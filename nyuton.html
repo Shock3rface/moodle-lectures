@@ -92,12 +92,20 @@ body{background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fw
 window.addEventListener("load", resizeIframe);
 
 
-// изменение размеров
+// повтор через задержки
+setTimeout(resizeIframe, 500);
+setTimeout(resizeIframe, 1500);
+setTimeout(resizeIframe, 3000);
+
+
+// изменение окна
 window.addEventListener("resize", resizeIframe);
 
 
-// если появляются интерактивные элементы
-const observer = new MutationObserver(resizeIframe);
+// отслеживание изменений страницы
+const observer = new MutationObserver(() => {
+    resizeIframe();
+});
 
 observer.observe(document.body,{
     childList:true,
