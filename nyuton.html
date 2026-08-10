@@ -74,12 +74,15 @@ body{background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fw
 <script>
     function resizeIframe(){
 
-    const height = document.documentElement.scrollHeight;
+    let height = Math.max(
+        document.body.scrollHeight,
+        document.documentElement.scrollHeight
+    );
 
     window.parent.postMessage(
         {
-            type: "resizeIframe",
-            height: height
+            type:"resizeIframe",
+            height:height
         },
         "*"
     );
