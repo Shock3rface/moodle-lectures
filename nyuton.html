@@ -72,7 +72,22 @@ body{background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fw
 <div class="block block-model3d align-center"><div class="model3d-wrap"><iframe class="model3d-frame" src="https://sketchfab.com/models/1351f71d50244ec69d7acc51799582e7/embed" style="width:100%;border:0;aspect-ratio:16/9;" allow="autoplay; fullscreen; xr-spatial-tracking" allowfullscreen loading="lazy"></iframe></div></div>
 </main>
 <script>
-document.addEventListener('click',function(e){var t=e.target.closest('.task-toggle');if(t){var a=t.parentElement.querySelector('.task-answer');if(a){var open=a.classList.toggle('open');t.textContent=open?'Скрыть ответ':'Показать ответ';}}});
+// запуск после загрузки
+window.addEventListener("load", resizeIframe);
+
+
+// изменение размеров
+window.addEventListener("resize", resizeIframe);
+
+
+// если появляются интерактивные элементы
+const observer = new MutationObserver(resizeIframe);
+
+observer.observe(document.body,{
+    childList:true,
+    subtree:true,
+    attributes:true
+});
 </script>
 </body>
 </html>
