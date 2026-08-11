@@ -2229,7 +2229,34 @@ updateModel();
 <p style="font-size:22px;font-weight:400;font-style:italic;text-decoration:none">1 — указать, как положение предмета относительно F и 2F влияет на свойства изображения;<br>2 — перечислить случаи получения действительного и мнимого изображения;<br>3 — сравнить результаты расчётов с данными виртуальной модели;<br>4 — сделать вывод о соответствии результатов формуле тонкой линзы;<br>5 — указать, при каком положении предмета изображение является увеличенным, уменьшенным и равным предмету.</p></div>
 </main>
 <script>
-document.addEventListener('click',function(e){var t=e.target.closest('.task-toggle');if(t){var a=t.parentElement.querySelector('.task-answer');if(a){var open=a.classList.toggle('open');t.textContent=open?'Скрыть ответ':'Показать ответ';}}});
+   function resizeIframe(){
+
+    const body = document.body;
+    const html = document.documentElement;
+
+    const height = Math.max(
+        body.getBoundingClientRect().height,
+        body.scrollHeight,
+        html.scrollHeight
+    );
+
+    window.parent.postMessage({
+        type:"resizeIframe",
+        height: Math.ceil(height)
+    }, "*");
+}
+
+
+window.addEventListener("load", resizeIframe);
+
+window.addEventListener("resize", resizeIframe);
+
+setTimeout(resizeIframe,1000);
+
+setTimeout(resizeIframe,3000);
+
+new ResizeObserver(resizeIframe)
+.observe(document.body);
 </script>
 </body>
 </html>
