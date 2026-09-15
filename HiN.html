@@ -263,6 +263,40 @@
             </p>
         </div>
     </footer>
+            <script>
 
+function resizeIframe(){
+
+    const body = document.body;
+    const html = document.documentElement;
+
+    const height = Math.max(
+        body.getBoundingClientRect().height,
+        body.scrollHeight,
+        html.scrollHeight
+    );
+
+    window.parent.postMessage({
+        type:"resizeIframe",
+        height: Math.ceil(height)
+    }, "*");
+}
+
+
+window.addEventListener("load", resizeIframe);
+
+window.addEventListener("resize", resizeIframe);
+
+
+setTimeout(resizeIframe,1000);
+
+setTimeout(resizeIframe,3000);
+
+
+new ResizeObserver(resizeIframe)
+.observe(document.body);
+
+
+</script>
 </body>
 </html>
