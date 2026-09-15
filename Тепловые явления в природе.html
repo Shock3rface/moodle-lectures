@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тепловые явления в природе</title>
+    <!-- Подключаем Tailwind CSS для современного и адаптивного дизайна -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Подключаем шрифты Google Fonts для красивой типографики -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Merriweather:ital,wght@0,300;0,700;1,300&display=swap" rel="stylesheet">
+    
+    <!-- Настройка базовых стилей и цветов -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Merriweather', 'serif'],
+                    },
+                    colors: {
+                        primary: '#0f172a',
+                        accent: '#3b82f6',
+                        highlight: '#fbbf24'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Дополнительные кастомные стили для плавных анимаций и деталей */
+        body {
+            background-color: #f8fafc;
+        }
+        .image-card img {
+            transition: transform 0.3s ease;
+        }
+        .image-card:hover img {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="font-sans text-gray-800 antialiased">
+
+    <header class="relative w-full h-[50vh] min-h-[400px] flex items-center justify-center overflow-hidden">
+        <img src="https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" 
+             alt="Фон природы" 
+             class="absolute inset-0 w-full h-full object-cover z-0 filter brightness-50">
+        
+        <div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
+            <h1 class="text-4xl md:text-6xl font-bold text-white mb-6 drop-shadow-lg font-serif">
+                Тепловые явления в природе
+            </h1>
+            <p class="text-lg md:text-xl text-gray-200 drop-shadow-md">
+                От базовых законов термодинамики до ледяных аномалий. Узнайте, как физика управляет нашей планетой.
+            </p>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 -mt-16 relative z-20">
+        
+        <div class="bg-white rounded-2xl shadow-xl p-6 md:p-10 mb-12 border-t-4 border-accent">
+            <p class="text-lg leading-relaxed text-gray-700 font-serif italic mb-4">
+                Физика — это не только сухие формулы, но и процессы, происходящие прямо у нас за окном. Понимание термодинамики позволяет объяснить множество удивительных явлений нашей планеты, от глобальных течений до микроскопических кристаллов льда.
+            </p>
+            <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500 mt-6">
+                <p class="text-gray-800">
+                    <strong>Тепловые явления</strong> — это любые процессы, которые связаны с нагреванием или охлаждением тел, а также с изменением их агрегатного состояния (переходом из твердого в жидкое, из жидкого в газообразное и наоборот).
+                </p>
+            </div>
+        </div>
+
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold text-primary mb-8 border-b-2 border-gray-200 pb-4">
+                1. Способы теплопередачи и агрегатные состояния
+            </h2>
+            <p class="mb-6 text-lg text-gray-700">Вся тепловая энергия в природе передается тремя основными способами, каждый из которых играет свою уникальную роль в формировании климата и погоды.</p>
+
+            <div class="flex flex-col gap-8 mb-12">
+                <!-- Теплопроводность -->
+                <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100">
+                    <h3 class="text-xl font-bold text-accent mb-3 flex items-center">
+                        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        Теплопроводность
+                    </h3>
+                    <p class="text-gray-700 mb-4">Передача тепла внутри самого вещества или при контакте двух тел, без переноса самого вещества.</p>
+                    <div class="relative w-full aspect-video md:aspect-[21/9] rounded-lg overflow-hidden mb-4">
+                        <img src="https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                             alt="Толстый слой снега в лесу" 
+                             class="absolute inset-0 w-full h-full object-cover">
+                    </div>
+                    <p class="text-gray-700 text-sm"><strong>Пример в природе:</strong> Снег — отличный теплоизолятор. Между снежинками находится много воздуха, а воздух очень плохо проводит тепло. Именно поэтому под толстым слоем снега земля не промерзает глубоко.</p>
+                </div>
+
+                <!-- Конвекция -->
+                <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100 flex flex-col">
+                    <h3 class="text-xl font-bold text-accent mb-3 flex items-center">
+                        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
+                        Конвекция
+                    </h3>
+                    <p class="text-gray-700 mb-4">В жидкостях и газах тепло переносится самими струями вещества. Нагретый воздух или вода становятся легче и поднимаются вверх, а холодные — опускаются вниз.</p>
+                    
+                    <!-- Измененная верстка для двух изображений -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 w-full">
+                        <div class="relative w-full aspect-video rounded-lg overflow-hidden bg-gray-100">
+                            <img src="https://encrypted-tbn3.gstatic.com/licensed-image?q=tbn:ANd9GcQ8xDY6xEwRThxbend7yIPlCCdchdtC6pDOeL7wbX6B1AlfcP7ADhURqJHDwMPMlplorBz2VddmB9CBsmU" 
+                                 alt="Извержение гейзера" 
+                                 class="absolute inset-0 w-full h-full object-cover">
+                        </div>
+                        <div class="relative w-full aspect-video rounded-lg overflow-hidden bg-gray-100">
+                            <img src="https://million-wallpapers.ru/wallpapers/3/23/486446121537092/pautina-v-kapelkax-rosy-v-zelenoj-trave.jpg" 
+                                 alt="Паутинка с росой" 
+                                 class="absolute inset-0 w-full h-full object-cover">
+                        </div>
+                    </div>
+                    
+                    <p class="text-gray-700 text-sm bg-gray-50 p-3 rounded mt-auto">
+                        <strong>Примеры:</strong> Гейзеры выбрасывают кипящую воду благодаря нагреву и мощной конвекции. Паутинка с росой иллюстрирует тесную связь конвективных потоков влажного воздуха и последующей конденсации.
+                    </p>
+                </div>
+            </div>
+
+            <h3 class="text-2xl font-bold text-primary mb-6">Изменение агрегатных состояний</h3>
+            <div class="overflow-x-auto rounded-lg shadow-md mb-10 border border-gray-100">
+                <table class="min-w-full bg-white text-left text-sm text-gray-700">
+                    <thead class="bg-gray-50 text-gray-900 font-medium border-b border-gray-200">
+                        <tr>
+                            <th scope="col" class="px-6 py-4">Явление</th>
+                            <th scope="col" class="px-6 py-4">Процесс</th>
+                            <th scope="col" class="px-6 py-4">Пример из природы</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        <tr class="hover:bg-blue-50/50 transition">
+                            <td class="px-6 py-4 font-bold text-gray-900">Испарение</td>
+                            <td class="px-6 py-4">Жидкость → Пар <span class="text-blue-600">(поглощает тепло)</span></td>
+                            <td class="px-6 py-4">Образование пара над океанами</td>
+                        </tr>
+                        <tr class="hover:bg-blue-50/50 transition">
+                            <td class="px-6 py-4 font-bold text-gray-900">Конденсация</td>
+                            <td class="px-6 py-4">Пар → Жидкость <span class="text-red-600">(выделяет тепло)</span></td>
+                            <td class="px-6 py-4">Облака, туман, роса</td>
+                        </tr>
+                        <tr class="hover:bg-blue-50/50 transition">
+                            <td class="px-6 py-4 font-bold text-gray-900">Кристаллизация</td>
+                            <td class="px-6 py-4">Жидкость → Твердое <span class="text-red-600">(выделяет тепло)</span></td>
+                            <td class="px-6 py-4">Снежинки, иней, лед на реке</td>
+                        </tr>
+                        <tr class="hover:bg-blue-50/50 transition">
+                            <td class="px-6 py-4 font-bold text-gray-900">Плавление</td>
+                            <td class="px-6 py-4">Твердое → Жидкость <span class="text-blue-600">(поглощает тепло)</span></td>
+                            <td class="px-6 py-4">Таяние ледников</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold text-primary mb-8 border-b-2 border-gray-200 pb-4">
+                2. Круговорот воды — гигантский тепловой двигатель
+            </h2>
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden p-6 md:p-8 border border-gray-100">
+                <p class="text-gray-700 mb-6 text-lg leading-relaxed">
+                    Без тепловых явлений вода бы просто стояла на месте. Круговорот воды — это глобальная система отопления и охлаждения Земли, работающая на энергии Солнца. Океан забирает тепло на экваторе (испаряясь), переносит эту энергию с паром в другие регионы и отдает ее атмосфере там, где проливается дождем.
+                </p>
+                <div class="relative w-full h-64 md:h-96 rounded-xl overflow-hidden shadow-inner bg-blue-50 p-2">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTizcRwKJzWvoGreNtTtmPpFQyGaFAicisCNY4JUKBQ8OvAZjAiJlp2QGb4&s=10" 
+                         alt="Круговорот воды" 
+                         class="absolute inset-0 w-full h-full object-contain">
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold text-primary mb-8 border-b-2 border-gray-200 pb-4">
+                3. Оптико-тепловой эффект: Мираж
+            </h2>
+            <div class="flex flex-col md:flex-row gap-8 items-center bg-white p-6 md:p-8 rounded-2xl shadow-xl border border-gray-100">
+                <div class="md:w-1/2 relative h-64 md:h-80 w-full rounded-xl overflow-hidden shadow-lg">
+                    <img src="https://encrypted-tbn1.gstatic.com/licensed-image?q=tbn:ANd9GcQuGSZtRL2exWnUyteRPDkwOWGjK-R6Zxzj_Het-kHCCDWzSfjh3yS3za7t0ech4tlXuU1jp5JEOvHZqmg" 
+                         alt="Мираж: оптическая иллюзия воды над раскаленной поверхностью" 
+                         class="absolute inset-0 w-full h-full object-cover">
+                </div>
+                <div class="md:w-1/2">
+                    <p class="text-lg text-gray-700 leading-relaxed">
+                        Вы наверняка видели в жаркую погоду над раскаленным асфальтом или песком «лужу воды», которой на самом деле нет. 
+                    </p>
+                    <p class="text-lg text-gray-700 leading-relaxed mt-4">
+                        Это явление связано с неравномерным нагревом воздуха. Сильно разогретый от земли нижний слой воздуха имеет меньшую плотность, чем верхние слои. Свет от неба <strong>искривляется</strong> (преломляется), проходя через эти слои с разной температурой, и попадает нам в глаза снизу вверх. В итоге мы видим отражение неба на земле.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold text-primary mb-8 border-b-2 border-gray-200 pb-4">
+                4. Необычные тепловые явления
+            </h2>
+            <p class="mb-8 text-lg text-gray-700">Когда стандартные законы физики сталкиваются с экстремальными условиями, возникают потрясающие природные аномалии.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                <!-- Брайникл -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col group border border-gray-100">
+                    <div class="h-56 relative w-full overflow-hidden bg-gray-900">
+                        <img src="https://encrypted-tbn2.gstatic.com/licensed-image?q=tbn:ANd9GcRV9RVlsmxk98FExpp66BnCehKYGlj6qe5NTjBAeGtsona9a8sqZtotskTl1RM89okRenAI3w-nQRxxekM" 
+                             alt="Брайникл: ледяной сталактит под водой" 
+                             class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                    </div>
+                    <div class="p-6 flex-grow">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Брайникл</h3>
+                        <p class="text-sm text-blue-500 font-semibold mb-3">«Ледяной палец смерти»</p>
+                        <p class="text-gray-600 text-sm leading-relaxed">
+                            Ледяной сталактит, растущий под водой в Арктике. При замерзании морской лед вытесняет соль, образуя тяжелый ледяной рассол. Он стекает на дно за счет конвекции, забирая тепло у окружающей воды и замораживая её вокруг себя в виде трубки.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Кающиеся снега -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col group border border-gray-100">
+                    <div class="h-56 relative w-full overflow-hidden">
+                        <img src="https://encrypted-tbn3.gstatic.com/licensed-image?q=tbn:ANd9GcQQ-zb9vZ55-8HuaocpM7C5Wu_IRr-bz9j-5QJ1My0CnOAjxQ3ZrAbbkZe4_aTBhZjUiU8d0rc7NcbYMoQ" 
+                             alt="Кающиеся снега: ледяные пики в горах" 
+                             class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                    </div>
+                    <div class="p-6 flex-grow">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Кающиеся снега</h3>
+                        <p class="text-sm text-blue-500 font-semibold mb-3">Сублимация</p>
+                        <p class="text-gray-600 text-sm leading-relaxed">
+                            Снежные иглы высотой до 5 метров в горах. Возникают из-за <strong>сублимации</strong> — перехода льда сразу в пар. Сухой холодный воздух и агрессивное солнце заставляют снег испаряться из углублений, оставляя острые пики.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Ледяные цветы -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col group border border-gray-100">
+                    <div class="h-56 relative w-full overflow-hidden">
+                        <img src="https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcTcINQ1BUc8tdVghg7wOZVVNd-icPXfH886LEPKzUH3f5pzXYHG3y_Jozjmd7b9vGJ5oRlyYc5UWdCS4Gg" 
+                             alt="Ледяные цветы: тонкие кристаллы на поверхности льда" 
+                             class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                    </div>
+                    <div class="p-6 flex-grow">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Ледяные цветы</h3>
+                        <p class="text-sm text-blue-500 font-semibold mb-3">Десублимация</p>
+                        <p class="text-gray-600 text-sm leading-relaxed">
+                            Тонкие кристаллы на свежем льду. Это <strong>десублимация</strong> (пар → лед). Когда вода около 0 °C, а воздух резко остывает до сильного минуса, перенасыщенный пар у поверхности льда мгновенно кристаллизуется в узоры.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-primary text-white py-12 text-center mt-12 border-t-8 border-accent">
+        <div class="max-w-3xl mx-auto px-4">
+            <svg class="w-12 h-12 mx-auto text-accent mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+            <h3 class="text-2xl font-bold mb-4 font-serif">Природа и термодинамика</h3>
+            <p class="text-gray-300 text-lg leading-relaxed">
+                Испарение, конвекция, теплопроводность и кристаллизация — это могущественные силы, которые формируют облик нашей планеты и управляют ее климатом каждый день.
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>
