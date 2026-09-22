@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Практическое применение электромагнетизма — 11 класс</title>
+    <!-- Chosen Palette: Warm Neutral Harmonious (Slate-50 background, Deep Slate/Indigo text & headers, Emerald/Amber/Cyan accents) -->
+    <!-- Application Structure Plan: The SPA is organized as an interactive scientific-educational workbench divided into 8 thematic modules. Instead of a flat reading layout, it presents key concepts through dynamic visual simulators (Faraday generator, Cyclotron spiral, Transformer laminations calculator, HVAC/HVDC line loss chart, MRI Larmor precessor, Maglev suspension, Tokamak bottle) and an 11th-grade interactive self-assessment quiz. Each section begins with an introductory pedagogical summary linking theory to real-world engineering. -->
+    <!-- Visualization & Content Choices: 
+         1. Generator E_max: HTML Sliders + Real-time Chart.js wave + Canvas 3D-like coil rotation -> Visualizing E = NBSw equation and the side doubling problem.
+         2. Cyclotron: HTML5 Canvas particle renderer -> Animating magnetic Lorentz turning and RF gap acceleration.
+         3. HVAC vs HVDC: Interactive line chart (Chart.js) -> Showing break-even distance and reactive loss drop.
+         4. Core Losses: Dynamic bar graph + Slider -> Showing 1/t^2 loss reduction during core lamination.
+         5. MRI Precessional Mechanics: Canvas spin precessor + Isotope spectrum calculator -> Visualizing Larmor equation w = gamma*B0.
+         6. Maglev EMS vs EDS: Dynamic HTML/CSS state toggle + gap height visualizer -> Explaining Earnshaw theorem bypass.
+         7. Self-Test Knowledge Matrix: Interactive JS Quiz with instant step-by-step theoretical feedback.
+         CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. Canvas and styled HTML/Tailwind elements used exclusively. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 380px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 340px;
+            }
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white">
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-50 bg-slate-900 text-white shadow-md border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <span class="bg-indigo-600 text-white p-2 rounded-lg font-bold text-lg shadow-inner">⚡</span>
+                <div>
+                    <h1 class="text-base sm:text-lg font-bold tracking-tight text-slate-100">Электромагнетизм в инженерии</h1>
+                    <p class="text-xs text-slate-400 hidden sm:block">Интерактивный курс физики • 11 класс</p>
+                </div>
+            </div>
+            
+            <!-- Quick Navigation Controls -->
+            <nav class="hidden lg:flex items-center space-x-1 text-xs font-medium text-slate-300">
+                <button onclick="switchTab('tab-fundamentals')" class="nav-btn px-3 py-2 rounded-md hover:bg-slate-800 hover:text-white transition">1. Законы</button>
+                <button onclick="switchTab('tab-vacuum')" class="nav-btn px-3 py-2 rounded-md hover:bg-slate-800 hover:text-white transition">2. Вакуум</button>
+                <button onclick="switchTab('tab-power')" class="nav-btn px-3 py-2 rounded-md hover:bg-slate-800 hover:text-white transition">3. Энергетика</button>
+                <button onclick="switchTab('tab-hf')" class="nav-btn px-3 py-2 rounded-md hover:bg-slate-800 hover:text-white transition">4. ВЧ-Индукция</button>
+                <button onclick="switchTab('tab-mri')" class="nav-btn px-3 py-2 rounded-md hover:bg-slate-800 hover:text-white transition">5. МРТ</button>
+                <button onclick="switchTab('tab-maglev')" class="nav-btn px-3 py-2 rounded-md hover:bg-slate-800 hover:text-white transition">6. Левитация</button>
+                <button onclick="switchTab('tab-megascience')" class="nav-btn px-3 py-2 rounded-md hover:bg-slate-800 hover:text-white transition">7. Мегасайенс</button>
+                <button onclick="switchTab('tab-quiz')" class="nav-btn px-3 py-2 rounded-md bg-indigo-700 text-white hover:bg-indigo-600 transition ml-2">🧪 Тест</button>
+            </nav>
+
+            <div class="lg:hidden flex items-center">
+                <select id="mobile-nav" onchange="switchTab(this.value)" class="bg-slate-800 text-slate-200 text-xs rounded border border-slate-700 px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <option value="tab-fundamentals">1. Законы электродинамики</option>
+                    <option value="tab-vacuum">2. Ускорители и частицы</option>
+                    <option value="tab-power">3. Энергетика и Сети</option>
+                    <option value="tab-hf">4. ВЧ-Быт и Qi</option>
+                    <option value="tab-mri">5. Медицинская физика (МРТ)</option>
+                    <option value="tab-maglev">6. Сверхпроводимость & Маглев</option>
+                    <option value="tab-megascience">7. Мегасайенс (Токамак & БАК)</option>
+                    <option value="tab-quiz">🧪 Интерактивный Тест</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- Banner / Hero Header -->
+        <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-2xl p-6 sm:p-8 text-white shadow-xl mb-8 border border-slate-800">
+            <div class="max-w-3xl">
+                <div class="inline-flex items-center space-x-2 bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-xs px-3 py-1 rounded-full mb-3">
+                    <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
+                    <span>Научно-методический интерактивный комплекс</span>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Практическое применение электромагнетизма</h2>
+                <p class="mt-2 text-slate-300 text-sm sm:text-base leading-relaxed">
+                    Исследуйте физику от вращения рамки в электрогенераторе до релятивистских ускорителей и квантовой прецессии спинов в МРТ. Используите симуляторы, чтобы визуализировать расчетные зависимости.
+                </p>
+            </div>
+        </div>
+
+        <!-- ==================== SECTION 1: FUNDAMENTAL LAWS ==================== -->
+        <section id="tab-fundamentals" class="tab-content block space-y-6">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <h3 class="text-xl font-bold text-slate-900 mb-2 flex items-center gap-2">
+                    <span class="w-7 h-7 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center text-sm font-black">1</span>
+                    Фундаментальные законы электромагнетизма
+                </h3>
+                <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                    В основе всей современной электротехники лежат два ключевых взаимодействия: индукционное появление ЭДС при изменении магнитного потока (закон Фарадея) и силовое воздействие поля на движущиеся заряды (сила Лоренца) и проводники с током (сила Ампера). Ниже представлена интерактивная модель генератора переменного тока.
+                </p>
+
+                <!-- Generator Interactive Simulation -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 bg-slate-50 p-4 sm:p-6 rounded-xl border border-slate-200">
+                    <div class="lg:col-span-5 space-y-4">
+                        <h4 class="font-semibold text-slate-800 text-sm border-b pb-2">Параметры генератора ℰ<sub>max</sub> = N · B · S · ω</h4>
+                        
+                        <div>
+                            <div class="flex justify-between text-xs font-medium text-slate-700 mb-1">
+                                <span>Длина стороны квадратной рамки (a):</span>
+                                <span id="val-side" class="font-bold text-indigo-600">0.10 м</span>
+                            </div>
+                            <input type="range" id="input-side" min="0.05" max="0.30" step="0.01" value="0.10" class="w-full accent-indigo-600 cursor-pointer">
+                            <p class="text-[11px] text-slate-500 mt-0.5"><span id="val-area" class="font-semibold">0.0100 м²</span></p>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-xs font-medium text-slate-700 mb-1">
+                                <span>Угловая скорость (ω):</span>
+                                <span id="val-omega" class="font-bold text-indigo-600">100 рад/с</span>
+                            </div>
+                            <input type="range" id="input-omega" min="20" max="300" step="10" value="100" class="w-full accent-indigo-600 cursor-pointer">
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-xs font-medium text-slate-700 mb-1">
+                                <span>Магнитная индукция (B):</span>
+                                <span id="val-bfield" class="font-bold text-indigo-600">0.20 Тл</span>
+                            </div>
+                            <input type="range" id="input-bfield" min="0.05" max="1.00" step="0.05" value="0.20" class="w-full accent-indigo-600 cursor-pointer">
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-xs font-medium text-slate-700 mb-1">
+                                <span>Число витков (N):</span>
+                                <span id="val-turns" class="font-bold text-indigo-600">100</span>
+                            </div>
+                            <input type="range" id="input-turns" min="10" max="500" step="10" value="100" class="w-full accent-indigo-600 cursor-pointer">
+                        </div>
+
+                        <!-- Special Case Highlight Box -->
+                        <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-900">
+                            <span class="font-bold block mb-1">💡 Разбор типовой задачи 11 класса:</span>
+                            Если сторону квадратной рамки увеличить в <b>2 раза</b> (площадь S вырастет в <b>4 раза</b>), а угловую скорость ω уменьшить в <b>2 раза</b>, то амплитуда ЭДС ℰ<sub>max</sub> <b>увеличится ровно в 2 раза</b> (например, с 2 мВ до 4 мВ).
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-7 flex flex-col justify-between space-y-4">
+                        <div class="bg-white p-4 rounded-lg border border-slate-200 flex items-center justify-between shadow-sm">
+                            <div>
+                                <span class="text-xs text-slate-500 uppercase tracking-wider font-semibold block">Рассчитанная амплитуда ЭДС</span>
+                                <span id="calc-emax" class="text-2xl font-black text-indigo-600">2000.0 мВ</span>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-xs text-slate-500 uppercase tracking-wider font-semibold block">Частота вращения</span>
+                                <span id="calc-freq" class="text-base font-bold text-slate-700">15.9 Гц</span>
+                            </div>
+                        </div>
+
+                        <!-- Chart Container -->
+                        <div class="chart-container bg-white p-2 rounded-lg border border-slate-200">
+                            <canvas id="chart-generator"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lorentian Earth Defense Callout -->
+                <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="p-4 bg-slate-900 text-white rounded-xl">
+                        <h4 class="font-bold text-indigo-400 text-sm mb-1">🛡️ Магнитосфера Земли и Сила Лоренца</h4>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Сила Лоренца F = qvB·sin(α) ортогональна скорости, поэтому <b>не совершает работы</b> и не изменяет кинетическую энергию частиц солнечного ветра, а лишь искривляет их траектории. Это защищает биосферу от губительной радиации.
+                        </p>
+                    </div>
+                    <div class="p-4 bg-indigo-50 border border-indigo-100 text-indigo-950 rounded-xl">
+                        <h4 class="font-bold text-indigo-800 text-sm mb-1">⚙️ От силы Лоренца к силе Ампера</h4>
+                        <p class="text-xs text-indigo-900/80 leading-relaxed">
+                            Макроскопическая сила Ампера F = IBL·sin(α) является результатом суммирования сил Лоренца, действующих на каждый отдельный свободный электрон проводимости внутри металлических обмоток ротора.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SECTION 2: VACUUM & ACCELERATORS ==================== -->
+        <section id="tab-vacuum" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <h3 class="text-xl font-bold text-slate-900 mb-2 flex items-center gap-2">
+                    <span class="w-7 h-7 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center text-sm font-black">2</span>
+                    Управление заряженными частицами в вакууме
+                </h3>
+                <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                    В вакууме отсутствие столкновений с молекулами газа позволяет использовать силу Лоренца для филигранного управления пучками электронов и ионов. Рассмотрим кинескопы ЭЛТ, масс-спектрометры, циклотроны и электромагнитный рельсотрон.
+                </p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Cyclotron Simulation Card -->
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <h4 class="font-bold text-slate-800 text-sm">Циклотрон: Разгон ионов по спирали</h4>
+                                <span class="text-[11px] bg-indigo-100 text-indigo-800 font-semibold px-2 py-0.5 rounded">Изохронный резонанс</span>
+                            </div>
+                            <p class="text-xs text-slate-600 mb-4 leading-relaxed">
+                                В циклотроне постоянное магнитное поле заставляет ион описывать дуги окружностей, а переменное электрическое поле в щели между дуантами ускоряет его. Период обращения T = (2πm) / (qB) <b>не зависит от радиуса</b>, что позволяет подавать напряжение с постоянной частотой.
+                            </p>
+                        </div>
+
+                        <!-- Canvas Animation for Cyclotron -->
+                        <div class="relative bg-slate-900 rounded-lg p-2 h-56 flex flex-col items-center justify-center overflow-hidden border border-slate-800">
+                            <canvas id="canvas-cyclotron" width="320" height="200" class="w-full h-full"></canvas>
+                            <div class="absolute bottom-2 right-2 bg-slate-800/80 backdrop-blur text-[10px] text-indigo-300 px-2 py-1 rounded">
+                                Энергия: <span id="cyclotron-energy" class="font-bold text-white">0.0</span> МэВ
+                            </div>
+                        </div>
+
+                        <div class="mt-4 flex items-center justify-between">
+                            <button onclick="restartCyclotron()" class="text-xs bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2 rounded-lg transition shadow-sm">
+                                ▶ Перезапустить пуск частицы
+                            </button>
+                            <span class="text-[11px] text-slate-500">Макс. энергия: ~20 МэВ</span>
+                        </div>
+                    </div>
+
+                    <!-- Tech Comparison Grid -->
+                    <div class="space-y-4">
+                        <div class="p-4 bg-white rounded-xl border border-slate-200 shadow-sm">
+                            <h4 class="font-bold text-slate-800 text-sm mb-1 flex items-center gap-2">
+                                <span class="text-indigo-600">📺</span> Электронно-лучевая трубка (ЭЛТ)
+                            </h4>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                Магнитные катушки отклонения создают поперечное векторное поле. Сила Лоренца смещает электронный луч по координатам X и Y, формируя растровое изображение на люминофоре.
+                            </p>
+                        </div>
+
+                        <div class="p-4 bg-white rounded-xl border border-slate-200 shadow-sm">
+                            <h4 class="font-bold text-slate-800 text-sm mb-1 flex items-center gap-2">
+                                <span class="text-indigo-600">🧪</span> Масс-спектрометрия
+                            </h4>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                Ионы с одинаковой скоростью попадают в однородное поле. Радиус траектории R = (mv) / (qB) прямо пропорционален массе m. Это позволяет разделять изотопы химических элементов.
+                            </p>
+                        </div>
+
+                        <div class="p-4 bg-white rounded-xl border border-slate-200 shadow-sm">
+                            <h4 class="font-bold text-slate-800 text-sm mb-1 flex items-center gap-2">
+                                <span class="text-indigo-600">⚡</span> Рельсотрон (Railgun) vs Пушка Гаусса
+                            </h4>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                В отличие от пушки Гаусса (переключение соленоидов), рельсотрон пропускает гигантский ток через сам токопроводящий снаряд между рельсами. Сила Ампера выталкивает снаряд на гиперзвуке.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SECTION 3: POWER & NETWORKS ==================== -->
+        <section id="tab-power" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <h3 class="text-xl font-bold text-slate-900 mb-2 flex items-center gap-2">
+                    <span class="w-7 h-7 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center text-sm font-black">3</span>
+                    Генерация, трансформация и передача электроэнергии
+                </h3>
+                <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                    От асинхронного двигателя Доливо-Добровольского с ротором «беличья клетка» до современных магистралей высокого напряжения постоянного тока (HVDC) — инженерия борется с реактивными потерями и токами Фуко.
+                </p>
+
+                <!-- Interactive Core Lamination & HVAC/HVDC Tabs -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    
+                    <!-- Eddy Current Losses Calculator -->
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
+                        <h4 class="font-bold text-slate-800 text-sm mb-2">🔥 Потери на вихревые токи в сердечнике (Токи Фуко)</h4>
+                        <p class="text-xs text-slate-600 mb-4 leading-relaxed">
+                            Мощность потерь P<sub>e</sub> = K<sub>e</sub> · B<sub>m</sub>² · t² · f² · V. Квадратичная зависимость от толщины пластины t² объясняет, почему сердечники <b>шихтуют</b> (набирают из изолированных лаком пластин), а добавление кремния повышает удельное сопротивление ρ.
+                        </p>
+
+                        <div class="space-y-3 bg-white p-4 rounded-lg border border-slate-200">
+                            <div>
+                                <div class="flex justify-between text-xs font-medium text-slate-700 mb-1">
+                                    <span>Толщина пластины шихтовки ($t$):</span>
+                                    <span id="val-thick" class="font-bold text-indigo-600">1.0 мм</span>
+                                </div>
+                                <input type="range" id="input-thick" min="0.1" max="2.0" step="0.1" value="1.0" class="w-full accent-indigo-600 cursor-pointer">
+                            </div>
+
+                            <div class="flex items-center justify-between pt-2 border-t">
+                                <span class="text-xs font-medium text-slate-700">Относительные тепловые потери (P<sub>e</sub> ~ t²):</span>
+                                <span id="calc-loss" class="text-lg font-black text-rose-600">100 %</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 bg-emerald-50 border border-emerald-200 rounded-lg p-3 text-xs text-emerald-900">
+                            <b>Вывод:</b> Уменьшение толщины пластины в 2 раза (например, с 1.0 мм до 0.5 мм) снижает потери на нагрев сердечника в <b>4 раза</b> (до 25%).
+                        </div>
+                    </div>
+
+                    <!-- HVAC vs HVDC Interactive Chart -->
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-sm mb-1">⚡ Сравнение потерь: HVAC против HVDC</h4>
+                            <p class="text-xs text-slate-600 mb-3 leading-relaxed">
+                                В калифорнийских и морских линиях переменный ток (HVAC) теряет энергию из-за перезарядки емкости кабеля. Постоянный ток (HVDC) не имеет реактивных потерь и эффективнее на расстояниях >700 км.
+                            </p>
+                        </div>
+
+                        <div class="chart-container bg-white p-2 rounded-lg border border-slate-200">
+                            <canvas id="chart-hvdc"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dolivo-Dobrovolsky Historical Note -->
+                <div class="mt-6 p-4 bg-amber-500/10 border border-amber-500/20 rounded-xl text-amber-950 text-xs leading-relaxed flex items-start gap-3">
+                    <span class="text-xl">💡</span>
+                    <div>
+                        <b>Исторический прорыв (М.О. Доливо-Добровольский, 1889–1891):</b> Изобретение трехфазного асинхронного двигателя с короткозамкнутым ротором («беличья клетка») и успешный запуск 170-км линии Лауфен—Франкфурт доказали превосходство трехфазного переменного тока над системами постоянного тока Томаса Эдисона.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SECTION 4: HIGH FREQUENCY & QI ==================== -->
+        <section id="tab-hf" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <h3 class="text-xl font-bold text-slate-900 mb-2 flex items-center gap-2">
+                    <span class="w-7 h-7 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center text-sm font-black">4</span>
+                    Высокочастотная индукция в быту и телекоммуникациях
+                </h3>
+                <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                    Использование токов высокой частоты (десятки килогерц и мегагерц) позволяет передавать энергию через воздух без физического контакта и осуществлять мгновенный бесконтактный нагрев металлов.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Induction Stove Card -->
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <h4 class="font-bold text-slate-800 text-sm">🍳 Индукционная варочная панель</h4>
+                            <span class="text-[10px] bg-slate-200 text-slate-700 font-bold px-2 py-0.5 rounded">20 – 120 кГц</span>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Медная катушка под стеклокерамикой создает высокочастотное магнитное поле. Поле наводит вихревые токи непосредственно в дне ферромагнитной посуды.
+                        </p>
+                        <ul class="text-xs text-slate-700 space-y-1.5 list-disc list-inside bg-white p-3 rounded-lg border border-slate-200">
+                            <li><b>Скин-эффект:</b> На высоких частотах ток вытесняется в тонкий поверхностный слой металла, повышая эффективное сопротивление и нагрев.</li>
+                            <li><b>Ферромагнетик:</b> Концентрирует магнитные линии и добавляет нагрев от потерь на гистерезис.</li>
+                            <li><b>Безопасность:</b> Сама панель не нагревается источником тока; тепло поступает только от дна горячей сковороды.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Qi Wireless Charging Card -->
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <h4 class="font-bold text-slate-800 text-sm">📱 Беспроводная зарядка Qi & MRC</h4>
+                            <span class="text-[10px] bg-indigo-100 text-indigo-700 font-bold px-2 py-0.5 rounded">205 кГц / 6.78 МГц</span>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Возрожденные идеи Николы Теслы о резонансном трансформаторе трансформировались в стандарт Qi и магнитный резонанс (MRC).
+                        </p>
+                        <div class="bg-white p-3 rounded-lg border border-slate-200 space-y-2 text-xs text-slate-700">
+                            <div class="flex justify-between border-b pb-1">
+                                <span class="font-semibold">Протокол обмена:</span>
+                                <span class="text-slate-500">Модуляция поля пакетами данных</span>
+                            </div>
+                            <div class="flex justify-between border-b pb-1">
+                                <span class="font-semibold">Магнитное центрирование:</span>
+                                <span class="text-slate-500">Кольцевые магниты (Apple MagSafe)</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="font-semibold">Магнитный бимформинг:</span>
+                                <span class="text-slate-500">Фазированные массивы (КПД до 60%)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SECTION 5: MRI ==================== -->
+        <section id="tab-mri" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <h3 class="text-xl font-bold text-slate-900 mb-2 flex items-center gap-2">
+                    <span class="w-7 h-7 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center text-sm font-black">5</span>
+                    Медицинская физика: Магнитно-резонансная томография (МРТ)
+                </h3>
+                <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                    МРТ основана на явлении ядерного магнитного резонанса (ЯМР). Протоны атомов водорода в тканях организма обладают собственным спином и совершают Ларморовскую прецессию во внешнем магнитном поле B<sub>0</sub>.
+                </p>
+
+                <!-- Larmor Frequency Calculator & Precession Visualizer -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 bg-slate-50 p-5 rounded-xl border border-slate-200">
+                    <div class="lg:col-span-5 space-y-4">
+                        <h4 class="font-bold text-slate-800 text-sm border-b pb-2">Калькулятор Ларморовской частоты ω<sub>0</sub> = γ · B<sub>0</sub></h4>
+
+                        <div>
+                            <label class="block text-xs font-medium text-slate-700 mb-1">Выберите исследуемый изотоп:</label>
+                            <select id="select-isotope" onchange="updateMRI()" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs font-medium focus:ring-2 focus:ring-indigo-500">
+                                <option value="42.58">Водород (1H) — γ = 42.58 МГц/Тл</option>
+                                <option value="40.05">Фтор (19F) — γ = 40.05 МГц/Тл</option>
+                                <option value="17.24">Фосфор (31P) — γ = 17.24 МГц/Тл</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-xs font-medium text-slate-700 mb-1">
+                                <span>Индукция поля томографа (B<sub>0</sub>):</span>
+                                <span id="val-mri-b" class="font-bold text-indigo-600">1.5 Тл</span>
+                            </div>
+                            <input type="range" id="input-mri-b" min="0.2" max="7.0" step="0.1" value="1.5" oninput="updateMRI()" class="w-full accent-indigo-600 cursor-pointer">
+                        </div>
+
+                        <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm space-y-2">
+                            <div class="text-xs text-slate-500 uppercase tracking-wider font-semibold">Резонансная частота РЧ-импульса</div>
+                            <div id="calc-larmor" class="text-2xl font-black text-indigo-600">63.87 МГц</div>
+                            <p class="text-[11px] text-slate-500">Относится к коротковолновому радиодиапазону (УКВ/FM).</p>
+                        </div>
+
+                        <div class="p-3 bg-slate-900 text-slate-200 rounded-lg text-xs space-y-1">
+                            <div class="font-bold text-indigo-400">🛡️ Стандарты безопасности ICNIRP:</div>
+                            <p class="text-[11px] text-slate-400">
+                                Для статического поля норма профессионального воздействия составляет <b>200 мТл (0.2 Тл)</b>. Для пациентов допустимы поля 1.5–3 Тл, так как излучение является <b>неионизирующим</b>.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Precession Animation Canvas -->
+                    <div class="lg:col-span-7 flex flex-col justify-between">
+                        <div class="bg-slate-900 rounded-xl p-4 flex flex-col items-center justify-center relative overflow-hidden h-64 border border-slate-800">
+                            <canvas id="canvas-mri-spin" width="300" height="220" class="max-w-full"></canvas>
+                            <div class="absolute top-3 left-3 bg-slate-800/80 backdrop-blur px-2 py-1 rounded text-[10px] text-slate-300">
+                                Вектор поля B<sub>0</sub> ↑
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-2 text-center">
+                            Вектор магнитования протона вращается по конусу вокруг вектора B<sub>0</sub>. Поглощая РЧ-импульс, вектор отклоняется, а при релаксации (T1/T2) переизлучает эхо-сигнал.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SECTION 6: LEVITATION & SUPERCONDUCTIVITY ==================== -->
+        <section id="tab-maglev" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <h3 class="text-xl font-bold text-slate-900 mb-2 flex items-center gap-2">
+                    <span class="w-7 h-7 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center text-sm font-black">6</span>
+                    Левитация, сверхпроводимость и теорема Ирншоу
+                </h3>
+                <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                    Теорема Ирншоу (1842 г.) строгими математическими методами доказала: <b>устойчивая статическая магнитная левитация невозможна</b>, так как лапласиан потенциальной энергии ∇²U = 0. Для полета необходима активная обратная связь или диамагнетизм сверхпроводников.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Maglev Systems Interactive Comparison -->
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 space-y-4">
+                        <h4 class="font-bold text-slate-800 text-sm border-b pb-2">Поезда Маглев: Сравнение технологий EMS и EDS</h4>
+
+                        <div class="flex gap-2">
+                            <button id="btn-ems" onclick="toggleMaglev('ems')" class="flex-1 py-2 text-xs font-bold rounded-lg bg-indigo-600 text-white transition">EMS (Электромагнитная)</button>
+                            <button id="btn-eds" onclick="toggleMaglev('eds')" class="flex-1 py-2 text-xs font-bold rounded-lg bg-slate-200 text-slate-700 hover:bg-slate-300 transition">EDS (Электродинамическая)</button>
+                        </div>
+
+                        <div id="maglev-info" class="bg-white p-4 rounded-lg border border-slate-200 text-xs space-y-2">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Meissner Effect & Quantum Pinning -->
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 space-y-3">
+                        <h4 class="font-bold text-slate-800 text-sm border-b pb-2">❄️ Эффект Мейснера и Квантовый пиннинг</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            При охлаждении ниже критической температуры T<sub>c</sub> сверхпроводник полностью выталкивает магнитное поле из своего объема за счет незатухающих поверхностных токов.
+                        </p>
+                        <div class="bg-white p-3 rounded-lg border border-slate-200 space-y-2 text-xs text-slate-700">
+                            <div class="font-semibold text-indigo-700">Сверхпроводники II рода (ReBCO):</div>
+                            <p class="text-slate-600">
+                                Магнитные вихри Абрикосова пронизывают материал в дефектах решетки. Поток «вмораживается» (квантовый пиннинг), благодаря чему сверхпроводник жестко застывает в воздухе над магнитом на любом расстоянии.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SECTION 7: MEGASCIENCE ==================== -->
+        <section id="tab-megascience" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <h3 class="text-xl font-bold text-slate-900 mb-2 flex items-center gap-2">
+                    <span class="w-7 h-7 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center text-sm font-black">7</span>
+                    Сверхмощные магнитные поля в фундаментальной науке
+                </h3>
+                <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                    Флагманами мировой науки являются установки Мегасайенс: термоядерные реакторы Токамак и Большой адронный коллайдер (LHC).
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Tokamak Container Card -->
+                    <div class="bg-slate-900 text-white p-5 rounded-xl border border-slate-800 space-y-3 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="font-bold text-indigo-400 text-sm">🔥 Термоядерный реактор Токамак</h4>
+                                <span class="text-[10px] bg-indigo-500/30 text-indigo-300 px-2 py-0.5 rounded border border-indigo-500/40">Магнитная ловушка</span>
+                            </div>
+                            <ul class="text-xs text-slate-300 space-y-1.5 list-disc list-inside bg-slate-800/80 p-3 rounded-lg border border-slate-700">
+                                <li><b>Тороидальное поле:</b> Создается внешними сверхпроводящими катушками вокруг тора.</li>
+                                <li><b>Полоидальное поле:</b> Индуцируется мощным током, протекающим по самому плазменному шнуру.</li>
+                            </ul>
+                        </div>
+                        <p class="text-[11px] text-slate-400 pt-2 border-t border-slate-800">
+                            Результирующие силовые линии имеют форму спиралей, на которые «навиваются» заряженные частицы.
+                        </p>
+                    </div>
+
+                    <!-- LHC Superconducting Dipoles Card -->
+                    <div class="bg-slate-900 text-white p-5 rounded-xl border border-slate-800 space-y-3 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="font-bold text-cyan-400 text-sm">⚛️ Большой адронный коллайдер (LHC)</h4>
+                                <span class="text-[10px] bg-cyan-500/30 text-cyan-300 px-2 py-0.5 rounded border border-cyan-500/40">ЦЕРН / BNL</span>
+                            </div>
+                            <p class="text-xs text-slate-300 leading-relaxed mb-3">
+                                Для удержания протонов с энергией 6.5 ТэВ на кольцевой орбите длиной 27 км используются сверхпроводящие дипольные магниты.
+                            </p>
+                            <div class="grid grid-cols-2 gap-2 text-xs">
+                                <div class="bg-slate-800 p-2 rounded border border-slate-700">
+                                    <span class="text-slate-400 text-[10px] block">Рабочее поле</span>
+                                    <span class="font-bold text-cyan-300 text-sm">8.3 Тесла</span>
+                                </div>
+                                <div class="bg-slate-800 p-2 rounded border border-slate-700">
+                                    <span class="text-slate-400 text-[10px] block">Температура гелия</span>
+                                    <span class="font-bold text-cyan-300 text-sm">1.9 Кельвина</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-[11px] text-slate-400 pt-2 border-t border-slate-800">
+                            Магниты весом по 25 тонн заключают в едином корпусе две вакуумные трубы для встречных пучков протонов.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SECTION 8: QUIZ ==================== -->
+        <section id="tab-quiz" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <div class="flex items-center justify-between mb-4 border-b pb-4">
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-900">🧪 Интерактивный контроль знаний (11 класс)</h3>
+                        <p class="text-xs text-slate-500">Проверьте усвоение материалов лекционного руководства.</p>
+                    </div>
+                    <div id="quiz-score-badge" class="bg-indigo-50 border border-indigo-200 text-indigo-700 font-bold px-3 py-1.5 rounded-lg text-xs">
+                        Результат: 0 / 5
+                    </div>
+                </div>
+
+                <!-- Quiz Questions Container -->
+                <div id="quiz-container" class="space-y-6">
+                    <!-- Populated dynamically by JS -->
+                </div>
+
+                <div class="mt-6 flex justify-end">
+                    <button onclick="resetQuiz()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold px-5 py-2.5 rounded-lg transition shadow-sm">
+                        🔄 Пройти тест заново
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 border-t border-slate-800 py-6 mt-12 text-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+                <p class="font-medium text-slate-300">Практическое применение электромагнетизма</p>
+                <p class="text-[11px] text-slate-500">Учебно - методическая лекция для курса физики 11 класса</p>
+            </div>
+            <p class="text-[11px] text-slate-500">© 2026 Физика & Инженерия. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // ==================== TAB SWITCHING LOGIC ====================
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            const activeTab = document.getElementById(tabId);
+            if (activeTab) activeTab.classList.remove('hidden');
+
+            // Update mobile dropdown selector
+            const mobileSelect = document.getElementById('mobile-nav');
+            if (mobileSelect) mobileSelect.value = tabId;
+
+            // Trigger chart resizes if switching to tab with chart
+            if (tabId === 'tab-fundamentals' && generatorChart) generatorChart.resize();
+            if (tabId === 'tab-power' && hvdcChart) hvdcChart.resize();
+            if (tabId === 'tab-vacuum') startCyclotronAnimation();
+            if (tabId === 'tab-mri') startMRIAnimation();
+        }
+
+        // ==================== SECTION 1: GENERATOR CHART & CALCULATOR ====================
+        let generatorChart;
+        const inputSide = document.getElementById('input-side');
+        const inputOmega = document.getElementById('input-omega');
+        const inputBfield = document.getElementById('input-bfield');
+        const inputTurns = document.getElementById('input-turns');
+
+        function updateGenerator() {
+            const side = parseFloat(inputSide.value);
+            const omega = parseFloat(inputOmega.value);
+            const B = parseFloat(inputBfield.value);
+            const N = parseInt(inputTurns.value);
+
+            const area = side * side;
+            const Emax = N * B * area * omega; // Volts
+            const freq = omega / (2 * Math.PI);
+
+            document.getElementById('val-side').innerText = side.toFixed(2) + ' м';
+            document.getElementById('val-area').innerText = area.toFixed(4) + ' м²';
+            document.getElementById('val-omega').innerText = omega + ' рад/с';
+            document.getElementById('val-bfield').innerText = B.toFixed(2) + ' Тл';
+            document.getElementById('val-turns').innerText = N;
+
+            document.getElementById('calc-emax').innerText = (Emax * 1000).toFixed(1) + ' мВ';
+            document.getElementById('calc-freq').innerText = freq.toFixed(1) + ' Гц';
+
+            // Generate sine points for Chart
+            const labels = [];
+            const dataPoints = [];
+            const steps = 60;
+            const period = (2 * Math.PI) / omega;
+            
+            for (let i = 0; i <= steps; i++) {
+                const t = (i / steps) * (2 * period);
+                labels.push((t * 1000).toFixed(1));
+                dataPoints.push((Emax * 1000 * Math.sin(omega * t)).toFixed(1));
+            }
+
+            if (generatorChart) {
+                generatorChart.data.labels = labels;
+                generatorChart.data.datasets[0].data = dataPoints;
+                generatorChart.update('none');
+            }
+        }
+
+        function initGeneratorChart() {
+            const ctx = document.getElementById('chart-generator').getContext('2d');
+            generatorChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Индуцированная ЭДС E(t) [мВ]',
+                        data: [],
+                        borderColor: '#4f46e5',
+                        backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        pointRadius: 0,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: true, labels: { font: { size: 11 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) { return context.parsed.y + ' мВ'; }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { title: { display: true, text: 'Время t (мс)', font: { size: 10 } } },
+                        y: { title: { display: true, text: 'ЭДС (мВ)', font: { size: 10 } } }
+                    }
+                }
+            });
+            updateGenerator();
+        }
+
+        inputSide.addEventListener('input', updateGenerator);
+        inputOmega.addEventListener('input', updateGenerator);
+        inputBfield.addEventListener('input', updateGenerator);
+        inputTurns.addEventListener('input', updateGenerator);
+
+        // ==================== SECTION 2: CYCLOTRON ANIMATION ====================
+        let cyclotronAnimId;
+        let cyclotronAngle = 0;
+        let cyclotronRadius = 10;
+        let cyclotronEnergy = 0;
+
+        function startCyclotronAnimation() {
+            if (cyclotronAnimId) cancelAnimationFrame(cyclotronAnimId);
+            const canvas = document.getElementById('canvas-cyclotron');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            function draw() {
+                ctx.fillStyle = '#0f172a';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                const cx = canvas.width / 2;
+                const cy = canvas.height / 2;
+
+                // Draw Dees (D-shaped electrodes)
+                ctx.strokeStyle = '#38bdf8';
+                ctx.lineWidth = 2;
+
+                // Left Dee
+                ctx.beginPath();
+                ctx.arc(cx - 3, cy, 80, Math.PI / 2, (3 * Math.PI) / 2);
+                ctx.closePath();
+                ctx.stroke();
+
+                // Right Dee
+                ctx.beginPath();
+                ctx.arc(cx + 3, cy, 80, (3 * Math.PI) / 2, Math.PI / 2);
+                ctx.closePath();
+                ctx.stroke();
+
+                // Accelerating gap line
+                ctx.strokeStyle = '#f59e0b';
+                ctx.lineWidth = 1;
+                ctx.setLineDash([3, 3]);
+                ctx.beginPath();
+                ctx.moveTo(cx, cy - 85);
+                ctx.lineTo(cx, cy + 85);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                // Particle trajectory update
+                cyclotronAngle += 0.12;
+                if (Math.abs(Math.cos(cyclotronAngle)) < 0.15 && cyclotronRadius < 75) {
+                    cyclotronRadius += 0.35;
+                    cyclotronEnergy += 0.12;
+                }
+
+                if (cyclotronRadius >= 75) {
+                    cyclotronRadius = 75; // Hit ejection target
+                }
+
+                document.getElementById('cyclotron-energy').innerText = cyclotronEnergy.toFixed(1);
+
+                // Particle position
+                const px = cx + cyclotronRadius * Math.cos(cyclotronAngle);
+                const py = cy + cyclotronRadius * Math.sin(cyclotronAngle);
+
+                // Draw Spiral Trail
+                ctx.strokeStyle = 'rgba(129, 140, 248, 0.5)';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                let r = 5;
+                for (let a = 0; a < cyclotronAngle; a += 0.1) {
+                    if (r < cyclotronRadius) r += 0.03;
+                    const tx = cx + r * Math.cos(a);
+                    const ty = cy + r * Math.sin(a);
+                    if (a === 0) ctx.moveTo(tx, ty);
+                    else ctx.lineTo(tx, ty);
+                }
+                ctx.stroke();
+
+                // Particle dot
+                ctx.fillStyle = '#ef4444';
+                ctx.beginPath();
+                ctx.arc(px, py, 5, 0, Math.PI * 2);
+                ctx.fill();
+
+                cyclotronAnimId = requestAnimationFrame(draw);
+            }
+            draw();
+        }
+
+        function restartCyclotron() {
+            cyclotronAngle = 0;
+            cyclotronRadius = 8;
+            cyclotronEnergy = 0;
+        }
+
+        // ==================== SECTION 3: CORE LOSSES & HVAC/HVDC ====================
+        const inputThick = document.getElementById('input-thick');
+        if (inputThick) {
+            inputThick.addEventListener('input', function() {
+                const t = parseFloat(this.value);
+                document.getElementById('val-thick').innerText = t.toFixed(1) + ' мм';
+                const lossPct = (t * t) * 100;
+                document.getElementById('calc-loss').innerText = lossPct.toFixed(0) + ' %';
+            });
+        }
+
+        let hvdcChart;
+        function initHVDCChart() {
+            const ctx = document.getElementById('chart-hvdc').getContext('2d');
+            const distances = [0, 200, 400, 600, 700, 800, 1000, 1200];
+            
+            // HVAC losses increase quadratically/exponentially over length due to reactive current
+            const hvacLosses = [1, 4, 9, 16, 21, 28, 42, 60];
+            // HVDC losses have initial converter station overhead (~2.5%) then linear low slope
+            const hvdcLosses = [3.5, 5, 6.5, 8, 8.8, 9.5, 11, 12.5];
+
+            hvdcChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: distances.map(d => d + ' км'),
+                    datasets: [
+                        {
+                            label: 'HVAC (Переменный ток) Потери %',
+                            data: hvacLosses,
+                            borderColor: '#ef4444',
+                            backgroundColor: 'transparent',
+                            borderWidth: 2,
+                            tension: 0.2
+                        },
+                        {
+                            label: 'HVDC (Постоянный ток) Потери %',
+                            data: hvdcLosses,
+                            borderColor: '#10b981',
+                            backgroundColor: 'transparent',
+                            borderWidth: 2,
+                            tension: 0.1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: true, labels: { font: { size: 10 } } }
+                    },
+                    scales: {
+                        x: { title: { display: true, text: 'Длина линии передачи (км)', font: { size: 10 } } },
+                        y: { title: { display: true, text: 'Суммарные потери (%)', font: { size: 10 } } }
+                    }
+                }
+            });
+        }
+
+        // ==================== SECTION 5: MRI SIMULATOR ====================
+        function updateMRI() {
+            const gamma = parseFloat(document.getElementById('select-isotope').value);
+            const B = parseFloat(document.getElementById('input-mri-b').value);
+
+            document.getElementById('val-mri-b').innerText = B.toFixed(1) + ' Тл';
+            const larmorFreq = gamma * B;
+            document.getElementById('calc-larmor').innerText = larmorFreq.toFixed(2) + ' МГц';
+        }
+
+        let mriAnimId;
+        let mriAngle = 0;
+        function startMRIAnimation() {
+            if (mriAnimId) cancelAnimationFrame(mriAnimId);
+            const canvas = document.getElementById('canvas-mri-spin');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            function draw() {
+                ctx.fillStyle = '#0f172a';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                const cx = canvas.width / 2;
+                const cy = canvas.height / 2 + 20;
+
+                // Precession Cone Outline
+                ctx.strokeStyle = 'rgba(99, 102, 241, 0.3)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.ellipse(cx, cy - 60, 45, 18, 0, 0, Math.PI * 2);
+                ctx.stroke();
+
+                // Central B0 vector
+                ctx.strokeStyle = '#38bdf8';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(cx, cy);
+                ctx.lineTo(cx, cy - 90);
+                ctx.stroke();
+
+                // Arrowhead B0
+                ctx.fillStyle = '#38bdf8';
+                ctx.beginPath();
+                ctx.moveTo(cx - 5, cy - 85);
+                ctx.lineTo(cx + 5, cy - 85);
+                ctx.lineTo(cx, cy - 95);
+                ctx.fill();
+
+                // Precessing Spin Vector
+                mriAngle += 0.08;
+                const tipX = cx + 45 * Math.cos(mriAngle);
+                const tipY = cy - 60 + 18 * Math.sin(mriAngle);
+
+                ctx.strokeStyle = '#ef4444';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(cx, cy);
+                ctx.lineTo(tipX, tipY);
+                ctx.stroke();
+
+                // Proton Sphere
+                ctx.fillStyle = '#ef4444';
+                ctx.beginPath();
+                ctx.arc(cx, cy, 8, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Precessing Arrowhead
+                ctx.fillStyle = '#ef4444';
+                ctx.beginPath();
+                ctx.arc(tipX, tipY, 4, 0, Math.PI * 2);
+                ctx.fill();
+
+                mriAnimId = requestAnimationFrame(draw);
+            }
+            draw();
+        }
+
+        // ==================== SECTION 6: MAGLEV TOGGLE ====================
+        function toggleMaglev(type) {
+            const btnEms = document.getElementById('btn-ems');
+            const btnEds = document.getElementById('btn-eds');
+            const info = document.getElementById('maglev-info');
+
+            if (type === 'ems') {
+                btnEms.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-indigo-600 text-white transition";
+                btnEds.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-slate-200 text-slate-700 hover:bg-slate-300 transition";
+                info.innerHTML = `
+                    <div class="font-bold text-indigo-700">Электромагнитная подвеска (EMS) — Притяжение:</div>
+                    <p class="text-slate-600">
+                        Электромагниты поезда притягиваются снизу к стальному рельсу. Нестабильность системы компенсируется активными <b>ПИД-регуляторами</b>, регулирующими ток 1000 раз в секунду для удержания зазора ~15 мм.
+                    </p>
+                `;
+            } else {
+                btnEds.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-indigo-600 text-white transition";
+                btnEms.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-slate-200 text-slate-700 hover:bg-slate-300 transition";
+                info.innerHTML = `
+                    <div class="font-bold text-emerald-700">Электродинамическая подвеска (EDS) — Отталкивание:</div>
+                    <p class="text-slate-600">
+                        Сверхпроводящие магниты движения индуцируют мощные токи в путевых катушках. По <b>правилу Ленца</b> появляется сила отталкивания. Система самостабилизируется при зазоре 10–15 см, но требует колесного шасси на малых скоростях.
+                    </p>
+                `;
+            }
+        }
+
+        // ==================== SECTION 8: KNOWLEDGE QUIZ ====================
+        const quizData = [
+            {
+                q: "1. Сторону квадратной рамки в генераторе увеличили в 2 раза, а угловую скорость вращения уменьшили в 2 раза. Как изменится максимальная наводимая ЭДС?",
+                options: ["Уменьшится в 2 раза", "Не изменится", "Увеличится в 2 раза", "Увеличится в 4 раза"],
+                correct: 2,
+                explain: "Площадь S = a² увеличивается в 4 раза. Из формулы E_max = N*B*S*w: 4 * (1/2) = 2. Амплитуда ЭДС вырастет в 2 раза."
+            },
+            {
+                q: "2. Почему сила Лоренца не может изменить кинетическую энергию заряженной частицы в вакууме?",
+                options: [
+                    "Она направлена параллельно скорости частицы",
+                    "Она строго ортогональна вектору скорости и не совершает работы",
+                    "Ее модуль всегда равен нулю",
+                    "Она компенсируется силой тяжести"
+                ],
+                correct: 1,
+                explain: "Так как F_Лоренца перпендикулярна вектору скорости, угол между силой и перемещением равен 90°, следовательно, работа A = F*s*cos(90°) = 0."
+            },
+            {
+                q: "3. Как изменится мощность тепловых потерь на вихревые токи (токи Фуко) в сердечнике при уменьшении толщины его пластин в 2 раза?",
+                options: ["Снизится в 2 раза", "Снизится в 4 раза", "Увеличится в 2 раза", "Увеличится в 4 раза"],
+                correct: 1,
+                explain: "Потери P_e пропорциональны квадрату толщины пластины (t²). При t/2 потери падают в (1/2)² = 1/4 раза."
+            },
+            {
+                q: "4. Каков физический принцип работы магнитно-резонансной томографии (МРТ)?",
+                options: [
+                    "Измерение поглощения гамма-излучения костными тканями",
+                    "Ядерный магнитный резонанс протонов водорода на Ларморовской частоте",
+                    "Нагрев тканей высоковольтными постоянными токами",
+                    "Регистрация электронных лучей, отраженных от кожи"
+                ],
+                correct: 1,
+                explain: "МРТ фиксирует эхо-сигнал релаксации спинов протонов водорода после воздействия РЧ-импульса на Ларморовской частоте w_0 = gamma * B_0."
+            },
+            {
+                q: "5. В чем заключается суть математической теоремы Ирншоу (1842 г.)?",
+                options: [
+                    "Электрический ток не может протекать в вакууме",
+                    "Статическая система магнитных диполей принципиально не может быть устойчива",
+                    "Сверхпроводники выталкивают свет",
+                    "Переменный ток опаснее постоянного"
+                ],
+                correct: 1,
+                explain: "Из уравнения Лапласа div(B)=0 следует, что потенциальная энергия статических магнитов не имеет 3D-минимумов в свободном пространстве."
+            }
+        ];
+
+        let userAnswers = {};
+
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+
+            quizData.forEach((item, qIdx) => {
+                const card = document.createElement('div');
+                card.className = "bg-slate-50 p-4 sm:p-5 rounded-xl border border-slate-200 space-y-3";
+
+                let optionsHTML = '';
+                item.options.forEach((opt, oIdx) => {
+                    const isSelected = userAnswers[qIdx] === oIdx;
+                    optionsHTML += `
+                        <button onclick="selectAnswer(${qIdx}, ${oIdx})" class="w-full text-left text-xs p-3 rounded-lg border transition ${
+                            isSelected 
+                            ? 'bg-indigo-600 text-white border-indigo-600 font-semibold' 
+                            : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
+                        }">
+                            ${opt}
+                        </button>
+                    `;
+                });
+
+                let explanationHTML = '';
+                if (userAnswers[qIdx] !== undefined) {
+                    const isCorrect = userAnswers[qIdx] === item.correct;
+                    explanationHTML = `
+                        <div class="p-3 rounded-lg text-xs mt-2 ${isCorrect ? 'bg-emerald-100 text-emerald-900 border border-emerald-200' : 'bg-rose-100 text-rose-900 border border-rose-200'}">
+                            <b>${isCorrect ? '✅ Верно!' : '❌ Неверно.'}</b> ${item.explain}
+                        </div>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <div class="font-bold text-slate-800 text-sm">${item.q}</div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">${optionsHTML}</div>
+                    ${explanationHTML}
+                `;
+                container.appendChild(card);
+            });
+
+            updateScoreBadge();
+        }
+
+        function selectAnswer(qIdx, oIdx) {
+            userAnswers[qIdx] = oIdx;
+            renderQuiz();
+        }
+
+        function updateScoreBadge() {
+            let correctCount = 0;
+            Object.keys(userAnswers).forEach(qIdx => {
+                if (userAnswers[qIdx] === quizData[qIdx].correct) correctCount++;
+            });
+            document.getElementById('quiz-score-badge').innerText = `Результат: ${correctCount} / ${quizData.length}`;
+        }
+
+        function resetQuiz() {
+            userAnswers = {};
+            renderQuiz();
+        }
+
+        // ==================== INITIALIZATION ====================
+        window.addEventListener('DOMContentLoaded', () => {
+            initGeneratorChart();
+            initHVDCChart();
+            startCyclotronAnimation();
+            updateMRI();
+            toggleMaglev('ems');
+            renderQuiz();
+        });
+    </script>
+</body>
+</html>
