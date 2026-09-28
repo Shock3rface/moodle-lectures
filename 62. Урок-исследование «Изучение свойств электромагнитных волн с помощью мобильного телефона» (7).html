@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабораторная работа: Электромагнитные волны</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- GSAP для анимаций -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <style>
+        body {
+            background-color: #f3f4f6;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+        }
+        #model-container {
+            width: 100%;
+            height: 450px;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            position: relative;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        canvas {
+            display: block;
+        }
+        .gsap-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        /* Стилизация скроллбара для текстовых полей */
+        textarea::-webkit-scrollbar {
+            width: 8px;
+        }
+        textarea::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+            border-radius: 4px;
+        }
+        textarea::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        textarea::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+    </style>
+</head>
+<body class="text-gray-800 pb-16">
+
+    <!-- Шапка -->
+    <header class="bg-blue-600 text-white py-12 shadow-lg gsap-reveal">
+        <div class="max-w-5xl mx-auto px-6">
+            <h2 class="text-blue-200 text-lg font-semibold tracking-wide uppercase mb-2">Физика • 9 класс</h2>
+            <h1 class="text-4xl font-bold mb-4 leading-tight">Урок-исследование: Изучение свойств электромагнитных волн с помощью мобильного телефона</h1>
+            <p class="text-blue-100 text-lg max-w-3xl">Экспериментальное доказательство свойств радиоволн (поглощение, отражение, проникающая способность) в различных средах.</p>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-6 mt-10 space-y-12">
+        
+        <!-- Интерактивная модель -->
+        <section class="gsap-reveal bg-white rounded-2xl p-6 shadow-md border border-gray-100">
+            <h3 class="text-2xl font-bold text-gray-800 mb-2">Интерактивная 3D-модель эксперимента</h3>
+            <p class="text-gray-600 mb-6">Выбирайте тип преграды и наблюдайте, как изменяется распространение электромагнитной волны от передатчика к приемнику.</p>
+            
+            <!-- Кнопки управления -->
+            <div class="flex flex-wrap gap-3 mb-6">
+                <button onclick="changeBarrier('air')" class="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-colors focus:ring-2 focus:ring-blue-500 focus:outline-none">Без преграды (Воздух)</button>
+                <button onclick="changeBarrier('plastic')" class="px-5 py-2.5 bg-blue-50 hover:bg-blue-100 text-blue-700 font-medium rounded-lg transition-colors focus:ring-2 focus:ring-blue-500 focus:outline-none">Диэлектрик (Пластик)</button>
+                <button onclick="changeBarrier('metal')" class="px-5 py-2.5 bg-gray-700 hover:bg-gray-800 text-white font-medium rounded-lg transition-colors focus:ring-2 focus:ring-gray-500 focus:outline-none">Сплошной металл</button>
+                <button onclick="changeBarrier('cage')" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors focus:ring-2 focus:ring-indigo-500 focus:outline-none">Клетка Фарадея (Сетка)</button>
+                <button onclick="triggerCall()" class="px-5 py-2.5 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg transition-colors shadow-md ml-auto flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                    Позвонить
+                </button>
+            </div>
+
+            <div id="model-container">
+                <!-- Сюда рендерится Three.js -->
+            </div>
+            
+            <div id="status-panel" class="mt-4 p-4 rounded-lg bg-gray-50 border border-gray-200 text-center font-medium text-gray-700 transition-all duration-300">
+                Ожидание сигнала... Нажмите «Позвонить», чтобы начать тест.
+            </div>
+        </section>
+
+        <!-- Ход работы -->
+        <section class="gsap-reveal">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6">Ход выполнения лабораторной работы</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Шаг 1 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 border-l-4 border-l-blue-500">
+                    <h4 class="text-lg font-bold mb-2">Опыт 1: Контрольный замер</h4>
+                    <p class="text-gray-600">Положите первый телефон (приемник) на стол. Со второго телефона (передатчика) позвоните на первый. Убедитесь, что сигнал проходит стабильно.</p>
+                </div>
+                <!-- Шаг 2 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 border-l-4 border-l-blue-400">
+                    <h4 class="text-lg font-bold mb-2">Опыт 2: Преграда из диэлектрика</h4>
+                    <p class="text-gray-600">Поместите телефон-приемник в пластиковый контейнер или стеклянную банку, плотно закройте. Совершите вызов. Зафиксируйте результат.</p>
+                </div>
+                <!-- Шаг 3 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 border-l-4 border-l-gray-600">
+                    <h4 class="text-lg font-bold mb-2">Опыт 3: Преграда из металла</h4>
+                    <p class="text-gray-600">Оберните телефон-приемник в два-три слоя плотной алюминиевой фольги без щелей. Попробуйте на него позвонить. Зафиксируйте результат.</p>
+                </div>
+                <!-- Шаг 4 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 border-l-4 border-l-indigo-500">
+                    <h4 class="text-lg font-bold mb-2">Опыт 4: Эффект клетки Фарадея</h4>
+                    <p class="text-gray-600">Накройте телефон металлической сеткой (или дуршлагом). Позвоните на телефон. Обратите внимание на то, как размер ячейки влияет на длину волны.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Пустая сводная таблица (для заполнения учениками) -->
+        <section class="gsap-reveal bg-white rounded-2xl p-6 shadow-md border border-gray-100">
+            <h3 class="text-2xl font-bold text-gray-800 mb-2">Сводная таблица результатов и анализ</h3>
+            <p class="text-gray-600 mb-6">На основе проведенных опытов самостоятельно заполните результаты наблюдений и сделайте физические выводы о свойствах электромагнитных волн в разных средах.</p>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-100 text-gray-700 text-sm uppercase tracking-wider">
+                            <th class="p-4 rounded-tl-lg font-semibold w-1/5">Среда / Преграда</th>
+                            <th class="p-4 font-semibold w-1/4 border-l border-gray-200">Результат<br><span class="text-xs font-normal text-gray-500">(проходит ли вызов?)</span></th>
+                            <th class="p-4 rounded-tr-lg font-semibold border-l border-gray-200">Физическое объяснение<br><span class="text-xs font-normal text-gray-500">(почему так происходит?)</span></th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-700 divide-y divide-gray-200">
+                        <tr class="hover:bg-gray-50 transition-colors group">
+                            <td class="p-4 font-medium flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-blue-400"></span> Воздух (газ)
+                            </td>
+                            <td class="p-4 border-l border-gray-200">
+                                <input type="text" placeholder="Опишите результат..." class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow">
+                            </td>
+                            <td class="p-4 border-l border-gray-200">
+                                <textarea rows="2" placeholder="Ваш вывод..." class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow resize-y"></textarea>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="p-4 font-medium flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-blue-200"></span> Пластик / Стекло
+                            </td>
+                            <td class="p-4 border-l border-gray-200">
+                                <input type="text" placeholder="Опишите результат..." class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow">
+                            </td>
+                            <td class="p-4 border-l border-gray-200">
+                                <textarea rows="2" placeholder="Ваш вывод..." class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow resize-y"></textarea>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="p-4 font-medium flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-gray-800"></span> Сплошной металл
+                            </td>
+                            <td class="p-4 border-l border-gray-200">
+                                <input type="text" placeholder="Опишите результат..." class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow">
+                            </td>
+                            <td class="p-4 border-l border-gray-200">
+                                <textarea rows="2" placeholder="Ваш вывод..." class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow resize-y"></textarea>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="p-4 font-medium flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-indigo-500"></span> Металлическая сетка
+                            </td>
+                            <td class="p-4 border-l border-gray-200">
+                                <input type="text" placeholder="Опишите результат..." class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow">
+                            </td>
+                            <td class="p-4 border-l border-gray-200">
+                                <textarea rows="2" placeholder="Ваш вывод..." class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow resize-y"></textarea>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-6 flex justify-end">
+                <button onclick="window.print()" class="px-5 py-2 bg-gray-800 hover:bg-gray-900 text-white text-sm font-medium rounded-md transition-colors flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                    Распечатать отчет
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Скрипты Three.js и логика -->
+    <script>
+        // Анимация появления элементов при загрузке
+        gsap.to(".gsap-reveal", {
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            stagger: 0.2,
+            ease: "power2.out",
+            delay: 0.2
+        });
+
+        // 1. НАСТРОЙКА СЦЕНЫ THREE.JS
+        const container = document.getElementById('model-container');
+        const scene = new THREE.Scene();
+        
+        // Камера
+        const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
+        camera.position.set(0, 3, 7);
+        camera.lookAt(0, 0, 0);
+
+        // Рендерер
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        container.appendChild(renderer.domElement);
+
+        // Освещение (улучшенное для отражений)
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        dirLight.position.set(5, 10, 5);
+        dirLight.castShadow = true;
+        scene.add(dirLight);
+
+        const spotLight = new THREE.SpotLight(0xffffff, 1.5);
+        spotLight.position.set(-5, 5, 0);
+        spotLight.angle = Math.PI/4;
+        scene.add(spotLight);
+
+        // Стол
+        const tableGeo = new THREE.PlaneGeometry(15, 10);
+        const tableMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.8, metalness: 0.1 });
+        const table = new THREE.Mesh(tableGeo, tableMat);
+        table.rotation.x = -Math.PI / 2;
+        table.position.y = -0.5;
+        table.receiveShadow = true;
+        scene.add(table);
+
+        // Создание телефонов
+        function createPhone(color, xPos) {
+            const phoneGroup = new THREE.Group();
+            
+            // Корпус
+            const bodyGeo = new THREE.BoxGeometry(0.8, 0.1, 1.6);
+            const bodyMat = new THREE.MeshStandardMaterial({ color: color, roughness: 0.4, metalness: 0.5 });
+            const body = new THREE.Mesh(bodyGeo, bodyMat);
+            body.castShadow = true;
+            
+            // Экран
+            const screenGeo = new THREE.PlaneGeometry(0.7, 1.4);
+            const screenMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
+            const screen = new THREE.Mesh(screenGeo, screenMat);
+            screen.rotation.x = -Math.PI / 2;
+            screen.position.y = 0.051;
+
+            phoneGroup.add(body);
+            phoneGroup.add(screen);
+            phoneGroup.position.set(xPos, -0.45, 0);
+            return phoneGroup;
+        }
+
+        const phoneTx = createPhone(0x3b82f6, -2.5); // Передатчик (синий)
+        const phoneRx = createPhone(0x10b981, 2.5);  // Приемник (зеленый)
+        scene.add(phoneTx);
+        scene.add(phoneRx);
+
+        // Подписи к телефонам
+        // Простая реализация спрайтами (заглушка для текста в 3D)
+        
+        // БАРЬЕРЫ
+        let currentBarrierType = 'air';
+        let barrierMesh = null;
+
+        // Генерация текстуры сетки (Клетка Фарадея) через Canvas
+        function createGridTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 256;
+            canvas.height = 256;
+            const context = canvas.getContext('2d');
+            
+            // Заливаем белым (непрозрачно)
+            context.fillStyle = 'white';
+            context.fillRect(0, 0, 256, 256);
+            
+            // Рисуем черные квадраты (дырки)
+            context.fillStyle = 'black';
+            const cellSize = 16;
+            const holeSize = 12;
+            for (let i = 0; i < 256; i += cellSize) {
+                for (let j = 0; j < 256; j += cellSize) {
+                    context.fillRect(i + (cellSize - holeSize)/2, j + (cellSize - holeSize)/2, holeSize, holeSize);
+                }
+            }
+            
+            const tex = new THREE.CanvasTexture(canvas);
+            tex.wrapS = THREE.RepeatWrapping;
+            tex.wrapT = THREE.RepeatWrapping;
+            tex.repeat.set(3, 3);
+            return tex;
+        }
+        
+        const gridAlphaMap = createGridTexture();
+
+        // Материалы барьеров
+        const materials = {
+            plastic: new THREE.MeshPhysicalMaterial({
+                color: 0x88ccff,
+                metalness: 0,
+                roughness: 0.1,
+                transmission: 0.9, // Эффект стекла/пластика
+                transparent: true,
+                opacity: 0.4
+            }),
+            metal: new THREE.MeshStandardMaterial({
+                color: 0xcccccc,
+                metalness: 1.0,  // Хромированный вид
+                roughness: 0.2
+            }),
+            cage: new THREE.MeshStandardMaterial({
+                color: 0xaaaaaa,
+                metalness: 0.8,
+                roughness: 0.4,
+                alphaMap: gridAlphaMap, // Текстура с дырками
+                transparent: true,
+                side: THREE.DoubleSide
+            })
+        };
+
+        // Создание барьера-купола над приемником
+        const barrierGeo = new THREE.BoxGeometry(2, 1.5, 2.5);
+        barrierMesh = new THREE.Mesh(barrierGeo, materials.plastic);
+        barrierMesh.position.set(2.5, 0.25, 0);
+        barrierMesh.castShadow = true;
+        barrierMesh.receiveShadow = true;
+        scene.add(barrierMesh);
+        barrierMesh.visible = false; // По умолчанию воздух
+
+        // ВОЛНЫ (Визуализация)
+        const waves = [];
+        let isCalling = false;
+
+        function createWaveRing() {
+            const geo = new THREE.TorusGeometry(0.2, 0.02, 16, 64);
+            const mat = new THREE.MeshBasicMaterial({ color: 0x3b82f6, transparent: true, opacity: 0.8 });
+            const ring = new THREE.Mesh(geo, mat);
+            ring.rotation.x = Math.PI / 2;
+            ring.position.copy(phoneTx.position);
+            ring.position.y = -0.4;
+            scene.add(ring);
+            
+            waves.push({ mesh: ring, radius: 0.2, opacity: 0.8, active: true });
+        }
+
+        // Логика управления с UI
+        window.changeBarrier = function(type) {
+            currentBarrierType = type;
+            const status = document.getElementById('status-panel');
+            status.innerHTML = "Готово. Нажмите «Позвонить».";
+            status.className = "mt-4 p-4 rounded-lg bg-gray-50 border border-gray-200 text-center font-medium text-gray-700 transition-all duration-300";
+
+            if (type === 'air') {
+                barrierMesh.visible = false;
+            } else {
+                barrierMesh.visible = true;
+                barrierMesh.material = materials[type];
+                
+                // Анимация появления барьера
+                barrierMesh.scale.set(0.1, 0.1, 0.1);
+                gsap.to(barrierMesh.scale, { x: 1, y: 1, z: 1, duration: 0.5, ease: "back.out(1.5)" });
+            }
+        };
+
+        window.triggerCall = function() {
+            if(isCalling) return;
+            isCalling = true;
+            
+            const status = document.getElementById('status-panel');
+            status.innerHTML = "📡 Идет передача сигнала...";
+            status.className = "mt-4 p-4 rounded-lg bg-blue-50 text-blue-700 border border-blue-200 text-center font-medium transition-all duration-300";
+
+            let callInterval = setInterval(createWaveRing, 400);
+
+            setTimeout(() => {
+                clearInterval(callInterval);
+                isCalling = false;
+                
+                // Проверка результата в зависимости от барьера
+                if (currentBarrierType === 'air' || currentBarrierType === 'plastic') {
+                    status.innerHTML = "✅ Вызов успешно прошел! Волна достигла приемника.";
+                    status.className = "mt-4 p-4 rounded-lg bg-green-50 text-green-700 border border-green-200 text-center font-medium transition-all duration-300";
+                    
+                    // Анимация экрана приемника (зеленая вспышка)
+                    const rxScreen = phoneRx.children[1].material;
+                    gsap.to(rxScreen.color, { r: 0, g: 1, b: 0, duration: 0.2, yoyo: true, repeat: 5 });
+                } else {
+                    status.innerHTML = "❌ Абонент вне зоны действия сети (Сигнал заблокирован).";
+                    status.className = "mt-4 p-4 rounded-lg bg-red-50 text-red-700 border border-red-200 text-center font-medium transition-all duration-300";
+                }
+            }, 3000);
+        };
+
+        // Анимационный цикл (Render Loop)
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // Анимация волн
+            for (let i = waves.length - 1; i >= 0; i--) {
+                let wave = waves[i];
+                if (!wave.active) continue;
+
+                wave.radius += 0.08;
+                wave.opacity -= 0.015;
+                
+                wave.mesh.scale.set(wave.radius, wave.radius, wave.radius);
+                wave.mesh.material.opacity = wave.opacity;
+
+                // Логика столкновения с барьером
+                const distanceToRx = Math.abs(phoneRx.position.x - wave.mesh.position.x) - (wave.radius/2);
+                
+                // Если есть металлическая преграда и волна дошла до нее
+                if ((currentBarrierType === 'metal' || currentBarrierType === 'cage') && wave.radius * 2 > 3.8) {
+                    wave.active = false;
+                    scene.remove(wave.mesh);
+                    waves.splice(i, 1);
+                    
+                    // Эффект поглощения/отражения (небольшая вспышка на барьере)
+                    if(barrierMesh.visible) {
+                        const originalColor = barrierMesh.material.color.getHex();
+                        gsap.to(barrierMesh.material.color, {
+                            r: 1, g: 0.5, b: 0.5, duration: 0.1, yoyo: true, repeat: 1,
+                            onComplete: () => barrierMesh.material.color.setHex(originalColor)
+                        });
+                    }
+                    continue;
+                }
+
+                if (wave.opacity <= 0 || wave.radius > 6) {
+                    scene.remove(wave.mesh);
+                    waves.splice(i, 1);
+                }
+            }
+
+            // Медленное вращение сцены для эффекта объема
+            scene.rotation.y = Math.sin(Date.now() * 0.0005) * 0.1;
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Обработка изменения размера окна
+        window.addEventListener('resize', () => {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        });
+
+    </script>
+</body>
+</html>
