@@ -462,28 +462,40 @@
         });
 
     </script>
-    <iframe 
-    id="lessonFrame"
-    src="https://shock3rface.github.io/moodle-lectures/nyuton.html"
-    width="100%"
-    height="100"
-    frameborder="0"
-    scrolling="no">
-</iframe>
+   <script>
 
-<script>
-window.addEventListener("message", function(event){
+function resizeIframe(){
 
-    if(event.data.type === "resizeIframe"){
+    const body = document.body;
+    const html = document.documentElement;
 
-        const iframe = document.getElementById("lessonFrame");
+    const height = Math.max(
+        body.getBoundingClientRect().height,
+        body.scrollHeight,
+        html.scrollHeight
+    );
 
-        iframe.style.height = event.data.height + "px";
+    window.parent.postMessage({
+        type:"resizeIframe",
+        height: Math.ceil(height)
+    }, "*");
+}
 
-        console.log("Получил высоту:", event.data.height);
-    }
 
-});
+window.addEventListener("load", resizeIframe);
+
+window.addEventListener("resize", resizeIframe);
+
+
+setTimeout(resizeIframe,1000);
+
+setTimeout(resizeIframe,3000);
+
+
+new ResizeObserver(resizeIframe)
+.observe(document.body);
+
+
 </script>
 </body>
 </html>
