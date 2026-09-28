@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабораторная работа: Дисперсия и цветовосприятие</title>
+    <!-- Подключение библиотеки GSAP для плавных анимаций -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #34495e;
+            --accent: #3498db;
+            --bg-color: #ecf0f1;
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .card {
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+        h1, h2, h3 { color: var(--primary); margin-top: 0; }
+        h1 { text-align: center; border-bottom: 2px solid var(--accent); padding-bottom: 10px; }
+        .warning {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+        th { background-color: #f8f9fa; }
+        
+        /* Интерактивная зона */
+        .interactive-section {
+            background: #1a1a1a;
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            text-align: center;
+            overflow: hidden;
+        }
+        .interactive-section h2 { color: #fff; }
+        canvas {
+            background: transparent;
+            max-width: 100%;
+            margin: 20px auto;
+            display: block;
+        }
+        
+        /* Стенд светофильтров */
+        .filter-stand {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 40px 20px;
+            background: #2a2a2a;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-around;
+            border: 2px solid #444;
+        }
+        .shape {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+            z-index: 1;
+        }
+        .shape.white { background-color: #ffffff; color: #000; }
+        .shape.black { background-color: #000000; color: #fff; border: 1px solid #555; }
+        .shape.red { background-color: #ff0000; color: #fff; }
+        .shape.green { background-color: #00ff00; color: #000; }
+        .shape.blue { background-color: #0000ff; color: #fff; }
+        
+        .filter-glass {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgb(255, 255, 255); /* Изначально прозрачный для умножения */
+            mix-blend-mode: multiply;
+            border-radius: 10px;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+        .btn:hover { transform: scale(1.05); opacity: 0.9; }
+        .btn-none { background: #ecf0f1; color: #333; }
+        .btn-red { background: #e74c3c; color: white; }
+        .btn-green { background: #2ecc71; color: white; }
+        .btn-blue { background: #3498db; color: white; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <h1>Лабораторная работа</h1>
+        <h2>Опыты по разложению белого света в спектр и восприятию цвета предметов при их наблюдении через цветовые фильтры</h2>
+        
+        <h3>🎯 Цель работы</h3>
+        <p>Разложить белый свет в сплошной спектр с помощью прозрачных сред различной плотности, изучить порядок следования спектральных цветов, а также экспериментально пронаблюдать цвета макроскопических предметов при их освещении и наблюдении через цветовые фильтры.</p>
+        
+        <h3>🔬 Оборудование</h3>
+        <ul>
+            <li>Источник узконаправленного белого света (фонарик с щелевой насадкой).</li>
+            <li>Стеклянная треугольная призма и плоский белый экран.</li>
+            <li>Прозрачный стеклянный стакан с водой.</li>
+            <li>Набор цветных прозрачных светофильтров (красный, зеленый, синий).</li>
+            <li>Набор непрозрачных цветных фигур (белая, черная, красная, зеленая, синяя).</li>
+        </ul>
+
+        <div class="warning">
+            <strong>⚠️ Техника безопасности:</strong> При работе со стеклянной призмой и стаканом будьте осторожны, избегайте механических ударов. Не касайтесь оптических граней призмы пальцами. Категорически запрещается направлять концентрированные пучки света в глаза.
+        </div>
+    </div>
+
+    <!-- Интерактивная модель 1: Дисперсия -->
+    <div class="interactive-section">
+        <h2>Интерактивная модель 1: Дисперсия света в призме</h2>
+        <p>Симуляция разложения светового луча при прохождении через оптически плотную среду.</p>
+        <canvas id="prismCanvas" width="700" height="300"></canvas>
+    </div>
+
+    <!-- Интерактивная модель 2: Светофильтры -->
+    <div class="interactive-section">
+        <h2>Интерактивная модель 2: Виртуальные светофильтры</h2>
+        <p>Выберите фильтр, чтобы увидеть, как субтрактивное смешение меняет воспринимаемый цвет объектов.</p>
+        
+        <div class="filter-stand">
+            <!-- Слой, имитирующий стекло фильтра с помощью mix-blend-mode -->
+            <div id="active-filter" class="filter-glass"></div>
+            
+            <div class="shape white">Белый</div>
+            <div class="shape black">Черный</div>
+            <div class="shape red">Красный</div>
+            <div class="shape green">Зеленый</div>
+            <div class="shape blue">Синий</div>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-none" onclick="setFilter('rgb(255, 255, 255)')">Без фильтра</button>
+            <button class="btn btn-red" onclick="setFilter('rgb(255, 0, 0)')">Красный фильтр</button>
+            <button class="btn btn-green" onclick="setFilter('rgb(0, 255, 0)')">Зеленый фильтр</button>
+            <button class="btn btn-blue" onclick="setFilter('rgb(0, 0, 255)')">Синий фильтр</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>📝 Порядок выполнения работы</h3>
+        <ol>
+            <li>Установите белый экран. Направьте узкий световой луч на боковую грань призмы под углом. Добейтесь радужной полосы на экране.</li>
+            <li>Зарисуйте спектр в тетрадь, зафиксировав последовательность цветов.</li>
+            <li>Замените призму на стакан с водой и повторите опыт. Сравните ширину полученного спектра.</li>
+            <li>Положите цветные фигуры на стол. Осветите их белым светом.</li>
+            <li>Посмотрите на фигуры сквозь красный светофильтр. Занесите наблюдаемые цвета в таблицу.</li>
+            <li>Повторите наблюдения, используя зеленый и синий фильтры.</li>
+        </ol>
+
+        <h3>📊 Таблица результатов</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Исходный цвет</th>
+                    <th>Через красный фильтр</th>
+                    <th>Через зеленый фильтр</th>
+                    <th>Через синий фильтр</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Белый</td><td></td><td></td><td></td></tr>
+                <tr><td>Черный</td><td></td><td></td><td></td></tr>
+                <tr><td>Красный</td><td></td><td></td><td></td></tr>
+                <tr><td>Зеленый</td><td></td><td></td><td></td></tr>
+                <tr><td>Синий</td><td></td><td></td><td></td></tr>
+            </tbody>
+        </table>
+
+        <h3>💡 Вывод</h3>
+        <p><i>(Опишите природу дисперсии, причину разложения белого света и механизм работы субтрактивного цветового синтеза. Объясните, почему цвет предмета является результатом отражения конкретных длин волн.)</i></p>
+    </div>
+</div>
+
+<script>
+    // --- Логика для Canvas (Модель дисперсии) ---
+    const canvas = document.getElementById('prismCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function drawScene() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Рисуем падающий белый луч
+        ctx.beginPath();
+        ctx.moveTo(50, 160);
+        ctx.lineTo(310, 160);
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth = 4;
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = 'white';
+        ctx.stroke();
+
+        // Рисуем призму
+        ctx.shadowBlur = 0;
+        ctx.beginPath();
+        ctx.moveTo(350, 50);
+        ctx.lineTo(500, 250);
+        ctx.lineTo(200, 250);
+        ctx.closePath();
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Рисуем спектр внутри призмы и на выходе
+        const colors = [
+            { c: '#ff0000', dy: -5 },   // Красный (отклоняется слабее всего)
+            { c: '#ff7f00', dy: 0 },
+            { c: '#ffff00', dy: 5 },
+            { c: '#00ff00', dy: 10 },
+            { c: '#0000ff', dy: 15 },
+            { c: '#4b0082', dy: 20 },
+            { c: '#9400d3', dy: 25 }    // Фиолетовый (отклоняется сильнее всего)
+        ];
+
+        colors.forEach((item, index) => {
+            // Луч внутри призмы
+            ctx.beginPath();
+            ctx.moveTo(310, 160); 
+            ctx.lineTo(415, 140 + item.dy); 
+            ctx.strokeStyle = item.c;
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Выходящий луч
+            ctx.beginPath();
+            ctx.moveTo(415, 140 + item.dy);
+            ctx.lineTo(650, 100 + item.dy * 4);
+            ctx.strokeStyle = item.c;
+            ctx.lineWidth = 3;
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = item.c;
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+        });
+    }
+    
+    // Анимация появления спектра
+    gsap.fromTo(canvas, {opacity: 0}, {opacity: 1, duration: 2, onUpdate: drawScene});
+    drawScene();
+
+    // --- Логика для светофильтров (GSAP анимация) ---
+    function setFilter(colorRgb) {
+        // Изменение цвета фильтра с плавной анимацией
+        gsap.to("#active-filter", {
+            backgroundColor: colorRgb, 
+            duration: 0.6, 
+            ease: "power2.inOut"
+        });
+    }
+</script>
+</body>
+</html>
