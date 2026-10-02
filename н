@@ -1,0 +1,474 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Архипелаг открытий: играя изучаем физику</title>
+    
+    <!-- Подключение шрифтов -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- Подключение иконок -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Подключение Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Nunito', 'sans-serif'],
+                        serif: ['Lora', 'serif'],
+                    },
+                    colors: {
+                        warm: {
+                            50: '#fff8f1',
+                            100: '#ffefdb',
+                            200: '#ffdbb3',
+                            300: '#ffc185',
+                            400: '#ffa154',
+                            500: '#fe852c',
+                            600: '#ef6814',
+                            700: '#c64d12',
+                            800: '#9d3e16',
+                            900: '#7e3515',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            margin: 0;
+            overflow-x: hidden;
+            background-color: #fff8f1;
+            color: #4a3728;
+        }
+        
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            opacity: 0.6;
+        }
+
+        /* Стили для редактируемых элементов (замена красного подчеркивания) */
+        .fillable-field {
+            display: inline-block;
+            min-width: 150px;
+            border-bottom: 2px dashed #ef6814;
+            background-color: rgba(255, 255, 255, 0.5);
+            padding: 0 4px;
+            outline: none;
+            transition: all 0.3s ease;
+            cursor: text;
+        }
+
+        .fillable-field:empty::before {
+            content: "заполнить...";
+            color: #ef6814;
+            opacity: 0.5;
+            font-style: italic;
+        }
+
+        .fillable-field:focus {
+            background-color: rgba(255, 219, 179, 0.4);
+            border-bottom: 2px solid #c64d12;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 239, 219, 0.5);
+            box-shadow: 0 10px 30px rgba(126, 53, 21, 0.05);
+        }
+        
+        .section-hidden {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-warm-300 selection:text-warm-900">
+
+    <div id="canvas-container"></div>
+
+    <main class="max-w-4xl mx-auto px-4 py-12 relative z-10">
+        
+        <header class="text-center mb-16 pt-10 section-animate section-hidden">
+            <div class="inline-block px-4 py-1 bg-warm-200 text-warm-800 rounded-full text-sm font-bold tracking-wider mb-4 shadow-sm uppercase">
+                Исследовательский проект
+            </div>
+            <h1 class="text-4xl md:text-5xl font-serif font-bold text-warm-900 mb-6 leading-tight">
+                «Архипелаг открытий: <br/> играя изучаем физику»
+            </h1>
+<div class="mt-12 max-w-xl mx-auto glass-card border-2 border-warm-300 shadow-xl rounded-3xl p-6 relative overflow-hidden group">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-warm-300 via-warm-500 to-warm-300"></div>
+                <h3 class="text-sm font-bold text-warm-700 uppercase tracking-widest mb-5 flex items-center justify-center">
+                    <i class="fa-solid fa-award text-warm-500 mr-2 text-lg"></i> 
+                    Руководители проекта 
+                    <i class="fa-solid fa-award text-warm-500 ml-2 text-lg"></i>
+                </h3>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-stretch text-lg font-serif font-bold text-warm-900">
+                    <div class="bg-gradient-to-br from-white to-warm-50 py-4 px-6 rounded-xl border border-warm-200 shadow-sm flex-1 w-full text-center transition-all duration-300 hover:shadow-md hover:border-warm-400 hover:-translate-y-1 flex flex-col items-center justify-between">
+                        <div class="w-full">
+                            <i class="fa-solid fa-user-tie text-warm-400 mb-2 text-2xl block"></i>
+                            <span contenteditable="true" class="outline-none focus:bg-warm-100 px-2 rounded block">Шатов Иван Юрьевич</span>
+                        </div>
+                        <div class="mt-4 inline-flex items-center px-3 py-1 bg-white border border-warm-300 text-warm-700 text-xs rounded-full font-sans font-bold tracking-wide shadow-sm cursor-default">
+                            <i class="fa-solid fa-laptop-code mr-1.5 text-warm-500"></i> Веб-версия
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-br from-white to-warm-50 py-4 px-6 rounded-xl border border-warm-200 shadow-sm flex-1 w-full text-center transition-all duration-300 hover:shadow-md hover:border-warm-400 hover:-translate-y-1 flex flex-col items-center justify-between">
+                        <div class="w-full">
+                            <i class="fa-solid fa-sun text-warm-400 mb-2 text-2xl block"></i>
+                            <span contenteditable="true" class="outline-none focus:bg-warm-100 px-2 rounded block">Баёва Полина Андреевна</span>
+                        </div>
+                        <div class="mt-4 inline-flex items-center px-3 py-1 bg-white border border-warm-300 text-warm-700 text-xs rounded-full font-sans font-bold tracking-wide shadow-sm cursor-default">
+                            <i class="fa-solid fa-dice mr-1.5 text-warm-500"></i> Физическая версия
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="space-y-8">
+            
+            <!-- Актуальность и Проблема -->
+            <div class="grid md:grid-cols-2 gap-8">
+                <section class="glass-card rounded-3xl p-8 section-animate section-hidden">
+                    <h2 class="text-2xl font-serif font-bold text-warm-800 mb-4 flex items-center">
+                        <i class="fa-solid fa-lightbulb text-warm-500 mr-3 text-xl"></i> Актуальность
+                    </h2>
+                    <ul class="list-disc pl-5 space-y-2 text-gray-700">
+                        <li>Изучение физических явлений в 5–6 классах является основой формирования интереса к естественным наукам.</li>
+                        <li>Игровые технологии позволяют повысить мотивацию учащихся, сделать изучение физики более наглядным и создать условия для активного закрепления знаний.</li>
+                    </ul>
+                </section>
+
+                <section class="glass-card rounded-3xl p-8 section-animate section-hidden">
+                    <h2 class="text-2xl font-serif font-bold text-warm-800 mb-4 flex items-center">
+                        <i class="fa-solid fa-triangle-exclamation text-red-400 mr-3 text-xl"></i> Проблема
+                    </h2>
+                    <p class="text-gray-700 leading-relaxed">
+                        Снижение интереса и мотивации учащихся 5–6 классов к изучению физических явлений и выполнению простых опытов.
+                    </p>
+                </section>
+            </div>
+
+            <!-- Цель и Задачи -->
+            <section class="glass-card rounded-3xl p-8 section-animate section-hidden border-l-4 border-l-warm-500">
+                <h2 class="text-2xl font-serif font-bold text-warm-800 mb-4 flex items-center">
+                    <i class="fa-solid fa-bullseye text-warm-500 mr-3 text-xl"></i> Цель исследования
+                </h2>
+                <div class="fillable-field w-full min-h-[40px] mb-8" contenteditable="true"></div>
+
+                <h3 class="text-lg font-bold text-warm-700 mb-3 uppercase tracking-wide text-sm">Задачи исследования:</h3>
+                <div class="fillable-field w-full min-h-[100px]" contenteditable="true"></div>
+            </section>
+<!-- Объект, Предмет, Гипотеза, Методы -->
+            <div class="grid md:grid-cols-2 gap-8">
+                <section class="glass-card rounded-3xl p-8 space-y-6 section-animate section-hidden">
+                    <div>
+                        <h3 class="text-xl font-serif font-bold text-warm-800 mb-2">Объект исследования:</h3>
+                        <div class="fillable-field w-full min-h-[30px]" contenteditable="true"></div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-serif font-bold text-warm-800 mb-2">Предмет исследования:</h3>
+                        <div class="fillable-field w-full min-h-[30px]" contenteditable="true"></div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-serif font-bold text-warm-800 mb-2">Методы исследования:</h3>
+                        <div class="fillable-field w-full min-h-[30px]" contenteditable="true"></div>
+                    </div>
+                </section>
+
+                <section class="glass-card rounded-3xl p-8 bg-gradient-to-br from-warm-100 to-white section-animate section-hidden border-2 border-warm-200">
+                    <h2 class="text-2xl font-serif font-bold text-warm-800 mb-4 flex items-center">
+                        <i class="fa-solid fa-flask text-warm-500 mr-3 text-xl"></i> Гипотеза исследования
+                    </h2>
+                    <div class="fillable-field w-full min-h-[100px]" contenteditable="true"></div>
+                </section>
+            </div>
+
+            <div class="text-center py-8 section-animate section-hidden">
+                <h2 class="text-3xl font-serif font-bold text-warm-900 inline-block border-b-4 border-warm-300 pb-2">
+                    Планируемый продукт проекта
+                </h2>
+                <p class="mt-4 text-lg text-gray-600">Создание образовательной игры в двух форматах</p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-8">
+                <!-- Настольная игра -->
+                <section class="glass-card rounded-3xl p-8 relative overflow-hidden section-animate section-hidden">
+                    <div class="absolute -right-10 -top-10 opacity-10 text-9xl"><i class="fa-solid fa-dice"></i></div>
+                    <h3 class="text-2xl font-bold text-warm-800 mb-6 flex items-center z-10 relative">
+                        <i class="fa-solid fa-chess-board text-warm-600 mr-3"></i> Концепция настольной игры
+                    </h3>
+                    
+                    <div class="mb-4">
+                        <strong class="text-warm-700">Основные элементы:</strong>
+                        <div class="flex flex-wrap gap-2 mt-2">
+                            <span class="px-3 py-1 bg-white rounded-md text-sm shadow-sm border border-warm-100">Игровое поле</span>
+                            <span class="px-3 py-1 bg-white rounded-md text-sm shadow-sm border border-warm-100">Кубик</span>
+                            <span class="px-3 py-1 bg-white rounded-md text-sm shadow-sm border border-warm-100">Фишки</span>
+                            <span class="px-3 py-1 bg-white rounded-md text-sm shadow-sm border border-warm-100">Карточки с заданиями</span>
+                            <span class="px-3 py-1 bg-white rounded-md text-sm shadow-sm border border-warm-100">Карточки с ответами</span>
+                            <span class="px-3 py-1 bg-white rounded-md text-sm shadow-sm border border-warm-100">Правила игры</span>
+                        </div>
+                    </div>
+
+                    <p class="text-sm text-gray-600 mb-4 bg-warm-50 p-3 rounded-lg">
+                        Игровая механика включает систему наград, штрафов и финальный этап определения победителя.
+                    </p>
+
+                    <div class="mb-4">
+                        <strong class="text-warm-700">Тематические направления:</strong>
+                        <ul class="list-disc pl-5 mt-2 text-gray-700 text-sm space-y-1">
+                            <li>Механика; Электрические явления; Оптика</li>
+                            <li>Тепловые явления; Колебания и волны</li>
+                            <li>Магнетизм; Давление (тв. тел, жидкостей и газов)</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <strong class="text-warm-700 block mb-2">Типы игровых карточек:</strong>
+                        <div class="fillable-field w-full min-h-[60px]" contenteditable="true"></div>
+                    </div>
+                </section>
+ <!-- Веб версия -->
+                <section class="glass-card rounded-3xl p-8 relative overflow-hidden section-animate section-hidden">
+                    <div class="absolute -right-10 -top-10 opacity-10 text-9xl"><i class="fa-solid fa-laptop-code"></i></div>
+                    <h3 class="text-2xl font-bold text-warm-800 mb-6 flex items-center z-10 relative">
+                        <i class="fa-solid fa-display text-warm-600 mr-3"></i> Концепция веб-версии
+                    </h3>
+                    
+                    <p class="text-gray-700 mb-4">Интерактивный цифровой формат включает в себя:</p>
+                    
+                    <div class="grid grid-cols-2 gap-3 mb-6">
+                        <div class="bg-white/60 p-3 rounded-lg border border-warm-100 flex items-center text-sm shadow-sm"><i class="fa-solid fa-user-plus text-warm-400 mr-2"></i> Регистрация участников</div>
+                        <div class="bg-white/60 p-3 rounded-lg border border-warm-100 flex items-center text-sm shadow-sm"><i class="fa-solid fa-users text-warm-400 mr-2"></i> Создание команд</div>
+                        <div class="bg-white/60 p-3 rounded-lg border border-warm-100 flex items-center text-sm shadow-sm"><i class="fa-solid fa-palette text-warm-400 mr-2"></i> Выбор персонажа</div>
+                        <div class="bg-white/60 p-3 rounded-lg border border-warm-100 flex items-center text-sm shadow-sm"><i class="fa-solid fa-map text-warm-400 mr-2"></i> Игровое поле</div>
+                        <div class="bg-white/60 p-3 rounded-lg border border-warm-100 flex items-center text-sm shadow-sm"><i class="fa-solid fa-cube text-warm-400 mr-2"></i> Виртуальный кубик</div>
+                        <div class="bg-white/60 p-3 rounded-lg border border-warm-100 flex items-center text-sm shadow-sm"><i class="fa-solid fa-trophy text-warm-400 mr-2"></i> Рейтинг команд</div>
+                    </div>
+
+                    <p class="text-sm text-gray-600 bg-warm-50 p-4 rounded-xl border border-warm-200">
+                        <i class="fa-solid fa-gears text-warm-500 mr-2"></i> Автоматическая генерация вопросов, случайный выбор первой команды, автопроверка ответов и подсчёт баллов.
+                    </p>
+                </section>
+            </div>
+
+            <section class="glass-card rounded-3xl p-8 bg-gradient-to-r from-warm-50 to-orange-50 section-animate section-hidden text-center">
+                <h2 class="text-2xl font-serif font-bold text-warm-800 mb-3">
+                    <i class="fa-solid fa-flag-checkered text-warm-600 mr-2"></i> Финальный этап
+                </h2>
+                <div class="fillable-field w-full max-w-2xl mx-auto min-h-[40px]" contenteditable="true"></div>
+            </section>
+
+            <section class="glass-card rounded-3xl p-8 section-animate section-hidden">
+                <h2 class="text-2xl font-serif font-bold text-warm-800 mb-4">Ожидаемый результат и продукт</h2>
+                <p class="text-gray-700 mb-4">
+                    Создание образовательной игры, позволяющей повысить интерес учащихся к физике, закреплять знания через игровую деятельность и применять физические знания для объяснения явлений окружающего мира.
+                </p>
+                <div class="bg-warm-100 text-warm-900 p-4 rounded-xl font-medium border border-warm-200">
+                    <i class="fa-solid fa-box-open mr-2 text-warm-600"></i>
+                    Натуральная настольная игра или разработанная веб–версия игры, которая может использоваться на уроках физики, предметных неделях, образовательных мероприятиях и во внеурочной деятельности.
+                </div>
+            </section>
+
+            <section class="glass-card rounded-3xl p-8 border-2 border-dashed border-warm-400 mt-12 bg-white/90 section-animate section-hidden">
+                <h2 class="text-xl font-bold text-warm-900 mb-4">Материалы проекта (для заполнения):</h2>
+                <p class="text-sm text-gray-500 mb-6">Кликните на пунктирные линии ниже, чтобы вставить ссылки или текст.</p>
+                
+                <ul class="space-y-4 list-none text-lg">
+                    <li class="flex items-center">
+                        <i class="fa-solid fa-file-powerpoint text-orange-500 w-8 text-center text-xl"></i>
+                        <span class="font-semibold mr-2">Презентация к защите:</span> 
+                        <span class="fillable-field flex-grow" contenteditable="true"></span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fa-solid fa-video text-orange-500 w-8 text-center text-xl"></i>
+                        <span class="font-semibold mr-2">Видео защиты:</span> 
+                        <span class="fillable-field flex-grow" contenteditable="true"></span>
+                    </li>
+                    <li class="flex items-center flex-wrap">
+                        <i class="fa-solid fa-camera text-orange-500 w-8 text-center text-xl"></i>
+                        <span class="font-semibold mr-2">Фото готовой игры / Ссылка на веб-игру:</span> 
+                        <span class="fillable-field flex-grow mt-1 w-full md:w-auto" contenteditable="true"></span>
+                    </li>
+                    <li class="flex items-start flex-wrap mt-6 pt-4 border-t border-warm-200">
+                        <i class="fa-solid fa-tools text-orange-500 w-8 text-center text-xl mt-1"></i>
+                        <div class="flex-grow">
+                            <span class="font-semibold block mb-1">Используемые инструменты для реализации проекта (для веб-игры):</span> 
+                            <span class="fillable-field w-full block min-h-[30px]" contenteditable="true"></span>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+
+        </div>
+        
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <script>
+        // Регистрация плагина прокрутки
+        gsap.registerPlugin(ScrollTrigger);
+
+        document.addEventListener("DOMContentLoaded", () => {
+       // 1. Инициализация GSAP Анимаций при скролле
+            const sections = document.querySelectorAll('.section-animate');
+            
+            sections.forEach((section, index) => {
+                gsap.to(section, {
+                    scrollTrigger: {
+                        trigger: section,
+                        start: "top 85%",
+                        toggleActions: "play none none reverse"
+                    },
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.8,
+                    ease: "power2.out",
+                    delay: index * 0.05 // Небольшая задержка для эффекта каскада
+                });
+            });
+
+            // 2. Инициализация Three.js Background
+            const initThreeJS = () => {
+                const container = document.getElementById('canvas-container');
+                const scene = new THREE.Scene();
+                
+                // Настройка камеры
+                const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+                camera.position.z = 15;
+
+                // Настройка рендера
+                const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                container.appendChild(renderer.domElement);
+
+                // Освещение (теплые тона)
+                const ambientLight = new THREE.AmbientLight(0xffefdb, 0.6); // Теплый мягкий свет
+                scene.add(ambientLight);
+
+                const directionalLight = new THREE.DirectionalLight(0xffa154, 0.8);
+                directionalLight.position.set(10, 20, 10);
+                scene.add(directionalLight);
+
+                const pointLight = new THREE.PointLight(0xff852c, 0.5);
+                pointLight.position.set(-10, -10, 10);
+                scene.add(pointLight);
+
+                // Создание объектов (символизируют физику и архипелаг)
+                const objects = [];
+                const material1 = new THREE.MeshStandardMaterial({ 
+                    color: 0xffb366, 
+                    roughness: 0.3,
+                    metalness: 0.1
+                });
+                const material2 = new THREE.MeshStandardMaterial({ 
+                    color: 0xffd9b3, 
+                    roughness: 0.4,
+                    metalness: 0.2
+                });
+                const material3 = new THREE.MeshStandardMaterial({ 
+                    color: 0xfa9856, 
+                    roughness: 0.2,
+                    metalness: 0.1,
+                    wireframe: true // Для технического/физического вида
+                });
+
+                // Сфера (Планета/атом)
+                const geometrySphere = new THREE.SphereGeometry(2, 32, 32);
+                const sphere = new THREE.Mesh(geometrySphere, material1);
+                sphere.position.set(-8, 5, -5);
+                scene.add(sphere);
+                objects.push(sphere);
+
+                // Куб (Механика/блок)
+                const geometryBox = new THREE.BoxGeometry(3, 3, 3);
+                const box = new THREE.Mesh(geometryBox, material2);
+                box.position.set(10, -4, -8);
+                scene.add(box);
+                objects.push(box);
+
+                // Икосаэдр (Кристаллы/Сложные структуры)
+                const geometryIcosahedron = new THREE.IcosahedronGeometry(2.5, 0);
+                const icosa = new THREE.Mesh(geometryIcosahedron, material3);
+                icosa.position.set(-6, -6, -2);
+                scene.add(icosa);
+                objects.push(icosa);
+
+                // Тор (Магнитное поле/волны)
+                const geometryTorus = new THREE.TorusGeometry(3, 0.8, 16, 100);
+                const torus = new THREE.Mesh(geometryTorus, material2);
+                torus.position.set(8, 6, -10);
+                scene.add(torus);
+                objects.push(torus);
+
+                // Анимация
+                const animate = () => {
+                    requestAnimationFrame(animate);
+
+                    // Медленное вращение объектов
+                    sphere.rotation.x += 0.002;
+                    sphere.rotation.y += 0.003;
+                    sphere.position.y += Math.sin(Date.now() * 0.001) * 0.01;
+
+                    box.rotation.x -= 0.003;
+                    box.rotation.y -= 0.002;
+                    box.position.y += Math.cos(Date.now() * 0.001) * 0.01;
+
+                    icosa.rotation.x += 0.001;
+                    icosa.rotation.y -= 0.004;
+
+                    torus.rotation.x += 0.002;
+                    torus.rotation.z += 0.001;
+
+                    // Параллакс эффект от мыши
+                    scene.rotation.y = mouseX * 0.05;
+                    scene.rotation.x = mouseY * 0.05;
+
+                    renderer.render(scene, camera);
+                };
+
+                // Отслеживание мыши для параллакса
+                let mouseX = 0;
+                let mouseY = 0;
+                document.addEventListener('mousemove', (event) => {
+                    mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+                    mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+                });
+
+                // Адаптация при изменении размера окна
+                window.addEventListener('resize', () => {
+                    camera.aspect = window.innerWidth / window.innerHeight;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+                });
+
+                animate();
+            };
+
+            // Запускаем 3D фон
+            initThreeJS();
+        });
+    </script>
+</body>
+</html>
