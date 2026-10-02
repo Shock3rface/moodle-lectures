@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Зелёный насос: физика транспирации и капиллярных явлений</title>
+    
+    <!-- Подключение Tailwind CSS для стилизации -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Настройка теплых тонов в Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        warm: {
+                            50: '#fcf9f2',
+                            100: '#f5efe1',
+                            200: '#ebdcc3',
+                            300: '#dec29d',
+                            400: '#cca273',
+                            500: '#bf8852',
+                            600: '#b07043',
+                            700: '#945839',
+                            800: '#7a4a33',
+                            900: '#633d2c',
+                        },
+                        leaf: {
+                            100: '#eef2e6',
+                            500: '#8ba888',
+                            700: '#4a5d23',
+                            900: '#2c3614',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        serif: ['Merriweather', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Подключение библиотек -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <style>
+        body {
+            background-color: #fcf9f2;
+            color: #4a4a4a;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            opacity: 0.6;
+        }
+
+        /* Стили для редактируемых полей */
+        .editable-field {
+            min-height: 120px;
+            padding: 1.25rem;
+            background: rgba(255, 255, 255, 0.7);
+            border: 2px dashed #dec29d;
+            border-radius: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(4px);
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #633d2c;
+        }
+
+        .editable-field:focus {
+            border-color: #bf8852;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 10px 25px -5px rgba(191, 136, 82, 0.2);
+        }
+
+        .editable-field:empty:before {
+            content: attr(data-placeholder);
+            color: #a3a3a3;
+            pointer-events: none;
+            display: block; /* For Firefox */
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 20px 40px -10px rgba(148, 88, 57, 0.1);
+        }
+
+        /* SVG Анимации */
+        .water-flow {
+            stroke-dasharray: 10;
+            animation: flow 2s linear infinite;
+        }
+        @keyframes flow {
+            to { stroke-dashoffset: -20; }
+        }
+        
+        .leaf-float {
+            transform-origin: center;
+            animation: float 4s ease-in-out infinite alternate;
+        }
+        @keyframes float {
+            0% { transform: rotate(-5deg) translateY(0px); }
+            100% { transform: rotate(5deg) translateY(-5px); }
+        }
+
+        .evap-arrow {
+            animation: fadeUp 2s ease-out infinite;
+        }
+        @keyframes fadeUp {
+            0% { opacity: 0; transform: translate(0, 5px); }
+            50% { opacity: 1; transform: translate(10px, -5px); }
+            100% { opacity: 0; transform: translate(20px, -15px); }
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-warm-300 selection:text-white">
+
+    <div id="canvas-container"></div>
+
+    <!-- Заголовок страницы -->
+    <header class="relative pt-32 pb-20 px-6 lg:px-8 text-center max-w-5xl mx-auto gs-reveal">
+        <span class="text-warm-600 font-semibold tracking-wider uppercase text-sm mb-4 block">Исследовательский проект</span>
+        <h1 class="text-4xl md:text-6xl font-serif font-bold text-warm-900 mb-6 leading-tight">
+            Зелёный насос:<br>
+            <span class="text-leaf-700">физика транспирации и капиллярных явлений</span>
+        </h1>
+        <div class="w-24 h-1 bg-warm-400 mx-auto rounded-full mt-8 opacity-70"></div>
+    </header>
+
+    <!-- Главный контент -->
+    <main class="max-w-4xl mx-auto px-6 pb-24 space-y-12 relative z-10">
+
+        <section class="glass-card p-8 md:p-12 rounded-3xl gs-reveal">
+            <h2 class="text-2xl font-serif font-bold text-warm-800 mb-6 flex items-center gap-3">
+                <svg class="w-6 h-6 text-warm-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                Актуальность исследования
+            </h2>
+            <div class="space-y-4 text-lg text-warm-900/80 leading-relaxed">
+                <p>Комнатные растения нуждаются в регулярном обеспечении водой, однако разные способы полива по-разному влияют на распределение влаги в почве и состояние растения.</p>
+                <p>Эффективность водоснабжения связана с физическими процессами: действием силы тяжести, давлением, капиллярными явлениями и испарением воды листьями (транспирацией).</p>
+            </div>
+        </section>
+
+        <div class="grid md:grid-cols-2 gap-8">
+            <section class="glass-card p-8 rounded-3xl gs-reveal">
+                <h3 class="text-xl font-bold text-warm-800 mb-4">Проблема исследования</h3>
+                <div contenteditable="true" class="editable-field" data-placeholder="Заполните проблему исследования..."></div>
+            </section>
+
+            <section class="glass-card p-8 rounded-3xl gs-reveal">
+                <h3 class="text-xl font-bold text-warm-800 mb-4">Цель исследования</h3>
+                <div contenteditable="true" class="editable-field" data-placeholder="Заполните цель исследования..."></div>
+            </section>
+        </div>
+
+        <section class="glass-card p-8 rounded-3xl gs-reveal">
+            <h3 class="text-xl font-bold text-warm-800 mb-4">Задачи исследования</h3>
+            <div contenteditable="true" class="editable-field" data-placeholder="Перечислите задачи исследования..."></div>
+        </section>
+
+        <div class="grid md:grid-cols-2 gap-8">
+            <section class="glass-card p-8 rounded-3xl gs-reveal">
+                <h3 class="text-xl font-bold text-warm-800 mb-4">Объект и предмет исследования</h3>
+                <div contenteditable="true" class="editable-field" data-placeholder="Укажите объект и предмет..."></div>
+            </section>
+
+            <section class="glass-card p-8 rounded-3xl gs-reveal">
+                <h3 class="text-xl font-bold text-warm-800 mb-4">Гипотеза исследования</h3>
+                <div contenteditable="true" class="editable-field" data-placeholder="Сформулируйте гипотезу..."></div>
+            </section>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8">
+            <section class="glass-card p-8 rounded-3xl gs-reveal">
+                <h3 class="text-xl font-bold text-warm-800 mb-4">Методы исследования</h3>
+                <div contenteditable="true" class="editable-field" data-placeholder="Опишите методы исследования..."></div>
+            </section>
+
+            <section class="glass-card p-8 rounded-3xl gs-reveal">
+                <h3 class="text-xl font-bold text-warm-800 mb-4">Теоретические основы</h3>
+                <div contenteditable="true" class="editable-field" data-placeholder="Изложите теоретические основы..."></div>
+            </section>
+        </div>
+
+        <section class="glass-card p-8 md:p-12 rounded-3xl gs-reveal">
+            <h2 class="text-2xl font-serif font-bold text-leaf-700 mb-6">Способы полива</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-warm-50 p-6 rounded-2xl border border-warm-200">
+                    <h4 class="font-bold text-warm-800 mb-2">Корневой полив</h4>
+                    <p class="text-warm-900/70">Вода поступает сверху под действием силы тяжести.</p>
+                </div>
+                <div class="bg-warm-50 p-6 rounded-2xl border border-warm-200">
+                    <h4 class="font-bold text-warm-800 mb-2">Полив в поддон</h4>
+                    <p class="text-warm-900/70">Вода перемещается вверх благодаря капиллярным силам почвы.</p>
+                </div>
+                <div class="bg-warm-50 p-6 rounded-2xl border border-warm-200">
+                    <h4 class="font-bold text-warm-800 mb-2">Фитильный полив</h4>
+                    <p class="text-warm-900/70">Вода поступает постепенно по фитилю за счёт капиллярного эффекта.</p>
+                </div>
+                <div class="bg-warm-50 p-6 rounded-2xl border border-warm-200">
+                    <h4 class="font-bold text-warm-800 mb-2">Автополив</h4>
+                    <p class="text-warm-900/70">Поддерживает постоянную подачу воды из резервуара.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="glass-card p-8 md:p-12 rounded-3xl gs-reveal">
+            <h2 class="text-2xl font-serif font-bold text-warm-800 mb-4">Транспирация <span class="text-lg font-sans font-normal text-warm-500">(дополнительный блок исследования)</span></h2>
+            <p class="text-lg text-warm-900/80 leading-relaxed">
+                Температура ускоряет испарение воды, движение воздуха удаляет влажный слой над листом, а высокая влажность снижает скорость потери воды.
+            </p>
+        </section>
+
+        <section class="glass-card p-8 md:p-12 rounded-3xl gs-reveal">
+            <h2 class="text-2xl font-serif font-bold text-warm-800 mb-6">Методика исследования</h2>
+            <div class="space-y-6 text-lg text-warm-900/80 leading-relaxed">
+                <p>Для сравнения способов полива используются одинаковые растения, горшки и почва. Оцениваются расход воды, изменение массы, влажность почвы и состояние растения.</p>
+                <p>Для изучения транспирации используется потометр. Прибор измеряет изменение объёма воды, поглощаемой побегом за определённое время. Интенсивность рассчитывается по формуле:</p>
+                
+                <div class="flex justify-center my-8">
+                    <div class="bg-white/80 py-4 px-8 rounded-2xl border border-warm-200 shadow-sm text-2xl font-serif text-leaf-700">
+                        E = &Delta;V / (S &middot; &Delta;t)
+                    </div>
+                </div>
+
+                <div class="mt-12 bg-white rounded-3xl p-6 shadow-inner border border-warm-100 overflow-hidden">
+                    <h4 class="text-center text-sm font-semibold text-warm-500 uppercase tracking-wider mb-6">Схема экспериментальной установки с потометром</h4>
+                    
+                    <!-- Интерактивная SVG схема -->
+                    <div class="relative w-full h-[350px] flex items-center justify-center">
+                        <svg viewBox="0 0 800 400" class="w-full h-full drop-shadow-md">
+                            <!-- Трубка (контур) -->
+                            <path d="M 50 300 L 350 300 L 400 150" fill="none" stroke="#2c5282" stroke-width="24" stroke-linejoin="round" stroke-linecap="round"/>
+                            <!-- Трубка (внутренняя вода) -->
+                            <path d="M 120 300 L 350 300 L 400 150" fill="none" stroke="#63b3ed" stroke-width="16" stroke-linejoin="round" class="water-flow" stroke-linecap="round"/>
+                            
+                            <!-- Градуировка -->
+                            <line x1="80" y1="280" x2="80" y2="260" stroke="#2c5282" stroke-width="2"/>
+                            <line x1="130" y1="280" x2="130" y2="260" stroke="#2c5282" stroke-width="2"/>
+                            <line x1="180" y1="280" x2="180" y2="260" stroke="#2c5282" stroke-width="2"/>
+                            <line x1="230" y1="280" x2="230" y2="260" stroke="#2c5282" stroke-width="2"/>
+                            <line x1="280" y1="280" x2="280" y2="260" stroke="#2c5282" stroke-width="2"/>
+                            <line x1="330" y1="280" x2="330" y2="260" stroke="#2c5282" stroke-width="2"/>
+                            
+                            <!-- Мениск (пузырек воздуха) -->
+                            <circle cx="90" cy="300" r="10" fill="#e2e8f0"/>
+
+                            <!-- Стебель растения -->
+                            <line x1="400" y1="160" x2="430" y2="60" stroke="#8B4513" stroke-width="12" stroke-linecap="round"/>
+                            
+                            <!-- Листья -->
+                            <g fill="#48bb78" class="leaf-float">
+                                <polygon points="430,70 380,100 410,120" />
+                                <polygon points="420,90 460,110 440,140" />
+                                <polygon points="425,60 370,50 400,20" />
+                                <polygon points="435,70 480,50 460,80" />
+                                <polygon points="440,40 500,20 480,0" />
+                                <polygon points="415,80 340,90 370,120" />
+                            </g>
+
+                            <!-- Указатели и подписи -->
+                            <!-- Мениск -->
+                            <line x1="150" y1="200" x2="110" y2="270" stroke="#4a5568" stroke-width="2" marker-end="url(#arrowhead)"/>
+                            <text x="140" y="180" fill="#2c5282" font-family="Inter" font-size="16" font-weight="500">Смещение мениска → ΔV</text>
+                            
+                            <!-- Трубка текст -->
+                            <text x="180" y="340" fill="#2c5282" font-family="Inter" font-size="14">Градуированная капиллярная трубка</text>
+                            
+                            <!-- Побег текст -->
+                            <text x="480" y="50" fill="#276749" font-family="Inter" font-size="16" font-weight="500">Облиственный побег</text>
+                            
+                            <!-- Испарение -->
+                            <g class="evap-arrow">
+                                <line x1="480" y1="120" x2="580" y2="100" stroke="#38a169" stroke-width="2" marker-end="url(#arrowhead-green)"/>
+                                <text x="590" y="95" fill="#276749" font-family="Inter" font-size="14">Испарение воды</text>
+                                <text x="590" y="115" fill="#276749" font-family="Inter" font-size="14">через устьица</text>
+                            </g>
+
+                            <defs>
+                                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                    <polygon points="0 0, 10 3.5, 0 7" fill="#4a5568" />
+                                </marker>
+                                <marker id="arrowhead-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                    <polygon points="0 0, 10 3.5, 0 7" fill="#38a169" />
+                                </marker>
+                            </defs>
+                        </svg>
+                    </div>
+                    <div class="text-center text-warm-600 text-sm mt-4">Контролировать: площадь листьев S, время Δt, температуру, влажность и скорость воздуха</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="glass-card p-8 rounded-3xl gs-reveal">
+            <h3 class="text-xl font-bold text-warm-800 mb-4">Результаты и практическое применение</h3>
+            <div contenteditable="true" class="editable-field" data-placeholder="Опишите результаты и их применение..."></div>
+        </section>
+
+        <section class="glass-card p-8 md:p-12 rounded-3xl gs-reveal">
+            <h2 class="text-2xl font-serif font-bold text-warm-800 mb-4">Продукт проекта</h2>
+            <p class="text-lg text-warm-900/80 leading-relaxed">
+                Конечным продуктом проекта является исследовательская работа с результатами экспериментов, оформленным в наглядном виде (таблицы, графики, диаграммы и т.п.), анализом эффективности различных способов полива и практическими рекомендациями по созданию оптимальных условий содержания комнатных растений.
+            </p>
+        </section>
+
+        <section class="glass-card p-8 rounded-3xl gs-reveal">
+            <h3 class="text-xl font-bold text-warm-800 mb-4">Заключение</h3>
+            <div contenteditable="true" class="editable-field" data-placeholder="Напишите заключение..."></div>
+        </section>
+
+        <section class="mt-16 pt-8 border-t border-warm-300 gs-reveal">
+            <h3 class="text-lg font-semibold text-warm-700 mb-6 uppercase tracking-wider">Прилагаемые материалы:</h3>
+            <ul class="space-y-4">
+                <li class="flex items-center gap-4 bg-white/60 p-4 rounded-xl border border-warm-200 transition hover:bg-white">
+                    <div class="w-10 h-10 rounded-full bg-warm-200 flex items-center justify-center text-warm-700">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg>
+                    </div>
+                    <span class="text-warm-900 font-medium text-lg">презентация к защите</span>
+                </li>
+                <li class="flex items-center gap-4 bg-white/60 p-4 rounded-xl border border-warm-200 transition hover:bg-white">
+                    <div class="w-10 h-10 rounded-full bg-warm-200 flex items-center justify-center text-warm-700">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <span class="text-warm-900 font-medium text-lg">видео защиты</span>
+                </li>
+                <li class="flex items-center gap-4 bg-white/60 p-4 rounded-xl border border-warm-200 transition hover:bg-white">
+                    <div class="w-10 h-10 rounded-full bg-warm-200 flex items-center justify-center text-warm-700">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    </div>
+                    <span class="text-warm-900 font-medium text-lg">фото серии экспериментов</span>
+                </li>
+                <li class="flex items-center gap-4 bg-white/60 p-4 rounded-xl border border-warm-200 transition hover:bg-white">
+                    <div class="w-10 h-10 rounded-full bg-warm-200 flex items-center justify-center text-warm-700">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    </div>
+                    <span class="text-warm-900 font-medium text-lg">наглядные визуальные материалы анализа и оценки методов полива</span>
+                </li>
+            </ul>
+        </section>
+
+    </main>
+
+    <script>
+        // Инициализация Three.js для создания теплого, атмосферного фона
+        const initThreeJS = () => {
+            const container = document.getElementById('canvas-container');
+            const scene = new THREE.Scene();
+            
+            // Настройка камеры
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 30;
+
+            // Рендерер с поддержкой прозрачности
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            container.appendChild(renderer.domElement);
+
+            // Создание частиц (символизируют капли влаги / транспирацию)
+            const particlesGeometry = new THREE.BufferGeometry();
+            const particlesCount = 300;
+            const posArray = new Float32Array(particlesCount * 3);
+
+            for(let i = 0; i < particlesCount * 3; i++) {
+                // Распределяем частицы в пространстве
+                posArray[i] = (Math.random() - 0.5) * 60;
+            }
+
+            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+            
+            // Материал для частиц (мягкие зеленые и бежевые оттенки)
+            const material = new THREE.PointsMaterial({
+                size: 0.2,
+                color: '#8ba888',
+                transparent: true,
+                opacity: 0.6,
+                blending: THREE.AdditiveBlending
+            });
+
+            const particlesMesh = new THREE.Points(particlesGeometry, material);
+            scene.add(particlesMesh);
+
+            // Обработка ресайза окна
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+
+            // Интерактивность мыши для параллакс-эффекта
+            let mouseX = 0;
+            let mouseY = 0;
+            document.addEventListener('mousemove', (event) => {
+                mouseX = event.clientX / window.innerWidth - 0.5;
+                mouseY = event.clientY / window.innerHeight - 0.5;
+            });
+
+            // Анимационный цикл
+            const animate = () => {
+                requestAnimationFrame(animate);
+                
+                // Медленное движение частиц вверх (транспирация)
+                const positions = particlesGeometry.attributes.position.array;
+                for(let i = 1; i < particlesCount * 3; i += 3) {
+                    positions[i] += 0.02; // Скорость подъема
+                    if (positions[i] > 30) {
+                        positions[i] = -30; // Возврат вниз
+                    }
+                }
+                particlesGeometry.attributes.position.needsUpdate = true;
+
+                // Вращение сцены и параллакс от мыши
+                particlesMesh.rotation.y += 0.001;
+                particlesMesh.position.x += (mouseX * 5 - particlesMesh.position.x) * 0.05;
+                particlesMesh.position.y += (-mouseY * 5 - particlesMesh.position.y) * 0.05;
+
+                renderer.render(scene, camera);
+            };
+
+            animate();
+        };
+
+        // Инициализация GSAP анимаций для скролла
+        const initGSAP = () => {
+            gsap.registerPlugin(ScrollTrigger);
+
+            const elements = document.querySelectorAll('.gs-reveal');
+            
+            elements.forEach((el) => {
+                gsap.fromTo(el, 
+                    { 
+                        y: 40, 
+                        opacity: 0 
+                    },
+                    {
+                        scrollTrigger: {
+                            trigger: el,
+                            start: "top 85%", // Анимация начнется, когда верх элемента достигнет 85% высоты окна
+                            toggleActions: "play none none reverse"
+                        },
+                        y: 0,
+                        opacity: 1,
+                        duration: 0.8,
+                        ease: "power2.out"
+                    }
+                );
+            });
+        };
+
+        // Запуск всех скриптов после загрузки окна
+        window.onload = () => {
+            initThreeJS();
+            initGSAP();
+        };
+    </script>
+</script>
+    <script>
+
+function resizeIframe(){
+
+    const body = document.body;
+    const html = document.documentElement;
+
+    const height = Math.max(
+        body.getBoundingClientRect().height,
+        body.scrollHeight,
+        html.scrollHeight
+    );
+
+    window.parent.postMessage({
+        type:"resizeIframe",
+        height: Math.ceil(height)
+    }, "*");
+}
+
+
+window.addEventListener("load", resizeIframe);
+
+window.addEventListener("resize", resizeIframe);
+
+
+setTimeout(resizeIframe,1000);
+
+setTimeout(resizeIframe,3000);
+
+
+new ResizeObserver(resizeIframe)
+.observe(document.body);
+
+
+</script>
+</body>
+</html>
