@@ -68,7 +68,7 @@
             background: var(--card-bg, rgba(255, 255, 255, 0.65));
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(2, 132, 199, 0.15); /* Subtle ocean border */
+            border: 1px solid rgba(2, 132, 199, 0.15);
             box-shadow: 0 10px 30px rgba(15, 23, 42, 0.03);
             transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.5s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.3s ease;
         }
@@ -123,6 +123,17 @@
                 Океан на столе:<br>
                 <span class="text-theme-ocean font-light italic">моделирование океанической конвекции</span>
             </h1>
+            
+            <!-- Выразительный блок с именем руководителя -->
+            <div class="mt-8 inline-block">
+                <div class="glass-card rounded-full px-6 py-3 flex items-center justify-center space-x-3 border-theme-ocean/30 shadow-sm">
+                    <svg class="w-5 h-5 text-theme-ocean" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
+                    <span class="text-sm text-slate-500 font-medium uppercase tracking-wider">Руководитель проекта:</span>
+                    <span class="text-lg font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-theme-oceanDark to-theme-ocean">Шатов Иван Юрьевич</span>
+                </div>
+            </div>
         </header>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
@@ -137,8 +148,7 @@
                     Конвекция является одним из основных механизмов переноса тепла в жидкостях и газах. Это явление играет важную роль в формировании природных процессов: движения воздушных масс в атмосфере, океанических течений и распределения тепла на поверхности Земли.
                 </p>
             </div>
-
-            <!-- Проблема (Filled) -->
+<!-- Проблема (Filled) -->
             <div class="glass-card rounded-2xl p-8 gs-reveal col-span-1 md:col-span-2 lg:col-span-1">
                 <h2 class="text-xl font-bold text-theme-heading mb-4 flex items-center">
                     <svg class="w-6 h-6 mr-3 text-theme-ocean" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -222,8 +232,7 @@
                     <li>Использование безопасных материалов.</li>
                 </ul>
             </div>
-
-            <!-- Продукт проекта (Filled) -->
+<!-- Продукт проекта (Filled) -->
             <div class="glass-card rounded-2xl p-8 gs-reveal col-span-1 md:col-span-2">
                 <h2 class="text-xl font-bold text-theme-heading mb-4 flex items-center">
                     <svg class="w-6 h-6 mr-3 text-theme-ocean" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
@@ -255,7 +264,7 @@
             </div>
         </div>
 
-        <!-- Footer Elements -->
+        <!-- Footer Elements (Updated List) -->
         <div class="bg-gradient-to-br from-theme-oceanDark to-slate-900 rounded-3xl p-8 md:p-12 text-white shadow-2xl gs-reveal relative overflow-hidden mt-12 border border-theme-ocean/30">
             <!-- Decorative circle -->
             <div class="absolute -top-16 -right-16 w-64 h-64 bg-theme-oceanLight opacity-20 rounded-full blur-3xl"></div>
@@ -267,9 +276,9 @@
                 <li><span class="font-medium text-white">Видео защиты</span></li>
                 <li><span class="font-medium text-white">Фото лабораторной установки</span></li>
                 <li><span class="font-medium text-white">Схема и чертеж лабораторной установки с указанием использованных элементов и материалов</span></li>
-                <li><span class="font-medium text-white">Файл визуализации конвективных течений из среды PivLab</span></li>
+                <li><span class="font-medium text-white">Файл визуализации конвективных течений из среды PIVLab</span></li>
                 <li><span class="font-medium text-white">Изображение (модель) визуализации в удобном формате</span></li>
-                <li><span class="font-medium text-white">Архивы содержащие покадровый набор серии экспериментов</span></li>
+                <li><span class="font-medium text-white">Архивы, содержащие покадровый набор серии экспериментов</span></li>
             </ul>
         </div>
 
@@ -319,7 +328,6 @@
             const container = document.getElementById('canvas-container');
             
             const scene = new THREE.Scene();
-            // Новый светлый фон
             scene.background = new THREE.Color('#F8FAFC'); 
             
             const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -344,9 +352,8 @@
                 currentScroll = window.scrollY;
             });
 
-            // Новые цвета: Оранжевый (Нагрев) и Синий (Охлаждение)
-            const colorHot = new THREE.Color('#EA580C'); // Orange 600
-            const colorCold = new THREE.Color('#0284C7'); // Sky 600
+            const colorHot = new THREE.Color('#EA580C'); // Orange
+            const colorCold = new THREE.Color('#0284C7'); // Blue
             const colorTemp = new THREE.Color();
 
             for (let i = 0; i < particleCount; i++) {
@@ -368,7 +375,7 @@
             geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
             geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
-            // Создаем круглую текстуру с градиентом прозрачности для мягких частиц (убирает рябь)
+            // Программное создание текстуры мягкого круга
             const circleCanvas = document.createElement('canvas');
             circleCanvas.width = 64;
             circleCanvas.height = 64;
@@ -386,8 +393,8 @@
                 map: particleTexture,
                 vertexColors: true,
                 transparent: true,
-                opacity: 0.5, // Делаем их полупрозрачными
-                depthWrite: false, // Избегаем резких углов при наложении
+                opacity: 0.5, // Полупрозрачные частицы
+                depthWrite: false, // Избегаем пересечений и резких углов
                 sizeAttenuation: true
             });
 
@@ -407,7 +414,6 @@
 
                     let y = positions[i * 3 + 1];
 
-                    // Очень мягкое изменение скорости (убирает резкие рывки)
                     if (y > bounds.y / 2) {
                         velocities[i * 3 + 1] -= 0.001; 
                     } 
@@ -422,7 +428,7 @@
                         }
                     }
 
-                    // Сильное ограничение скорости для спокойной картинки
+                    // Сильное ограничение скорости для плавности
                     velocities[i * 3 + 1] = Math.max(Math.min(velocities[i * 3 + 1], 0.06), -0.06);
 
                     if (positions[i * 3] > bounds.x / 2 || positions[i * 3] < -bounds.x / 2) {
@@ -443,10 +449,9 @@
                 particleSystem.geometry.attributes.position.needsUpdate = true;
                 particleSystem.geometry.attributes.color.needsUpdate = true;
 
-                particleSystem.rotation.y += 0.0005; // Вращение сцены стало медленнее
+                particleSystem.rotation.y += 0.0005;
 
-                // Параллакс эффект для камеры: камера мягко смещается при скролле
-                // Это устраняет стробирующий эффект (рябь) на сетчатке глаза
+                // Эффект параллакса: камера мягко смещается при скролле для устранения ряби
                 const targetCameraY = -(currentScroll * 0.015);
                 camera.position.y += (targetCameraY - camera.position.y) * 0.1;
 
@@ -462,7 +467,6 @@
             });
         }
     </script>
-</script>
     <script>
 
 function resizeIframe(){
