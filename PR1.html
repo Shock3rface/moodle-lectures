@@ -110,7 +110,7 @@
             <h1 class="text-4xl md:text-5xl font-serif font-bold text-warm-900 mb-6 leading-tight">
                 «Архипелаг открытий: <br/> играя изучаем физику»
             </h1>
-            <div class="mt-12 max-w-xl mx-auto glass-card border-2 border-warm-300 shadow-xl rounded-3xl p-6 relative overflow-hidden group">
+<div class="mt-12 max-w-xl mx-auto glass-card border-2 border-warm-300 shadow-xl rounded-3xl p-6 relative overflow-hidden group">
                 <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-warm-300 via-warm-500 to-warm-300"></div>
                 <h3 class="text-sm font-bold text-warm-700 uppercase tracking-widest mb-5 flex items-center justify-center">
                     <i class="fa-solid fa-award text-warm-500 mr-2 text-lg"></i> 
@@ -118,13 +118,23 @@
                     <i class="fa-solid fa-award text-warm-500 ml-2 text-lg"></i>
                 </h3>
                 <div class="flex flex-col sm:flex-row gap-4 justify-center items-stretch text-lg font-serif font-bold text-warm-900">
-                    <div class="bg-gradient-to-br from-white to-warm-50 py-4 px-6 rounded-xl border border-warm-200 shadow-sm flex-1 w-full text-center transition-all duration-300 hover:shadow-md hover:border-warm-400 hover:-translate-y-1">
-                        <i class="fa-solid fa-user-tie text-warm-400 mb-2 text-2xl block"></i>
-                        <span contenteditable="true" class="outline-none focus:bg-warm-100 px-2 rounded">Шатов Иван Юрьевич</span>
+                    <div class="bg-gradient-to-br from-white to-warm-50 py-4 px-6 rounded-xl border border-warm-200 shadow-sm flex-1 w-full text-center transition-all duration-300 hover:shadow-md hover:border-warm-400 hover:-translate-y-1 flex flex-col items-center justify-between">
+                        <div class="w-full">
+                            <i class="fa-solid fa-user-tie text-warm-400 mb-2 text-2xl block"></i>
+                            <span contenteditable="true" class="outline-none focus:bg-warm-100 px-2 rounded block">Шатов Иван Юрьевич</span>
+                        </div>
+                        <div class="mt-4 inline-flex items-center px-3 py-1 bg-white border border-warm-300 text-warm-700 text-xs rounded-full font-sans font-bold tracking-wide shadow-sm cursor-default">
+                            <i class="fa-solid fa-laptop-code mr-1.5 text-warm-500"></i> Веб-версия
+                        </div>
                     </div>
-                    <div class="bg-gradient-to-br from-white to-warm-50 py-4 px-6 rounded-xl border border-warm-200 shadow-sm flex-1 w-full text-center transition-all duration-300 hover:shadow-md hover:border-warm-400 hover:-translate-y-1">
-                        <i class="fa-solid fa-user-tie text-warm-400 mb-2 text-2xl block"></i>
-                        <span contenteditable="true" class="outline-none focus:bg-warm-100 px-2 rounded">Баёва Полина Андреевна</span>
+                    <div class="bg-gradient-to-br from-white to-warm-50 py-4 px-6 rounded-xl border border-warm-200 shadow-sm flex-1 w-full text-center transition-all duration-300 hover:shadow-md hover:border-warm-400 hover:-translate-y-1 flex flex-col items-center justify-between">
+                        <div class="w-full">
+                            <i class="fa-solid fa-sun text-warm-400 mb-2 text-2xl block"></i>
+                            <span contenteditable="true" class="outline-none focus:bg-warm-100 px-2 rounded block">Баёва Полина Андреевна</span>
+                        </div>
+                        <div class="mt-4 inline-flex items-center px-3 py-1 bg-white border border-warm-300 text-warm-700 text-xs rounded-full font-sans font-bold tracking-wide shadow-sm cursor-default">
+                            <i class="fa-solid fa-dice mr-1.5 text-warm-500"></i> Физическая версия
+                        </div>
                     </div>
                 </div>
             </div>
@@ -164,8 +174,7 @@
                 <h3 class="text-lg font-bold text-warm-700 mb-3 uppercase tracking-wide text-sm">Задачи исследования:</h3>
                 <div class="fillable-field w-full min-h-[100px]" contenteditable="true"></div>
             </section>
-
-            <!-- Объект, Предмет, Гипотеза, Методы -->
+<!-- Объект, Предмет, Гипотеза, Методы -->
             <div class="grid md:grid-cols-2 gap-8">
                 <section class="glass-card rounded-3xl p-8 space-y-6 section-animate section-hidden">
                     <div>
@@ -235,8 +244,7 @@
                         <div class="fillable-field w-full min-h-[60px]" contenteditable="true"></div>
                     </div>
                 </section>
-
-                <!-- Веб версия -->
+ <!-- Веб версия -->
                 <section class="glass-card rounded-3xl p-8 relative overflow-hidden section-animate section-hidden">
                     <div class="absolute -right-10 -top-10 opacity-10 text-9xl"><i class="fa-solid fa-laptop-code"></i></div>
                     <h3 class="text-2xl font-bold text-warm-800 mb-6 flex items-center z-10 relative">
@@ -321,8 +329,7 @@
         gsap.registerPlugin(ScrollTrigger);
 
         document.addEventListener("DOMContentLoaded", () => {
-            
-            // 1. Инициализация GSAP Анимаций при скролле
+       // 1. Инициализация GSAP Анимаций при скролле
             const sections = document.querySelectorAll('.section-animate');
             
             sections.forEach((section, index) => {
@@ -462,7 +469,6 @@
             initThreeJS();
         });
     </script>
-</script>
     <script>
 
 function resizeIframe(){
