@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#08a9df">
+  <meta name="description" content="Интерактивная лабораторная работа: зависимость веса тела в воде от объёма погружённой части.">
+  <title>Лабораторная работа № 5 · Вес тела в воде</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2308a9df'/%3E%3Cpath d='M18 18h28v29H18zM24 39h16M32 14v18m-7-7 7 7 7-7' fill='none' stroke='white' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <style>
+    :root{--blue:#08a9df;--blue-dark:#087ca8;--ink:#202326;--muted:#677178;--line:#d8e0e4;--paper:#fff;--wash:#f4f8fa;--pale:#dff5fc;--grey:#e2e2e2;--green:#16784d;--shadow:0 18px 60px #22364312}
+    *{box-sizing:border-box}body{margin:0;background:#edf2f4;color:var(--ink);font:16px/1.5 Georgia,"Times New Roman",serif}.page{max-width:1060px;margin:34px auto;background:var(--paper);box-shadow:var(--shadow);padding:38px 54px 46px;}
+    .topline{display:flex;justify-content:space-between;align-items:center;gap:12px;color:var(--muted);font:600 12px/1.3 Arial,sans-serif;text-transform:uppercase;letter-spacing:.09em;margin-bottom:20px}.titlebar{display:grid;grid-template-columns:92px 1fr;align-items:stretch;margin-bottom:22px}.number{display:grid;place-items:center;background:var(--blue);color:white;font:800 34px/1 Arial,sans-serif;min-height:76px}h1{margin:0;background:var(--grey);padding:14px 26px;display:flex;align-items:center;font:800 clamp(20px,3vw,27px)/1.12 Arial,sans-serif;text-transform:uppercase;letter-spacing:.005em}.lead{font-size:19px;margin:0 0 26px;color:#41484c}
+    .meta{display:grid;grid-template-columns:160px 1fr;gap:12px 18px;margin:0 0 30px;align-items:start}.meta dt{font:700 14px/1.25 Arial,sans-serif}.meta dd{margin:0;font-size:19px;line-height:1.35}.section-ribbon{display:inline-block;margin:0 0 16px;background:var(--blue);color:white;padding:5px 12px;font:800 14px/1.1 Arial,sans-serif;letter-spacing:.045em;text-transform:uppercase}
+    .steps{list-style:none;counter-reset:step;padding:0;margin:0 0 29px}.steps li{counter-increment:step;display:grid;grid-template-columns:30px 1fr;gap:12px;margin:0 0 14px;font-size:19px;line-height:1.35}.steps li::before{content:counter(step) ".";color:var(--blue);font:800 18px/1.45 Arial,sans-serif;text-align:right}.steps strong{font-weight:700}.note{background:#f5fbfd;border-left:4px solid var(--blue);padding:13px 16px;margin:22px 0 30px;color:#35444b;font-size:16px}.formula{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:16px 20px;margin:14px 0 24px;background:var(--pale);font-size:20px}.formula b{font-size:24px;color:var(--blue-dark)}.formula small{font:14px/1.4 Arial,sans-serif;color:#52636a}
+    .initial{display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px;padding:14px 18px;background:var(--wash);border:1px solid var(--line);margin:12px 0 20px}.initial label{font:700 15px/1.35 Arial,sans-serif}.initial input{width:130px;border:1px solid #cad7dc;border-radius:4px;padding:9px;text-align:center;font:17px Georgia,serif}.initial input:focus,td input:focus{outline:2px solid #81d9f4;border-color:var(--blue)}
+    .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:4px;margin:12px 0}.table-wrap table{border-collapse:collapse;width:100%;min-width:700px}th{background:#dff5fc;font:700 14px/1.3 Arial,sans-serif;text-align:center;padding:12px 10px;border:1px solid white;vertical-align:middle}td{padding:9px 8px;border:1px solid var(--line);text-align:center;background:#fff}tbody tr:nth-child(even) td{background:#f6fbfd}td input{width:100%;min-width:90px;border:1px solid #cad7dc;border-radius:4px;background:white;padding:8px;text-align:center;color:var(--ink);font:16px Georgia,serif}td .trial{font:700 15px Arial,sans-serif;color:var(--blue-dark)}.calc{font-weight:700;color:#123847}.empty{color:#8a9498}
+    .table-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--muted);font:13px/1.4 Arial,sans-serif}.actions{display:flex;gap:8px;flex-wrap:wrap}.button{border:1px solid #b8c9cf;background:white;color:#25343a;border-radius:5px;padding:9px 13px;cursor:pointer;font:700 13px Arial,sans-serif}.button:hover{border-color:var(--blue);color:var(--blue-dark)}.button.primary{background:var(--blue);border-color:var(--blue);color:white}.button.danger{border-color:#e2c6c6;color:#9b4141}.button:focus-visible{outline:3px solid #89ddf5;outline-offset:2px}
+    .conclusion{border:1px solid var(--line);background:var(--wash);padding:18px 20px;margin:18px 0 28px}.conclusion-label{font:800 14px Arial,sans-serif;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}.conclusion p{font-size:18px;margin:0;min-height:52px}.conclusion .prompt{font:14px Arial,sans-serif;color:var(--muted);margin-top:9px}.footer{margin-top:40px;padding-top:10px;border-top:4px solid var(--blue);display:flex;justify-content:space-between;color:var(--muted);font:12px Arial,sans-serif}
+    @media(max-width:720px){.page{margin:0 auto;padding:24px 18px 34px}.titlebar{grid-template-columns:66px 1fr}.number{min-height:70px;font-size:27px}h1{padding:12px 15px;font-size:20px}.meta{grid-template-columns:1fr;gap:5px;margin-bottom:24px}.meta dd{margin-bottom:10px}.steps li{grid-template-columns:26px 1fr;font-size:17px}.formula{font-size:18px;padding:13px}.initial{grid-template-columns:1fr}.initial input{width:100%}.footer{gap:12px;flex-wrap:wrap}.topline{align-items:flex-start;flex-direction:column}}
+    @media print{body{background:#fff}.page{max-width:none;margin:0;box-shadow:none;padding:12mm;min-height:auto}.actions,.save-status{display:none!important}.table-wrap{overflow:visible}table{min-width:0!important}input{border:0!important;padding:2px!important}.note,.formula,.initial,.conclusion{break-inside:avoid}}
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="topline"><span>Физика · 7 класс · лабораторный практикум</span><span class="save-status" id="saveStatus" aria-live="polite">Заполнение сохраняется на этом устройстве</span></div>
+    <header class="titlebar"><div class="number">№ 5</div><h1>Исследование зависимости веса тела в воде от объёма погружённой части тела</h1></header>
+    <p class="lead">Установите, как меняется показание динамометра, когда в воду погружается всё большая часть тела.</p>
+
+    <dl class="meta">
+      <dt>Цель работы</dt><dd>Исследовать зависимость веса тела в воде от объёма погружённой в воду части тела.</dd>
+      <dt>Приборы и материалы</dt><dd>Штатив с лапкой, динамометр, тело с измерительной шкалой, сосуд с водой, линейка или мензурка для определения объёма.</dd>
+    </dl>
+
+    <h2 class="section-ribbon">Указания к работе</h2>
+    <ol class="steps">
+      <li><span class="step-text">Подвесьте тело к динамометру и измерьте его вес в воздухе. Запишите показание <i>P</i><sub>0</sub>.</span></li>
+      <li><span class="step-text">Поставьте сосуд с водой под тело. Погружайте тело постепенно, не касаясь дна и стенок сосуда. Для каждого положения определите объём погружённой части <i>V</i> и снимите показание динамометра <i>P</i>.</span></li>
+      <li><span class="step-text">Повторите измерения для нескольких значений объёма погружённой части. Снимайте показания, когда тело и динамометр неподвижны.</span></li>
+      <li><span class="step-text"><strong>Обработка результатов измерений.</strong> Для каждого опыта вычислите вес тела в воде и выталкивающую силу как разность веса в воздухе и показания динамометра в воде.</span></li>
+      <li><span class="step-text">Сравните показания динамометра и рассчитанную выталкивающую силу при разных значениях <i>V</i>. Сформулируйте вывод о зависимости веса тела в воде от объёма его погружённой части.</span></li>
+    </ol>
+    <aside class="note"><strong>Важно.</strong> Изменяйте только объём погружённой части тела. Тело не должно касаться дна и стенок; вода не должна переливаться через край. Записывайте объём в см³, а показания динамометра — в ньютонах.</aside>
+
+    <h2 class="section-ribbon">Формулы для расчёта</h2>
+    <div class="formula" aria-label="Выталкивающая сила равна весу тела в воздухе минус вес тела в воде">
+      <span><i>F</i><sub>A</sub> = <i>P</i><sub>0</sub> − <i>P</i></span>
+      <b id="formulaExample">Введите измерения в таблицу →</b>
+      <small><i>P</i><sub>0</sub> — вес тела в воздухе; <i>P</i> — показание динамометра в воде. Теоретически: <i>F</i><sub>A</sub> = ρ<i>gV</i>.</small>
+    </div>
+
+    <h2 class="section-ribbon">Обработка результатов измерений</h2>
+    <div class="initial"><label for="airWeight">Вес тела в воздухе, <i>P</i><sub>0</sub>, Н</label><input id="airWeight" inputmode="decimal" aria-label="Вес тела в воздухе, ньютон" placeholder="например, 0,6"></div>
+    <div class="table-wrap">
+      <table aria-label="Результаты исследования зависимости веса тела в воде от объёма погружённой части">
+        <thead><tr><th scope="col">№ опыта</th><th scope="col">Объём погружённой части тела <i>V</i>, см³</th><th scope="col">Вес тела в воде <i>P</i>, Н</th><th scope="col">Выталкивающая сила <i>F</i><sub>A</sub> = <i>P</i><sub>0</sub> − <i>P</i>, Н</th></tr></thead>
+        <tbody id="resultsBody"></tbody>
+      </table>
+    </div>
+    <div class="table-foot"><span class="hint">Внесите результаты опыта. Таблица и вывод сохраняются в этом браузере.</span><div class="actions"><button class="button" id="print" type="button">Печать / PDF</button><button class="button danger" id="clear" type="button">Очистить таблицу</button></div></div>
+    <aside class="note"><strong>По материалам видео.</strong> В опыте используют штатив, динамометр, размеченное тело и сосуд с водой. Значения в таблице оставлены пустыми: внесите показания, полученные при выполнении опыта.</aside>
+
+    <div class="conclusion"><div class="conclusion-label">Вывод</div><p id="conclusionText" aria-live="polite">Заполните таблицу — здесь появится сравнение результатов для разных объёмов погружённой части.</p><p class="prompt">Проверьте: увеличивается ли выталкивающая сила и уменьшается ли показание динамометра при увеличении объёма погружённой части?</p></div>
+
+    <footer class="footer"><span>Лабораторная работа № 5</span><span>Физика · Измерения и вывод</span></footer>
+  </main>
+  <script>
+  (()=>{
+    const KEY='physics-lab-5-volume-v1',body=document.querySelector('#resultsBody'),air=document.querySelector('#airWeight');
+    const blank=()=>({air:'',rows:Array.from({length:5},()=>({volume:'',water:''}))});let data=blank();
+    const num=v=>{if(v===''||v===null||v===undefined)return null;const n=Number(String(v).replace(',','.'));return Number.isFinite(n)?n:null;};
+    const fmt=n=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:3}).format(n);
+    function save(){try{localStorage.setItem(KEY,JSON.stringify(data));document.querySelector('#saveStatus').textContent='Сохранено на этом устройстве';}catch{document.querySelector('#saveStatus').textContent='Автосохранение недоступно';}}
+    function render(){body.replaceChildren();data.rows.forEach((r,i)=>{const tr=document.createElement('tr');tr.innerHTML=`<th scope="row" class="trial">${i+1}</th><td><input data-row="${i}" data-key="volume" aria-label="Объём погружённой части, опыт ${i+1}, кубические сантиметры" inputmode="decimal" placeholder="см³" value="${r.volume}"></td><td><input data-row="${i}" data-key="water" aria-label="Вес тела в воде, опыт ${i+1}, ньютон" inputmode="decimal" placeholder="Н" value="${r.water}"></td><td class="calc" data-force="${i}">—</td>`;body.append(tr);});body.querySelectorAll('input').forEach(input=>input.addEventListener('input',update));air.value=data.air||'';update();}
+    function update(){data.air=air.value;const p0=num(data.air),valid=[];body.querySelectorAll('tr').forEach((row,i)=>{const r=data.rows[i];row.querySelectorAll('input').forEach(input=>{r[input.dataset.key]=input.value;});const v=num(r.volume),p=num(r.water),out=row.querySelector(`[data-force="${i}"]`),fa=p0===null||p===null?null:p0-p;out.textContent=fa===null?'—':fmt(fa);if(v!==null&&p!==null&&fa!==null)valid.push({v,p,fa});});
+      const first=valid[0];document.querySelector('#formulaExample').textContent=first?`${fmt(p0)} − ${fmt(first.p)} = ${fmt(first.fa)} Н`:'Введите измерения в таблицу →';
+      let conclusion='Заполните таблицу — здесь появится сравнение результатов для разных объёмов погружённой части.';if(valid.length>=2){const sorted=[...valid].sort((a,b)=>a.v-b.v),inc=sorted.every((x,i)=>i===0||x.fa>=sorted[i-1].fa),dec=sorted.every((x,i)=>i===0||x.p<=sorted[i-1].p);conclusion=inc&&dec?`При увеличении объёма погружённой части от ${fmt(sorted[0].v)} до ${fmt(sorted.at(-1).v)} см³ выталкивающая сила возрастает, а показание динамометра уменьшается. Результаты опыта подтверждают зависимость веса тела в воде от объёма погружённой части.`:'Сопоставьте значения объёма, показания динамометра и рассчитанной выталкивающей силы. Если результаты не показывают общей зависимости, проверьте измерения и повторите опыт.';}
+      document.querySelector('#conclusionText').textContent=conclusion;save();}
+    air.addEventListener('input',update);document.querySelector('#print').addEventListener('click',()=>window.print());document.querySelector('#clear').addEventListener('click',()=>{data=blank();render();});
+    try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&Array.isArray(s.rows))data={air:s.air||'',rows:Array.from({length:5},(_,i)=>s.rows[i]||{volume:'',water:''})};}catch{}render();
+  })();
+  </script>
+  <script>
+    function resizeIframe() {
+        // Ищем основной блок страницы. Если его нет — берем body
+        const container = document.querySelector('.page') || document.body;
+        
+        // Получаем стили блока, чтобы учесть его внешние отступы (margin)
+        const style = window.getComputedStyle(container);
+        const marginTop = parseFloat(style.marginTop) || 0;
+        const marginBottom = parseFloat(style.marginBottom) || 0;
+        
+        // Полная высота = высота самого блока + верхний отступ + нижний отступ
+        const height = container.offsetHeight + marginTop + marginBottom;
+        
+        window.parent.postMessage({
+            type: "resizeIframe",
+            height: Math.ceil(height)
+        }, "*");
+    }
+
+    window.addEventListener("load", resizeIframe);
+    window.addEventListener("resize", resizeIframe);
+
+    // Наблюдаем за изменениями размеров именно контейнера с контентом
+    const target = document.querySelector('.page') || document.body;
+    new ResizeObserver(resizeIframe).observe(target);
+  </script>
+</body>
+</html>
