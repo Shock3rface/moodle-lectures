@@ -127,40 +127,31 @@
     render();
   })();
   </script>
-  <script>
-
-function resizeIframe(){
-
-    const body = document.body;
-    const html = document.documentElement;
-
-    const height = Math.max(
-        body.getBoundingClientRect().height,
-        body.scrollHeight,
-        html.scrollHeight
-    );
-
+ <script>
+function resizeIframe() {
+    // Ищем основной блок страницы. Если его нет — берем body
+    const container = document.querySelector('.page') || document.body;
+    
+    // Получаем стили блока, чтобы учесть его внешние отступы (margin)
+    const style = window.getComputedStyle(container);
+    const marginTop = parseFloat(style.marginTop) || 0;
+    const marginBottom = parseFloat(style.marginBottom) || 0;
+    
+    // Полная высота = высота самого блока + верхний отступ + нижний отступ
+    const height = container.offsetHeight + marginTop + marginBottom;
+    
     window.parent.postMessage({
-        type:"resizeIframe",
+        type: "resizeIframe",
         height: Math.ceil(height)
     }, "*");
 }
 
-
 window.addEventListener("load", resizeIframe);
-
 window.addEventListener("resize", resizeIframe);
 
-
-setTimeout(resizeIframe,1000);
-
-setTimeout(resizeIframe,3000);
-
-
-new ResizeObserver(resizeIframe)
-.observe(document.body);
-
-
+// Наблюдаем за изменениями размеров именно контейнера с контентом
+const target = document.querySelector('.page') || document.body;
+new ResizeObserver(resizeIframe).observe(target);
 </script>
 </body>
 </html>
