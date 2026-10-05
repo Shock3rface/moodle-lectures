@@ -40,7 +40,7 @@
 <body>
   <main class="page">
     <div class="topline"><span>Физика · 7 класс · лабораторный практикум</span><span class="status" id="saveStatus" aria-live="polite">Заполнение сохраняется на этом устройстве</span></div>
-    <header class="titlebar"><div class="number">№ __</div><h1>Определение выталкивающей силы, действующей на погружённое в жидкость тело</h1></header>
+    <header class="titlebar"><div class="number">№ _ </div><h1>Определение выталкивающей силы, действующей на погружённое в жидкость тело</h1></header>
     <p class="lead">Сравните выталкивающую силу для двух цилиндров в воде и в насыщенном растворе соли.</p>
 
     <dl class="meta">
@@ -92,7 +92,7 @@
     const num=v=>{if(v===''||v===null||v===undefined)return null;const n=Number(String(v).replace(',','.'));return Number.isFinite(n)?n:null};
     const fmt=n=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:3}).format(n);
     const pair=(record,cylinder)=>{const air=num(record[`air${cylinder}`]),liq=num(record[`liq${cylinder}`]);return air===null||liq===null?null:air-liq;};
-    function save(){try{localStorage.setItem(KEY,JSON.stringify(records));document.querySelector('#saveStatus').textContent='Сохранено на этом устройстве';}catch{document.querySelector('#saveStatus').textContent='Автосохранение недоступно';}}
+    function save(){try{localStorage.setItem(KEY,JSON.stringify(records));document.querySelector('#saveStatus').textContent='';}catch{document.querySelector('#saveStatus').textContent='Автосохранение недоступно';}}
     function render(){
       body.replaceChildren();
       fluids.forEach(fluid=>{
