@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#08a9df">
   <meta name="description" content="Интерактивная лабораторная работа: зависимость веса тела в воде от объёма погружённой части.">
-  <title>Лабораторная работа № 5 · Вес тела в воде</title>
+  <title>Лабораторная работа · Вес тела в воде</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2308a9df'/%3E%3Cpath d='M18 18h28v29H18zM24 39h16M32 14v18m-7-7 7 7 7-7' fill='none' stroke='white' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
   <style>
     :root{--blue:#08a9df;--blue-dark:#087ca8;--ink:#202326;--muted:#677178;--line:#d8e0e4;--paper:#fff;--wash:#f4f8fa;--pale:#dff5fc;--grey:#e2e2e2;--green:#16784d;--shadow:0 18px 60px #22364312}
@@ -24,7 +24,7 @@
 <body>
   <main class="page">
     <div class="topline"><span>Физика · 7 класс · лабораторный практикум</span><span class="save-status" id="saveStatus" aria-live="polite">Заполнение сохраняется на этом устройстве</span></div>
-    <header class="titlebar"><div class="number">№ 5</div><h1>Исследование зависимости веса тела в воде от объёма погружённой части тела</h1></header>
+    <header class="titlebar"><div class="number">№ _ </div><h1>Исследование зависимости веса тела в воде от объёма погружённой части тела</h1></header>
     <p class="lead">Установите, как меняется показание динамометра, когда в воду погружается всё большая часть тела.</p>
 
     <dl class="meta">
@@ -70,7 +70,7 @@
     const blank=()=>({air:'',rows:Array.from({length:5},()=>({volume:'',water:''}))});let data=blank();
     const num=v=>{if(v===''||v===null||v===undefined)return null;const n=Number(String(v).replace(',','.'));return Number.isFinite(n)?n:null;};
     const fmt=n=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:3}).format(n);
-    function save(){try{localStorage.setItem(KEY,JSON.stringify(data));document.querySelector('#saveStatus').textContent='Сохранено на этом устройстве';}catch{document.querySelector('#saveStatus').textContent='Автосохранение недоступно';}}
+    function save(){try{localStorage.setItem(KEY,JSON.stringify(data));document.querySelector('#saveStatus').textContent='';}catch{document.querySelector('#saveStatus').textContent='Автосохранение недоступно';}}
     function render(){body.replaceChildren();data.rows.forEach((r,i)=>{const tr=document.createElement('tr');tr.innerHTML=`<th scope="row" class="trial">${i+1}</th><td><input data-row="${i}" data-key="volume" aria-label="Объём погружённой части, опыт ${i+1}, кубические сантиметры" inputmode="decimal" placeholder="см³" value="${r.volume}"></td><td><input data-row="${i}" data-key="water" aria-label="Вес тела в воде, опыт ${i+1}, ньютон" inputmode="decimal" placeholder="Н" value="${r.water}"></td><td class="calc" data-force="${i}">—</td>`;body.append(tr);});body.querySelectorAll('input').forEach(input=>input.addEventListener('input',update));air.value=data.air||'';update();}
     function update(){data.air=air.value;const p0=num(data.air),valid=[];body.querySelectorAll('tr').forEach((row,i)=>{const r=data.rows[i];row.querySelectorAll('input').forEach(input=>{r[input.dataset.key]=input.value;});const v=num(r.volume),p=num(r.water),out=row.querySelector(`[data-force="${i}"]`),fa=p0===null||p===null?null:p0-p;out.textContent=fa===null?'—':fmt(fa);if(v!==null&&p!==null&&fa!==null)valid.push({v,p,fa});});
       const first=valid[0];document.querySelector('#formulaExample').textContent=first?`${fmt(p0)} − ${fmt(first.p)} = ${fmt(first.fa)} Н`:'Введите измерения в таблицу →';
