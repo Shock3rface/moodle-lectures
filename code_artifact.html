@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Зависимость атмосферного давления от высоты | Интерактивный курс физики 7 класса</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fbf9f5;
+            color: #1e293b;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 360px;
+            }
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .tab-btn.active {
+            border-bottom: 3px solid #2563eb;
+            color: #2563eb;
+            font-weight: 600;
+            background-color: #eff6ff;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col custom-scrollbar">
+
+    <!-- Chosen Palette: Warm Neutral Harmony (Background: #fbf9f5, Card/Container: #ffffff, Text: #1e293b, Primary Accent: #2563eb, Secondary Accent: #d97706, Success: #059669) -->
+    <!-- Application Structure Plan: 
+         1. Header & Navigation: Clean top navigation to switch between thematic modules (Overview, Historical Origins, Physics & Math, Aviation & Instruments, Boiling Thermodynamics, Biophysics & Physiology).
+         2. Metric Summary Dashboard: Top level KPI cards showing core physics thresholds updated for 10.5m / 1 mmHg rule (up to 2000m).
+         3. Interactive Tabbed Modules:
+            - Module 1: Historical Discoveries (Torricelli, Pascal, Guericke with an interactive Magdeburg force simulator).
+            - Module 2: Physics & Math Model (Chart comparing 10.5m gradient rule with barometric formula, dynamic altitude barometer calculator).
+            - Module 3: Aviation & Aneroid Barometers (Interactive Q-codes breakdown and aneroid mechanism visual).
+            - Module 4: Thermodynamics of Boiling (Interactive chart & boiling point calculator, culinary physics).
+            - Module 5: Biophysics & Health (Ear Eustachian tube interactive simulator & hypoxia mountain altitude map).
+    -->
+    <!-- Visualization & Content Choices:
+         - Pressure vs Altitude: Chart.js Line Chart (Canvas) -> Compare textbook 10.5m gradient rule vs real ISA model -> Interactive slider/hover -> Clear visual contrast.
+         - Magdeburg Hemispheres: Dynamic HTML/JS Force Calculator -> Input diameter & vacuum -> Output force in kN, kg, horses required -> Visualizes invisible atmospheric pressure.
+         - Water Boiling Temp vs Altitude: Chart.js Line Chart (Canvas) -> Shows Clausius-Clapeyron effect -> Contextual culinary tips.
+         - Ear Drum Eustachian Simulator: Pure CSS/HTML interactive diagram -> Buttons to change altitude/swallow -> Teaches pressure equalization mechanism without SVG.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <!-- Header & Navigation -->
+    <header class="bg-white border-b border-stone-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-xl shadow">
+                        P
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold text-slate-800 leading-tight">Атмосферное давление и высота</h1>
+                        <p class="text-xs text-slate-500">Научно-методический интерактивный курс по физике для 7 класса</p>
+                    </div>
+                </div>
+                <div class="hidden md:flex space-x-1 text-sm font-medium text-slate-600">
+                    <span class="px-3 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200 text-xs flex items-center">
+                        <span class="mr-1">🎓</span> Учебный уровень: 7 класс
+                    </span>
+                </div>
+            </div>
+            <!-- Navigation Tabs -->
+            <nav class="flex space-x-1 overflow-x-auto custom-scrollbar border-t border-stone-100 text-xs sm:text-sm">
+                <button onclick="switchTab('tab-overview')" id="btn-tab-overview" class="tab-btn active px-4 py-3 whitespace-nowrap transition-colors border-b-2 border-transparent hover:text-blue-600">
+                    📊 Обзор и показатели
+                </button>
+                <button onclick="switchTab('tab-history')" id="btn-tab-history" class="tab-btn px-4 py-3 whitespace-nowrap transition-colors border-b-2 border-transparent hover:text-blue-600">
+                    📜 История и Опыты
+                </button>
+                <button onclick="switchTab('tab-physics')" id="btn-tab-physics" class="tab-btn px-4 py-3 whitespace-nowrap transition-colors border-b-2 border-transparent hover:text-blue-600">
+                    🧮 Физика и Графики
+                </button>
+                <button onclick="switchTab('tab-instruments')" id="btn-tab-instruments" class="tab-btn px-4 py-3 whitespace-nowrap transition-colors border-b-2 border-transparent hover:text-blue-600">
+                    ✈️ Приборы и Авиация
+                </button>
+                <button onclick="switchTab('tab-boiling')" id="btn-tab-boiling" class="tab-btn px-4 py-3 whitespace-nowrap transition-colors border-b-2 border-transparent hover:text-blue-600">
+                    🌡 Кипение воды
+                </button>
+                <button onclick="switchTab('tab-biophysics')" id="btn-tab-biophysics" class="tab-btn px-4 py-3 whitespace-nowrap transition-colors border-b-2 border-transparent hover:text-blue-600">
+                    🫁 Биофизика человека
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- SECTION 1: OVERVIEW & KEY METRICS -->
+        <section id="tab-overview" class="space-y-6">
+            <div class="bg-gradient-to-r from-blue-900 to-indigo-800 text-white rounded-2xl p-6 sm:p-8 shadow-md">
+                <div class="max-w-3xl space-y-3">
+                    <span class="inline-block px-3 py-1 bg-blue-500/30 rounded-full text-blue-200 text-xs font-semibold uppercase tracking-wider">
+                        Введение в физику атмосферы
+                    </span>
+                    <h2 class="text-2xl sm:text-3xl font-bold">Почему атмосферное давление меняется с высотой?</h2>
+                    <p class="text-blue-100 text-sm sm:text-base leading-relaxed">
+                        Атмосфера Земли — это огромный газовый океан. Верхние слои воздуха под действием силы тяжести сдавливают нижние слои. Поэтому у поверхности Земли воздух наиболее плотный, а с увеличением высоты он становится всё более разреженным, и его давление неуклонно снижается.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Key Metric Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white p-5 rounded-xl border border-stone-200 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-slate-400 uppercase">Нормальное давление</p>
+                        <h3 class="text-2xl font-bold text-slate-800 mt-1">760 мм рт. ст.</h3>
+                        <p class="text-xs text-slate-500 mt-1">101 325 Па (~101,3 кПа)</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-stone-100 text-xs text-blue-600 font-medium">
+                        Уровень моря (0 м, t=0°C)
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border border-stone-200 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-slate-400 uppercase">Правило учебника</p>
+                        <h3 class="text-2xl font-bold text-amber-600 mt-1">-1 мм рт. ст.</h3>
+                        <p class="text-xs text-slate-500 mt-1">(-133,3 Па) на каждые 10,5 м</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-stone-100 text-xs text-slate-600">
+                        При небольших подъёмах (до 2000 м)
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border border-stone-200 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-slate-400 uppercase">Давление на Эвересте</p>
+                        <h3 class="text-2xl font-bold text-indigo-600 mt-1">~235 мм рт. ст.</h3>
+                        <p class="text-xs text-slate-500 mt-1">~31% от нормального</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-stone-100 text-xs text-slate-600">
+                        Высота: 8 848 метров
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border border-stone-200 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-slate-400 uppercase">Рубеж "Зоны Смерти"</p>
+                        <h3 class="text-2xl font-bold text-rose-600 mt-1">6 500+ м</h3>
+                        <p class="text-xs text-slate-500 mt-1">Острая гипоксия</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-stone-100 text-xs text-rose-600 font-medium">
+                        Адаптация человека невозможна
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Exploration Map Section -->
+            <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                <h3 class="text-lg font-bold text-slate-800 mb-2">Навигационная карта учебных тем</h3>
+                <p class="text-sm text-slate-600 mb-4">
+                    Данный интерактивный комплекс разбит на 5 тематических модулей. Каждая секция содержит теоретические разъяснения, наглядные модели и практические инструменты.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div onclick="switchTab('tab-history')" class="p-4 rounded-lg bg-stone-50 border border-stone-200 hover:border-blue-400 cursor-pointer transition-all">
+                        <div class="text-blue-600 font-bold mb-1">1. Великие опыты XVII века</div>
+                        <p class="text-xs text-slate-500">Торричелли, Паскаль на горе Пюи-де-Дом и симулятор Магдебургских полушарий Отто фон Герике.</p>
+                    </div>
+                    <div onclick="switchTab('tab-physics')" class="p-4 rounded-lg bg-stone-50 border border-stone-200 hover:border-blue-400 cursor-pointer transition-all">
+                        <div class="text-blue-600 font-bold mb-1">2. Физика & Барометрический график</div>
+                        <p class="text-xs text-slate-500">Интерактивный калькулятор высоты, правило 10,5 м (до 2000 м) и экспоненциальный закон.</p>
+                    </div>
+                    <div onclick="switchTab('tab-instruments')" class="p-4 rounded-lg bg-stone-50 border border-stone-200 hover:border-blue-400 cursor-pointer transition-all">
+                        <div class="text-blue-600 font-bold mb-1">3. Приборы и Авиация</div>
+                        <p class="text-xs text-slate-500">Устройство барометра-анероида, высотомеры и авиационные настройки QFE, QNH, QNE.</p>
+                    </div>
+                    <div onclick="switchTab('tab-boiling')" class="p-4 rounded-lg bg-stone-50 border border-stone-200 hover:border-blue-400 cursor-pointer transition-all">
+                        <div class="text-blue-600 font-bold mb-1">4. Температура кипения</div>
+                        <p class="text-xs text-slate-500">Почему вода кипит при 70°C на Эвересте и как устроена физика скороварки.</p>
+                    </div>
+                    <div onclick="switchTab('tab-biophysics')" class="p-4 rounded-lg bg-stone-50 border border-stone-200 hover:border-blue-400 cursor-pointer transition-all">
+                        <div class="text-blue-600 font-bold mb-1">5. Биофизика и Евстахиева труба</div>
+                        <p class="text-xs text-slate-500">Симулятор "закладывания ушей", физиология горной болезни и отеков легких/мозга.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: HISTORICAL ORIGINS & EXPERIMENTS -->
+        <section id="tab-history" class="hidden space-y-6">
+            <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                <h2 class="text-xl font-bold text-slate-800 mb-2">Исторический генезис концепции атмосферного давления</h2>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    До XVII века в науке господствовала утвержденная Аристотелем догма о «боязни пустоты» (horror vacui). Считалось, что природа не терпит вакуума, и именно это заставляет воду подниматься за поршнем насоса. Разрушение этого мифа произошло благодаря серии гениальных экспериментов.
+                </p>
+
+                <!-- Interactive Timeline Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+                    <!-- Torricelli -->
+                    <div class="border border-stone-200 rounded-xl p-5 bg-stone-50 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="font-bold text-blue-700">1643 год</span>
+                                <span class="px-2 py-0.5 bg-blue-100 text-blue-800 rounded text-xs">Италия</span>
+                            </div>
+                            <h3 class="font-bold text-slate-800 text-base">Опыт Эванджелиста Торричелли</h3>
+                            <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                                Торричелли заполнил ртутью стеклянную трубку длиной 1 метр, запаянную с одного конца, и перевернул ее в чашу с ртутью. Столб ртути опустился до 760 мм, а над ним образовалась «торричеллиева пустота».
+                            </p>
+                        </div>
+                        <div class="mt-4 p-3 bg-white rounded border border-stone-200 text-xs text-slate-700">
+                            💡 <strong>Вывод:</strong> Ртутный столб удерживается весом атмосферного воздуха, давящего на открытую поверхность чаши.
+                        </div>
+                    </div>
+
+                    <!-- Pascal -->
+                    <div class="border border-stone-200 rounded-xl p-5 bg-stone-50 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="font-bold text-indigo-700">1648 год</span>
+                                <span class="px-2 py-0.5 bg-indigo-100 text-indigo-800 rounded text-xs">Франция</span>
+                            </div>
+                            <h3 class="font-bold text-slate-800 text-base">Опыт Блеза Паскаля и Пеpье</h3>
+                            <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                                Флорен Перье по просьбе Паскаля поднялся с барометром на гору Пюи-де-Дом (1465 м). На вершине уровень ртути опустился более чем на 3 дюйма по сравнению с подножием горы.
+                            </p>
+                        </div>
+                        <div class="mt-4 p-3 bg-white rounded border border-stone-200 text-xs text-slate-700">
+                            💡 <strong>Вывод:</strong> Чем выше мы поднимаемся, тем меньше столб воздуха над нами и тем ниже атмосферное давление.
+                        </div>
+                    </div>
+
+                    <!-- Guericke -->
+                    <div class="border border-stone-200 rounded-xl p-5 bg-stone-50 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="font-bold text-amber-700">1654 год</span>
+                                <span class="px-2 py-0.5 bg-amber-100 text-amber-800 rounded text-xs">Германия</span>
+                            </div>
+                            <h3 class="font-bold text-slate-800 text-base">Магдебургские полушария</h3>
+                            <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                                Отто фон Герике сложил два медных полушария, уплотнил стык кожаным кольцом и откачал из сферы воздух изобретенным им вакуумным насосом.
+                            </p>
+                        </div>
+                        <div class="mt-4 p-3 bg-white rounded border border-stone-200 text-xs text-slate-700">
+                            💡 <strong>Вывод:</strong> Внешнее давление воздуха настолько велико, что 16 упряжек лошадей не смогли разнять полушария!
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INTERACTIVE SIMULATOR: Magdeburg Hemispheres -->
+            <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                <div class="flex flex-col md:flex-row md:items-center justify-between pb-4 border-b border-stone-200 mb-6">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-800">Интерактивный симулятор: Магдебургские полушария</h3>
+                        <p class="text-xs text-slate-500">Рассчитайте силу прижатия полушарий в зависимости от их диаметра и степени откачки воздуха</p>
+                    </div>
+                    <span class="mt-2 md:mt-0 text-xs px-3 py-1 bg-amber-50 text-amber-700 border border-amber-200 rounded-full font-medium">
+                        ⚙️ Физическая модель: F = P_атм * π * R²
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                    <!-- Controls -->
+                    <div class="space-y-5">
+                        <div>
+                            <div class="flex justify-between text-sm font-medium text-slate-700 mb-1">
+                                <label for="hemisphere-diameter">Диаметр полушарий (см):</label>
+                                <span id="diameter-val" class="font-bold text-blue-600">37 см</span>
+                            </div>
+                            <input type="range" id="hemisphere-diameter" min="10" max="100" value="37" step="1" 
+                                   oninput="updateMagdeburg()" class="w-full h-2 bg-stone-200 rounded-lg appearance-none cursor-pointer accent-blue-600">
+                            <div class="flex justify-between text-xs text-slate-400 mt-1">
+                                <span>10 см (учебные)</span>
+                                <span>37 см (Оригинал 1654г)</span>
+                                <span>100 см (1 метр)</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-sm font-medium text-slate-700 mb-1">
+                                <label for="vacuum-level">Качество вакуума (% откачанного воздуха):</label>
+                                <span id="vacuum-val" class="font-bold text-indigo-600">90%</span>
+                            </div>
+                            <input type="range" id="vacuum-level" min="10" max="100" value="90" step="5" 
+                                   oninput="updateMagdeburg()" class="w-full h-2 bg-stone-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                            <div class="flex justify-between text-xs text-slate-400 mt-1">
+                                <span>10% (слабая откачка)</span>
+                                <span>90% (насос Герике)</span>
+                                <span>100% (идеальный вакуум)</span>
+                            </div>
+                        </div>
+
+                        <!-- Calculation Output Cards -->
+                        <div class="grid grid-cols-2 gap-3 pt-2">
+                            <div class="p-3 bg-stone-50 border border-stone-200 rounded-lg">
+                                <p class="text-xs text-slate-500">Сила сжатия (Ньютоны):</p>
+                                <p id="mag-force-kn" class="text-xl font-bold text-slate-800">9.81 кН</p>
+                                <p id="mag-force-n" class="text-xs text-slate-400">(9 810 Н)</p>
+                            </div>
+                            <div class="p-3 bg-stone-50 border border-stone-200 rounded-lg">
+                                <p class="text-xs text-slate-500">Эквивалент массы груза:</p>
+                                <p id="mag-mass-kg" class="text-xl font-bold text-amber-600">~1 000 кг</p>
+                                <p class="text-xs text-slate-400">1.0 тонны!</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visual Representation -->
+                    <div class="bg-gradient-to-br from-stone-900 to-slate-800 text-white rounded-xl p-6 flex flex-col items-center justify-center text-center relative overflow-hidden">
+                        <div class="text-4xl mb-3">🐎 🔴 🐎</div>
+                        <h4 class="text-lg font-bold text-amber-300 mb-1">Оценка силы разрыва</h4>
+                        <p class="text-xs text-stone-300 max-w-sm mb-4">
+                            Для преодоления атмосферного давления, удерживающего эти полушария, потребуется:
+                        </p>
+                        <div class="inline-block px-4 py-2 bg-amber-500/20 border border-amber-400/40 rounded-xl text-amber-200 font-bold text-lg mb-2">
+                            <span id="horses-needed">14</span> лошадей (по <span id="horses-half">7</span> с каждой стороны)
+                        </div>
+                        <p class="text-xs text-stone-400">
+                            *Из расчета тяговой силы 1 рабочей лошади ~ 750 Н
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: PHYSICS & MATHEMATICAL MODEL -->
+        <section id="tab-physics" class="hidden space-y-6">
+            <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                <h2 class="text-xl font-bold text-slate-800 mb-2">Физика и математика: Зависимость давления от высоты</h2>
+                
+                <!-- Rule Highlight Box -->
+                <div class="p-4 bg-amber-50 border-l-4 border-amber-500 rounded-r-xl my-4 text-slate-800 text-sm leading-relaxed">
+                    <p class="font-bold text-amber-900 text-base mb-1">📌 Правило учебника физики:</p>
+                    <p>
+                        При небольших подъёмах <strong>(до высоты 2000 м)</strong> давление уменьшается в среднем на <strong>1 мм рт. ст. (на 133,3 Па) на каждые 10,5 м подъёма</strong>.
+                    </p>
+                    <p class="text-xs text-slate-600 mt-2">
+                        При дальнейшем удалении от поверхности Земли атмосфера становится всё более разреженной, и атмосферное давление снижается медленнее (по экспоненциальному закону).
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start mt-6">
+                    <!-- Dynamic Interactive Chart Container -->
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-base font-bold text-slate-800">Зависимость давления от высоты</h3>
+                            <span class="text-xs text-slate-500">Реальная атмосфера vs Правило (10,5 м)</span>
+                        </div>
+                        <div class="chart-container bg-stone-50 rounded-xl p-2 border border-stone-200">
+                            <canvas id="pressureChart"></canvas>
+                        </div>
+                        <p class="text-xs text-slate-400 text-center mt-2">
+                            Заметьте: до 2000 м линеаризованное правило отлично совпадает с реальной атмосферой, а на больших высотах давление снижается медленнее.
+                        </p>
+                    </div>
+
+                    <!-- Dynamic Altitude Barometer Calculator -->
+                    <div class="bg-stone-50 p-5 rounded-xl border border-stone-200 space-y-4">
+                        <div class="border-b border-stone-200 pb-3">
+                            <h3 class="text-base font-bold text-slate-800">🧮 Интерактивный альтиметр-калькулятор</h3>
+                            <p class="text-xs text-slate-500">Выберите высоту, чтобы узнать параметры атмосферы</p>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between items-center text-sm font-medium text-slate-700 mb-2">
+                                <label for="altitude-slider">Высота над уровнем моря (м):</label>
+                                <span id="altitude-display" class="px-3 py-1 bg-blue-600 text-white font-bold rounded-lg text-sm">
+                                    0 м
+                                </span>
+                            </div>
+                            <input type="range" id="altitude-slider" min="0" max="10000" value="0" step="100" 
+                                   oninput="calculateAtmosphere()" class="w-full h-2 bg-stone-200 rounded-lg appearance-none cursor-pointer accent-blue-600">
+                            
+                            <!-- Quick Landmark Preset Buttons -->
+                            <div class="flex flex-wrap gap-1.5 mt-3">
+                                <button onclick="setAltitude(0)" class="text-xs px-2.5 py-1 bg-white border border-stone-300 rounded hover:bg-blue-50">Уровень моря (0м)</button>
+                                <button onclick="setAltitude(525)" class="text-xs px-2.5 py-1 bg-white border border-stone-300 rounded hover:bg-blue-50">Останкино (525м)</button>
+                                <button onclick="setAltitude(1050)" class="text-xs px-2.5 py-1 bg-white border border-stone-300 rounded hover:bg-blue-50">Горный рубеж (1050м)</button>
+                                <button onclick="setAltitude(2000)" class="text-xs px-2.5 py-1 bg-white border border-stone-300 rounded hover:bg-blue-50">Предел правила (2000м)</button>
+                                <button onclick="setAltitude(8848)" class="text-xs px-2.5 py-1 bg-white border border-stone-300 rounded hover:bg-blue-50">Эверест (8848м)</button>
+                            </div>
+                        </div>
+
+                        <!-- Computed Results -->
+                        <div class="space-y-2 pt-2">
+                            <div class="flex justify-between items-center p-2.5 bg-white rounded-lg border border-stone-200 text-xs sm:text-sm">
+                                <span class="text-slate-600">Давление (мм рт. ст.):</span>
+                                <span id="calc-mmHg" class="font-bold text-slate-800">760 мм рт. ст.</span>
+                            </div>
+                            <div class="flex justify-between items-center p-2.5 bg-white rounded-lg border border-stone-200 text-xs sm:text-sm">
+                                <span class="text-slate-600">Давление в килопаскалях (кПа):</span>
+                                <span id="calc-kPa" class="font-bold text-blue-600">101.3 кПа</span>
+                            </div>
+                            <div class="flex justify-between items-center p-2.5 bg-white rounded-lg border border-stone-200 text-xs sm:text-sm">
+                                <span class="text-slate-600">Падение давления (от уровня моря):</span>
+                                <span id="calc-drop" class="font-bold text-amber-600">0 мм рт. ст. (0 Па)</span>
+                            </div>
+                            <div class="flex justify-between items-center p-2.5 bg-white rounded-lg border border-stone-200 text-xs sm:text-sm">
+                                <span class="text-slate-600">Температура кипения воды:</span>
+                                <span id="calc-boil" class="font-bold text-rose-600">100.0 °C</span>
+                            </div>
+                            <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg text-xs text-blue-900 mt-2">
+                                📍 <strong>Географический ориентир:</strong> <span id="calc-landmark">Уровень Мирового океана</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: INSTRUMENTS & AVIATION -->
+        <section id="tab-instruments" class="hidden space-y-6">
+            <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                <h2 class="text-xl font-bold text-slate-800 mb-2">Измерительные приборы и Авиационная альтиметрия</h2>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    Ртутный барометр Торричелли точен, но стеклянная трубка со ядовитой ртутью непригодна для экспедиций и авиации. Поэтому был изобретен **барометр-анероид** («безжидкостный»).
+                </p>
+
+                <!-- Aneroid Mechanism Schema Section -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                    <div class="bg-stone-50 p-5 rounded-xl border border-stone-200">
+                        <h3 class="font-bold text-slate-800 mb-3 flex items-center">
+                            <span class="w-7 h-7 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center mr-2 text-xs">1</span>
+                            Устройство барометра-анероида
+                        </h3>
+                        <ul class="space-y-2 text-xs text-slate-600">
+                            <li class="flex items-start">
+                                <span class="text-blue-500 mr-1.5">•</span>
+                                <div><strong>Гофрированная металлическая коробка:</strong> внутри нее создан вакуум (разрежение).</div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-blue-500 mr-1.5">•</span>
+                                <div><strong>Пружина:</strong> не дает атмосферному давлению полностью сплющить коробку.</div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-blue-500 mr-1.5">•</span>
+                                <div><strong>Передаточный механизм:</strong> микроскопическое сжатие крышки коробки передается через рычаги на стрелку.</div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-blue-500 mr-1.5">•</span>
+                                <div><strong>Шкала:</strong> проградуирована в мм рт. ст. или Паскалях (а у высотомеров — в метрах).</div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-stone-50 p-5 rounded-xl border border-stone-200">
+                        <h3 class="font-bold text-slate-800 mb-3 flex items-center">
+                            <span class="w-7 h-7 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center mr-2 text-xs">2</span>
+                            Принцип работы альтиметра
+                        </h3>
+                        <p class="text-xs text-slate-600 leading-relaxed mb-3">
+                            Альтиметр (высотомер) — это тот же анероид, но на его шкалу нанесены метры. По шкале высотомера измеряют уменьшение давления (на 1 мм рт. ст. на каждые 10,5 м) и таким образом определяют высоту подъёма.
+                        </p>
+                        <div class="p-3 bg-amber-50 border border-amber-200 rounded text-xs text-amber-800">
+                            ⚠️ <strong>Опасность гистерезиса:</strong> при очень быстром снижении самолета коробка прибора не успевает деформироваться, и высотомер может временно показывать высоту больше реальной!
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aviation Q-Codes Interactive Breakdown -->
+            <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                <h3 class="text-lg font-bold text-slate-800 mb-2">✈️ Авиационная альтиметрия: Система Q-кодов</h3>
+                <p class="text-sm text-slate-600 mb-6">
+                    Поскольку погодные циклоны постоянно меняют давление у поверхности, летчики обязаны перед взлетом и посадкой настраивать высотомер по специальным международным кодам.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="p-4 rounded-xl border border-blue-200 bg-blue-50/50">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-bold text-blue-900 text-lg">QFE</span>
+                            <span class="text-xs bg-blue-200 text-blue-800 px-2 py-0.5 rounded">Уровень ВПП</span>
+                        </div>
+                        <p class="text-xs text-slate-600 mb-3">
+                            Давление на уровне взлетно-посадочной полосы (ВПП) конкретного аэродрома.
+                        </p>
+                        <div class="text-xs font-semibold text-blue-700 bg-white p-2 rounded border border-blue-100">
+                            На полосе показывает: 0 метров
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded-xl border border-indigo-200 bg-indigo-50/50">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-bold text-indigo-900 text-lg">QNH</span>
+                            <span class="text-xs bg-indigo-200 text-indigo-800 px-2 py-0.5 rounded">Приведенное к морю</span>
+                        </div>
+                        <p class="text-xs text-slate-600 mb-3">
+                            Давление аэродрома, пересчитанное к среднему уровню моря.
+                        </p>
+                        <div class="text-xs font-semibold text-indigo-700 bg-white p-2 rounded border border-indigo-100">
+                            На полосе показывает: Превышение аэродрома над морем
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded-xl border border-purple-200 bg-purple-50/50">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-bold text-purple-900 text-lg">QNE</span>
+                            <span class="text-xs bg-purple-200 text-purple-800 px-2 py-0.5 rounded">Стандарт 1013 гПа</span>
+                        </div>
+                        <p class="text-xs text-slate-600 mb-3">
+                            Стандартное давление (760 мм рт. ст. / 1013.25 гПа) для полетов на эшелонах.
+                        </p>
+                        <div class="text-xs font-semibold text-purple-700 bg-white p-2 rounded border border-purple-100">
+                            Используется: Выше высоты перехода (в крейсерском полете)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: THERMODYNAMICS OF BOILING -->
+        <section id="tab-boiling" class="hidden space-y-6">
+            <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                <h2 class="text-xl font-bold text-slate-800 mb-2">Термодинамика: Связь давления и кипения жидкости</h2>
+                <p class="text-sm text-slate-600 leading-relaxed mb-6">
+                    Учащиеся часто привыкают к стереотипу, что «вода всегда кипит при 100 °C». Однако кипение начинается тогда, когда давление насыщенного пара внутри пузырьков становится равным внешнему атмосферному давлению. На высоте давление ниже, поэтому и вода закипает при более низкой температуре!
+                </p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                    <!-- Boiling Chart -->
+                    <div>
+                        <h3 class="text-base font-bold text-slate-800 mb-2">График температуры кипения воды</h3>
+                        <div class="chart-container bg-stone-50 rounded-xl p-2 border border-stone-200">
+                            <canvas id="boilingChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Culinary Paradox Section -->
+                    <div class="space-y-4">
+                        <div class="p-4 bg-amber-50 border border-amber-200 rounded-xl">
+                            <h3 class="font-bold text-amber-900 text-base mb-2">🥚 Кулинарный парадокс Эвереста</h3>
+                            <p class="text-xs text-amber-800 leading-relaxed">
+                                На вершине Эвереста (8848 м) давление составляет всего ~235 мм рт. ст. Вода закипает там всего при <strong>~69°C — 70°C</strong>.
+                            </p>
+                            <p class="text-xs text-amber-800 leading-relaxed mt-2">
+                                В таком «кипятке» <strong>невозможно сварить куриное яйцо или мясо</strong>, так как для свёртывания (денатурации) белка требуются температуры выше 80°C. Вода будет бурно бурлить, но останется недостаточно горячей!
+                            </p>
+                        </div>
+
+                        <div class="p-4 bg-blue-50 border border-blue-200 rounded-xl">
+                            <h3 class="font-bold text-blue-900 text-base mb-2">🍲 Решение: Скороварка</h3>
+                            <p class="text-xs text-blue-800 leading-relaxed">
+                                Чтобы сварить еду в горах, альпинисты используют герметичные кастрюли-скороварки. Водяной пар не выходит наружу, создает внутри высокое давление (до 1.5–2 атмосфер), и вода закипает при 110–120 °C, готовя еду в разы быстрее.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 6: BIOPHYSICS & HEALTH -->
+        <section id="tab-biophysics" class="hidden space-y-6">
+            <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                <h2 class="text-xl font-bold text-slate-800 mb-2">Биофизика человека: Влияние перепадов давления</h2>
+                <p class="text-sm text-slate-600 leading-relaxed mb-6">
+                    Человеческий организм идеально адаптирован к жизни при нормальном давлении у поверхности Земли. Любые быстрые изменения внешнего давления вызывают ощутимые физиологические реакции.
+                </p>
+
+                <!-- Eustachian Tube Simulator -->
+                <div class="border border-stone-200 rounded-xl p-6 bg-stone-50">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-4 border-b border-stone-200 mb-4">
+                        <div>
+                            <h3 class="text-base font-bold text-slate-800">👂 Симулятор: Механика «закладывания ушей»</h3>
+                            <p class="text-xs text-slate-500">Поведение барабанной перепонки при изменении внешнего давления</p>
+                        </div>
+                        <div class="flex space-x-2 mt-3 sm:mt-0">
+                            <button onclick="setEarState('normal')" class="text-xs px-3 py-1.5 bg-white border border-stone-300 rounded hover:bg-stone-100 font-medium">Норма (Земля)</button>
+                            <button onclick="setEarState('climb')" class="text-xs px-3 py-1.5 bg-blue-600 text-white rounded hover:bg-blue-700 font-medium">Взлет самолета ✈️</button>
+                            <button onclick="setEarState('swallow')" class="text-xs px-3 py-1.5 bg-emerald-600 text-white rounded hover:bg-emerald-700 font-medium">Глоток / Зевок 🍬</button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                        <div id="ear-visual-box" class="p-6 bg-white border border-stone-200 rounded-xl flex flex-col items-center justify-center min-h-[180px] text-center">
+                            <div id="ear-icon" class="text-4xl mb-2">👂</div>
+                            <h4 id="ear-status-title" class="font-bold text-slate-800">Давление уравновешено</h4>
+                            <p id="ear-status-desc" class="text-xs text-slate-500 mt-1 max-w-xs">
+                                Барабанная перепонка находится в плоском нормальном состоянии. Слух чистый.
+                            </p>
+                        </div>
+
+                        <div class="text-xs text-slate-600 space-y-2">
+                            <p><strong>Роль Евстахиевой (слуховой) трубы:</strong></p>
+                            <p>
+                                Барабанная перепонка отделяет слуховой проход от среднего уха. Чтобы перепонку не разрывало, слуховой канал соединяет среднее ухо с носоглоткой.
+                            </p>
+                            <p class="p-2.5 bg-amber-50 border border-amber-200 rounded text-amber-900">
+                                💡 При взлете самолета давление снаружи падает, и более высокое давление изнутри выпячивает перепонку наружу («закладывает уши»). При глотании труба открывается, и давление выравнивается!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Altitude Sickness Zones -->
+                <div class="mt-6">
+                    <h3 class="text-base font-bold text-slate-800 mb-3">Зоны высотной гипоксии и горная болезнь</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
+                            <span class="text-xs font-bold text-emerald-700 uppercase">0 — 2 000 м</span>
+                            <h4 class="font-bold text-emerald-900 mt-1">Безопасная зона</h4>
+                            <p class="text-xs text-emerald-800 mt-1">Зона действия правила 10,5 м / 1 мм рт. ст. Организм легко адаптируется.</p>
+                        </div>
+                        <div class="p-4 bg-amber-50 border border-amber-200 rounded-xl">
+                            <span class="text-xs font-bold text-amber-700 uppercase">2 000 — 5 500 м</span>
+                            <h4 class="font-bold text-amber-900 mt-1">Зона острой адаптации</h4>
+                            <p class="text-xs text-amber-800 mt-1">Возможна острая горная болезнь: головная боль, одышка, тошнота.</p>
+                        </div>
+                        <div class="p-4 bg-orange-50 border border-orange-200 rounded-xl">
+                            <span class="text-xs font-bold text-orange-700 uppercase">5 500 — 6 500 м</span>
+                            <h4 class="font-bold text-orange-900 mt-1">Высокая гипоксия</h4>
+                            <p class="text-xs text-orange-800 mt-1">Риск высокогорного отека легких (HAPE) и мозга (HACE).</p>
+                        </div>
+                        <div class="p-4 bg-rose-50 border border-rose-200 rounded-xl">
+                            <span class="text-xs font-bold text-rose-700 uppercase">Выше 6 500 м</span>
+                            <h4 class="font-bold text-rose-900 mt-1">«Зона Смерти»</h4>
+                            <p class="text-xs text-rose-800 mt-1">Полная невозможность долговременной адаптации даже в состоянии покоя.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-stone-200 py-6 mt-12 text-center text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto px-4">
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Global Chart Instances
+        let pressureChartInstance = null;
+        let boilingChartInstance = null;
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            const tabs = ['tab-overview', 'tab-history', 'tab-physics', 'tab-instruments', 'tab-boiling', 'tab-biophysics'];
+            
+            tabs.forEach(id => {
+                const element = document.getElementById(id);
+                const btn = document.getElementById('btn-' + id);
+                if (id === tabId) {
+                    element.classList.remove('hidden');
+                    btn.classList.add('active');
+                } else {
+                    element.classList.add('hidden');
+                    btn.classList.remove('active');
+                }
+            });
+
+            // Trigger chart updates on tab view
+            if (tabId === 'tab-physics' && !pressureChartInstance) {
+                initPressureChart();
+            }
+            if (tabId === 'tab-boiling' && !boilingChartInstance) {
+                initBoilingChart();
+            }
+        }
+
+        // Magdeburg Hemispheres Interactive Calculation
+        function updateMagdeburg() {
+            const diamCm = parseFloat(document.getElementById('hemisphere-diameter').value);
+            const vacuumPct = parseFloat(document.getElementById('vacuum-level').value);
+
+            document.getElementById('diameter-val').innerText = diamCm + ' см';
+            document.getElementById('vacuum-val').innerText = vacuumPct + '%';
+
+            const radiusM = (diamCm / 100) / 2;
+            const areaM2 = Math.PI * radiusM * radiusM;
+            const pAtm = 101325; // Normal pressure in Pa
+            const deltaP = pAtm * (vacuumPct / 100);
+
+            const forceN = deltaP * areaM2;
+            const forceKN = forceN / 1000;
+            const massKg = forceN / 9.81;
+
+            document.getElementById('mag-force-kn').innerText = forceKN.toFixed(2) + ' кН';
+            document.getElementById('mag-force-n').innerText = '(' + Math.round(forceN).toLocaleString('ru-RU') + ' Н)';
+            document.getElementById('mag-mass-kg').innerText = '~' + Math.round(massKg).toLocaleString('ru-RU') + ' кг';
+
+            // Horse estimation (assuming ~750N pulling force per horse)
+            const horsesTotal = Math.max(2, Math.round((forceN / 750) * 2) / 2);
+            const horsesPerSide = Math.ceil(horsesTotal / 2);
+
+            document.getElementById('horses-needed').innerText = Math.max(2, horsesPerSide * 2);
+            document.getElementById('horses-half').innerText = horsesPerSide;
+        }
+
+        // Dynamic Altitude Barometer Calculator
+        function calculateAtmosphere() {
+            const h = parseFloat(document.getElementById('altitude-slider').value);
+            document.getElementById('altitude-display').innerText = h.toLocaleString('ru-RU') + ' м';
+
+            // Barometric model (ISA)
+            let pKpa = 101.325 * Math.pow(1 - 0.0000225577 * h, 5.25588);
+            if (pKpa < 0) pKpa = 0;
+
+            const pMmHg = pKpa * 7.50062;
+            const dropMmHg = 760 - pMmHg;
+            const dropPa = dropMmHg * 133.3;
+
+            // Approximate boiling point of water
+            let tBoil = 100 * Math.pow(pKpa / 101.325, 0.27);
+            if (tBoil < 0) tBoil = 0;
+
+            document.getElementById('calc-mmHg').innerText = Math.round(pMmHg) + ' мм рт. ст.';
+            document.getElementById('calc-kPa').innerText = pKpa.toFixed(1) + ' кПа';
+            document.getElementById('calc-drop').innerText = '-' + Math.round(dropMmHg) + ' мм рт. ст. (-' + Math.round(dropPa).toLocaleString('ru-RU') + ' Па)';
+            document.getElementById('calc-boil').innerText = tBoil.toFixed(1) + ' °C';
+
+            // Landmarks
+            let landmark = 'Нижние слои тропосферы';
+            if (h === 0) landmark = 'Уровень моря (Стандарт)';
+            else if (h <= 525) landmark = 'Смотровая площадка Останкино (~525 м)';
+            else if (h <= 1050) landmark = 'Низкогорный рельеф (1050 м)';
+            else if (h <= 2000) landmark = 'Верхний предел прямого правила 10,5 м (2000 м)';
+            else if (h <= 4810) landmark = 'Альпийские вершины / Монблан (4810 м)';
+            else if (h <= 6000) landmark = 'Базовый лагерь Эвереста (~5364 м)';
+            else if (h <= 8848) landmark = 'Вершина Джомолунгмы / Эверест (8848 м)';
+            else landmark = 'Высота крейсерского полета самолетов';
+
+            document.getElementById('calc-landmark').innerText = landmark;
+        }
+
+        function setAltitude(val) {
+            document.getElementById('altitude-slider').value = val;
+            calculateAtmosphere();
+        }
+
+        // Eustachian Ear Simulator State Handler
+        function setEarState(state) {
+            const title = document.getElementById('ear-status-title');
+            const desc = document.getElementById('ear-status-desc');
+            const box = document.getElementById('ear-visual-box');
+
+            if (state === 'normal') {
+                title.innerText = "Давление уравновешено";
+                desc.innerText = "Барабанная перепонка в нормальном плоском состоянии. Слух чистый.";
+                box.className = "p-6 bg-white border border-stone-200 rounded-xl flex flex-col items-center justify-center min-h-[180px] text-center";
+            } else if (state === 'climb') {
+                title.innerText = "Ухо заложено! (Выпячивание)";
+                desc.innerText = "Внешнее давление упало. Выход воздуха из среднего уха заблокирован. Перепонка выпячена наружу.";
+                box.className = "p-6 bg-amber-50 border border-amber-300 rounded-xl flex flex-col items-center justify-center min-h-[180px] text-center";
+            } else if (state === 'swallow') {
+                title.innerText = "Клапан открыт! Давление сброшено";
+                desc.innerText = "Акт глотания или зевания открыл Евстахиеву трубу. Давление уравнялось, слух восстановился!";
+                box.className = "p-6 bg-emerald-50 border border-emerald-300 rounded-xl flex flex-col items-center justify-center min-h-[180px] text-center";
+            }
+        }
+
+        // Initialize Pressure Chart (Chart.js)
+        function initPressureChart() {
+            const ctx = document.getElementById('pressureChart').getContext('2d');
+            
+            const heights = [0, 500, 1000, 1500, 2000, 3000, 4000, 5000, 6000, 8000, 10000];
+            const realISA = [760, 716, 674, 634, 596, 526, 462, 405, 354, 267, 198];
+            // Linear rule (10.5 m / 1 mmHg) up to 2000m, then linear extrapolation to illustrate divergence
+            const linearRule = [
+                760, 
+                Math.round(760 - 500 / 10.5), 
+                Math.round(760 - 1000 / 10.5), 
+                Math.round(760 - 1500 / 10.5), 
+                Math.round(760 - 2000 / 10.5), 
+                Math.round(760 - 3000 / 10.5), 
+                Math.round(760 - 4000 / 10.5), 
+                Math.round(760 - 5000 / 10.5),
+                Math.max(0, Math.round(760 - 6000 / 10.5)),
+                0, 
+                0
+            ];
+
+            pressureChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: heights.map(h => h + ' м'),
+                    datasets: [
+                        {
+                            label: 'Реальная атмосфера (ИКАО)',
+                            data: realISA,
+                            borderColor: '#2563eb',
+                            backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                            fill: true,
+                            tension: 0.3,
+                            borderWidth: 2.5
+                        },
+                        {
+                            label: 'Правило учебника (1 мм / 10,5 м)',
+                            data: linearRule,
+                            borderColor: '#d97706',
+                            borderDash: [5, 5],
+                            fill: false,
+                            tension: 0,
+                            borderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.parsed.y + ' мм рт. ст.';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            title: { display: true, text: 'Давление (мм рт. ст.)' },
+                            min: 0,
+                            max: 800
+                        },
+                        x: {
+                            title: { display: true, text: 'Высота над уровнем моря' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize Boiling Point Chart (Chart.js)
+        function initBoilingChart() {
+            const ctx = document.getElementById('boilingChart').getContext('2d');
+            
+            const pressures = [100, 200, 300, 400, 500, 600, 700, 760, 900, 1000];
+            const boilTemps = [45.8, 66.4, 75.9, 83.0, 88.7, 93.5, 97.7, 100.0, 104.7, 107.9];
+
+            boilingChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: pressures.map(p => p + ' мм'),
+                    datasets: [
+                        {
+                            label: 'Температура кипения (°C)',
+                            data: boilTemps,
+                            borderColor: '#d97706',
+                            backgroundColor: 'rgba(217, 119, 6, 0.1)',
+                            fill: true,
+                            tension: 0.3,
+                            borderWidth: 2.5
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    },
+                    scales: {
+                        y: {
+                            title: { display: true, text: 'Температура кипения (°C)' },
+                            min: 40,
+                            max: 120
+                        },
+                        x: {
+                            title: { display: true, text: 'Атмосферное давление (мм рт. ст.)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initial Executions
+        window.addEventListener('DOMContentLoaded', () => {
+            updateMagdeburg();
+            calculateAtmosphere();
+        });
+    </script>
+</body>
+</html>
