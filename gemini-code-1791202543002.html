@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ru"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#08a9df"><title>Лабораторная работа № 9 · Условия плавания тела</title>
+<style>
+:root{--blue:#08a9df;--dark:#087ca8;--ink:#202326;--muted:#677178;--line:#d8e0e4;--wash:#f4f8fa;--pale:#dff5fc;--grey:#e2e2e2;--shadow:0 18px 60px #22364312}
+*{box-sizing:border-box}body{margin:0;background:#edf2f4;color:var(--ink);font:16px/1.5 Georgia,"Times New Roman",serif}.page{max-width:1060px;margin:34px auto;background:#fff;box-shadow:var(--shadow);padding:38px 54px 46px}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:12px;color:var(--muted);font:600 12px/1.3 Arial,sans-serif;text-transform:uppercase;letter-spacing:.09em;margin-bottom:20px}.titlebar{display:grid;grid-template-columns:92px 1fr;margin-bottom:22px}.number{display:grid;place-items:center;background:var(--blue);color:#fff;font:800 34px/1 Arial,sans-serif;min-height:76px}h1{margin:0;background:var(--grey);padding:14px 26px;display:flex;align-items:center;font:800 clamp(20px,3vw,27px)/1.12 Arial,sans-serif;text-transform:uppercase}.lead{font-size:19px;margin:0 0 26px;color:#41484c}
+.meta{display:grid;grid-template-columns:160px 1fr;gap:12px 18px;margin:0 0 30px}.meta dt{font:700 14px/1.25 Arial,sans-serif}.meta dd{margin:0;font-size:19px;line-height:1.35}.section-ribbon{display:inline-block;margin:0 0 16px;background:var(--blue);color:#fff;padding:5px 12px;font:800 14px/1.1 Arial,sans-serif;letter-spacing:.045em;text-transform:uppercase}
+.steps{list-style:none;counter-reset:step;padding:0;margin:0 0 29px}.steps li{counter-increment:step;display:grid;grid-template-columns:30px 1fr;gap:12px;margin:0 0 14px;font-size:19px;line-height:1.35}.steps li:before{content:counter(step) ".";color:var(--blue);font:800 18px/1.45 Arial,sans-serif;text-align:right}.step-text{display:block}.note{background:#f5fbfd;border-left:4px solid var(--blue);padding:13px 16px;margin:22px 0 30px;color:#35444b;font-size:16px}.formula{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:16px 20px;margin:14px 0 24px;background:var(--pale);font-size:20px}.formula b{font-size:22px;color:var(--dark)}.formula small{font:14px/1.4 Arial,sans-serif;color:#52636a}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:4px;margin:12px 0}.table-wrap table{border-collapse:collapse;width:100%;min-width:900px}th{background:#dff5fc;font:700 14px/1.3 Arial,sans-serif;text-align:center;padding:12px 10px;border:1px solid #fff;vertical-align:middle}td{padding:9px 8px;border:1px solid var(--line);text-align:center;background:#fff}tbody tr:nth-child(even) td{background:#f6fbfd}td input{width:100%;min-width:72px;border:1px solid #cad7dc;border-radius:4px;background:#fff;padding:8px;text-align:center;color:var(--ink);font:16px Georgia,serif}td input:focus{outline:2px solid #81d9f4;border-color:var(--blue)}.trial{font:700 15px Arial,sans-serif;color:var(--dark)}.calc{font-weight:700;color:#123847}.status{font:700 14px/1.25 Arial,sans-serif;color:#31434a}.sink{color:#96500d}.float{color:var(--dark)}.rise{color:#16784d}
+.table-foot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--muted);font:13px/1.4 Arial,sans-serif}.actions{display:flex;gap:8px;flex-wrap:wrap}.button{border:1px solid #b8c9cf;background:#fff;color:#25343a;border-radius:5px;padding:9px 13px;cursor:pointer;font:700 13px Arial,sans-serif}.button:hover{border-color:var(--blue);color:var(--dark)}.danger{border-color:#e2c6c6;color:#9b4141}
+.conclusion{border:1px solid var(--line);background:var(--wash);padding:18px 20px;margin:18px 0 28px}.conclusion-label{font:800 14px Arial,sans-serif;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}.conclusion p{font-size:18px;margin:0;min-height:52px}.prompt{font:14px Arial,sans-serif;color:var(--muted);margin-top:9px!important}.footer{margin-top:40px;padding-top:10px;border-top:4px solid var(--blue);display:flex;justify-content:space-between;color:var(--muted);font:12px Arial,sans-serif}.source a{color:var(--dark)}
+@media(max-width:720px){.page{margin:0;padding:24px 18px 34px}.titlebar{grid-template-columns:66px 1fr}.number{min-height:70px;font-size:27px}h1{padding:12px 15px;font-size:20px}.meta{grid-template-columns:1fr;gap:5px;margin-bottom:24px}.meta dd{margin-bottom:10px}.steps li{grid-template-columns:26px 1fr;font-size:17px}.formula{font-size:18px;padding:13px}.footer{gap:12px;flex-wrap:wrap}.topline{align-items:flex-start;flex-direction:column}}
+@media print{body{background:#fff}.page{max-width:none;margin:0;box-shadow:none;padding:12mm;min-height:auto}.actions,.save-status{display:none!important}.table-wrap{overflow:visible}table{min-width:0!important}input{border:0!important;padding:2px!important}.note,.formula,.conclusion{break-inside:avoid}}
+</style></head><body><main class="page">
+<div class="topline"><span>Физика · 7 класс · лабораторный практикум</span><span class="save-status" id="saveStatus" aria-live="polite">Заполнение сохраняется на этом устройстве</span></div>
+<header class="titlebar"><div class="number">№ 9</div><h1>Выяснение условий плавания тела в жидкости</h1></header>
+<p class="lead">Сравните силу тяжести, действующую на пробирку с песком, с выталкивающей силой воды и установите, когда пробирка тонет, плавает или всплывает.</p>
+<dl class="meta"><dt>Цель работы</dt><dd>Выяснить условия плавания тела в жидкости, сравнив силу тяжести и выталкивающую силу.</dd><dt>Приборы и материалы</dt><dd>Пробирка (аптечный пузырёк) с пробкой и нитью, сухой песок, вода, измерительный цилиндр, электронные весы, салфетка.</dd></dl>
+<h2 class="section-ribbon">Указания к работе</h2>
+<ol class="steps">
+<li><span class="step-text">Налейте воду в измерительный цилиндр и запишите её объём V₁. Взвесьте пробирку с песком; для каждого опыта меняйте количество песка.</span></li>
+<li><span class="step-text">Опустите пробирку в воду, не касаясь стенок и дна цилиндра. Запишите новый объём воды V₂ и отметьте, тонет пробирка, плавает или всплывает.</span></li>
+<li><span class="step-text">Повторите наблюдение для нескольких масс пробирки с песком. Для каждого опыта определите объём вытесненной воды: V = V₂ − V₁.</span></li>
+<li><span class="step-text"><strong>Обработка результатов измерений.</strong> Рассчитайте силу тяжести Fтяж = mg и выталкивающую силу FА = ρводыVg. Для воды примите ρ = 1000 кг/м³, g = 10 Н/кг.</span></li>
+<li><span class="step-text">Сравните силы в каждом опыте. Если FА меньше Fтяж, тело тонет; при равенстве сил оно находится в равновесии; если выталкивающая сила больше, тело всплывает.</span></li>
+<li><span class="step-text">Проанализируйте измерения и сделайте вывод об условии плавания тела в жидкости.</span></li></ol>
+<aside class="note"><strong>Заполнение таблицы.</strong> Введите массу пробирки с песком в граммах и показания цилиндра в миллилитрах (1 мл = 1 см³). Сила тяжести и выталкивающая сила рассчитываются автоматически. Поведение пробирки определите по сравнению сил и запишите наблюдение.</aside>
+<h2 class="section-ribbon">Формулы для расчёта</h2>
+<div class="formula"><span>Fтяж = mg</span><span>FА = ρводыVg</span><b>Сравните FА и Fтяж</b><small>Масса переводится из граммов в килограммы, объём — из см³ в м³; для воды FА = 0,01V Н, если V задан в см³.</small></div>
+<h2 class="section-ribbon">Обработка результатов измерений</h2>
+<div class="table-wrap"><table aria-label="Результаты выяснения условий плавания тела в жидкости"><thead><tr><th>№ опыта</th><th>Масса пробирки с песком m, г</th><th>Сила тяжести Fтяж = mg, Н</th><th>Объём вытесненной воды V = V₂ − V₁, см³<br><small>Ввод: V₁ и V₂, мл</small></th><th>Выталкивающая сила FА, Н</th><th>Поведение пробирки в воде</th></tr></thead><tbody id="resultsBody"></tbody></table></div>
+<div class="table-foot"><span>Результаты сохраняются в этом браузере.</span><div class="actions"><button class="button" id="print" type="button">Печать / PDF</button><button class="button danger" id="clear" type="button">Очистить таблицу</button></div></div>
+<aside class="note"><strong>Контрольный расчёт из видео.</strong> Для первого опыта: V = 180 − 160 = 20 см³, FА = 0,20 Н, Fтяж = 0,205 Н. Для третьего: V = 188 − 160 = 28 см³, FА = 0,28 Н, Fтяж = 0,276 Н.</aside>
+<div class="conclusion"><div class="conclusion-label">Вывод</div><p>Сравните выталкивающую силу с силой тяжести для каждого опыта и сформулируйте условие плавания тела в жидкости.</p><p class="prompt">Для вывода используйте результаты наблюдений и условие FА = Fтяж для равновесного плавания.</p></div>
+<p class="source">Материал: <a href="https://rutube.ru/video/9527dc719a07a159e56beea067f7bc97/" target="_blank" rel="noopener">видео лабораторной работы № 9</a>.</p><footer class="footer"><span>Лабораторная работа № 9</span><span>Физика · Измерения и вывод</span></footer></main>
+<script>
+(()=>{const KEY='physics-lab-9-floating-v1',body=document.querySelector('#resultsBody');let data={rows:Array.from({length:4},()=>({mass:'',v1:'',v2:''}))};const num=v=>{if(v===''||v==null)return null;const n=Number(String(v).replace(',','.'));return Number.isFinite(n)?n:null},fmt=n=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:3}).format(n);
+function save(){try{localStorage.setItem(KEY,JSON.stringify(data));document.querySelector('#saveStatus').textContent='Сохранено на этом устройстве'}catch{document.querySelector('#saveStatus').textContent='Автосохранение недоступно'}}
+function render(){body.replaceChildren();data.rows.forEach((r,i)=>{const tr=document.createElement('tr');tr.innerHTML='<th scope=\"row\" class=\"trial\">'+(i+1)+'</th><td><input data-row=\"'+i+'\" data-key=\"mass\" aria-label=\"Масса пробирки с песком, опыт '+(i+1)+', граммы\" inputmode=\"decimal\" placeholder=\"г\" value=\"'+r.mass+'\"></td><td class=\"calc\" data-weight=\"'+i+'\">—</td><td><input data-row=\"'+i+'\" data-key=\"v1\" aria-label=\"Начальный объём воды, опыт '+(i+1)+', миллилитры\" inputmode=\"decimal\" placeholder=\"V₁, мл\" value=\"'+r.v1+'\"><div style=\"color:#677178;font:12px Arial,sans-serif;margin:5px 0\">V₂, мл</div><input data-row=\"'+i+'\" data-key=\"v2\" aria-label=\"Объём воды с пробиркой, опыт '+(i+1)+', миллилитры\" inputmode=\"decimal\" placeholder=\"мл\" value=\"'+r.v2+'\"></td><td class=\"calc\" data-force=\"'+i+'\">—</td><td class=\"status\" data-behavior=\"'+i+'\">—</td>';body.append(tr)});body.querySelectorAll('input').forEach(input=>input.addEventListener('input',update));update()}
+function update(){
+  body.querySelectorAll('tr').forEach((row,i)=>{
+    const r=data.rows[i];
+    row.querySelectorAll('input').forEach(input=>{r[input.dataset.key]=input.value;});
+    const mass=num(r.mass),v1=num(r.v1),v2=num(r.v2);
+    const volume=(v1===null||v2===null)?null:v2-v1;
+    const weight=(mass===null)?null:mass/1000*10;
+    const force=(volume===null)?null:volume*0.01;
+    row.querySelector('[data-weight="'+i+'"]').textContent=weight===null?'—':fmt(weight);
+    row.querySelector('[data-force="'+i+'"]').textContent=force===null?'—':fmt(force);
+    row.querySelector('[data-behavior="'+i+'"]').textContent=(weight!==null&&force!==null&&volume>=0)?'Запишите наблюдение':'—';
+  });
+  save();
+}
+document.querySelector('#print').addEventListener('click',()=>window.print());document.querySelector('#clear').addEventListener('click',()=>{data={rows:Array.from({length:4},()=>({mass:'',v1:'',v2:''}))};render()});try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&Array.isArray(s.rows))data={rows:Array.from({length:4},(_,i)=>s.rows[i]||{mass:'',v1:'',v2:''})}}catch{}render()})();
+</script>
+<script>
+function resizeIframe() {
+    // Ищем основной блок страницы. Если его нет — берем body
+    const container = document.querySelector('.page') || document.body;
+    
+    // Получаем стили блока, чтобы учесть его внешние отступы (margin)
+    const style = window.getComputedStyle(container);
+    const marginTop = parseFloat(style.marginTop) || 0;
+    const marginBottom = parseFloat(style.marginBottom) || 0;
+    
+    // Полная высота = высота самого блока + верхний отступ + нижний отступ
+    const height = container.offsetHeight + marginTop + marginBottom;
+    
+    window.parent.postMessage({
+        type: "resizeIframe",
+        height: Math.ceil(height)
+    }, "*");
+}
+
+window.addEventListener("load", resizeIframe);
+window.addEventListener("resize", resizeIframe);
+
+// Наблюдаем за изменениями размеров именно контейнера с контентом
+const target = document.querySelector('.page') || document.body;
+new ResizeObserver(resizeIframe).observe(target);
+</script>
+</body></html>
