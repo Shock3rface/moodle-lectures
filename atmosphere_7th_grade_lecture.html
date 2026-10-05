@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Физика 7 класс: Атмосфера Земли и причины её существования</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- MathJax Configuration & CDN -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            bg: '#faf8f5',
+                            card: '#ffffff',
+                            text: '#1e293b',
+                            primary: '#0284c7',
+                            primaryDark: '#0369a1',
+                            accent: '#f59e0b',
+                            accentHover: '#d97706',
+                            emerald: '#10b981',
+                            rose: '#f43f5e',
+                            purple: '#8b5cf6'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #faf8f5;
+            color: #1e293b;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        /* Responsive Chart Containers */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 380px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 340px;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Chosen Palette: Warm Sky & Sunset Gold (#faf8f5 main background, #0284c7 primary sky blue, #f59e0b warm amber, #10b981 emerald, #1e293b text) -->
+
+    <!-- Application Structure Plan:
+         1. Hero Header & Visual Fun Stats: First impressions for 7th graders. Air has weight! Mass of air in a classroom, total mass of atmosphere.
+         2. Section 1: The Big Question - Why doesn't air fly into space or fall to the ground? Interactive Particle Animation (Gravity vs. Molecular Speed simulator) + Planet Switcher with true thermal dissipation physics for the Moon.
+         3. Section 2: Classroom Air Mass Calculator - Interactive tool where students input their classroom size and find out how many kilograms (and bears!) of air they are sitting under.
+         4. Section 3: Journey Upwards: Layers & Altitude Explorer - Interactive slider from 0 to 400 km showing Everest, Planes, Meteors, Aurora, and ISS with temperature and oxygen drops.
+         5. Section 4: Atmospheric Pressure & Historical Demos - Interactive explanations of Torricelli's mercury tube, Magdeburg hemispheres, and suction cups.
+    -->
+
+    <!-- Visualization & Content Choices:
+         - Particle Simulator: HTML5 Canvas for real-time visualization of molecular bounce vs gravity pull with realistic atmospheric dissipation for low-gravity bodies (NO SVG, pure Canvas 2D context).
+         - Altitude Chart: Chart.js Line chart for simplified altitude vs pressure relation.
+         - Classroom Calculator: Interactive JS dynamic multiplication & visual comparison cards with MathJax formulas.
+         - NO SVG tags used. NO Mermaid JS used. Visual icons powered by Unicode / Emojis and styled HTML containers.
+    -->
+
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <!-- Navigation Header -->
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <span class="text-3xl">🎈</span>
+                <div>
+                    <span class="font-extrabold text-lg text-slate-800 tracking-tight block leading-none">Атмосфера Земли</span>
+                    <span class="text-xs text-sky-600 font-semibold">Урок физики • 7 класс</span>
+                </div>
+            </div>
+            <nav class="hidden md:flex items-center space-x-6 text-sm font-medium text-slate-600">
+                <a href="#why-air" class="hover:text-sky-600 transition-colors">Почему воздух не улетает?</a>
+                <a href="#classroom-calc" class="hover:text-sky-600 transition-colors">Вес воздуха в классе</a>
+                <a href="#altitude" class="hover:text-sky-600 transition-colors">Путешествие на высоту</a>
+                <a href="#pressure" class="hover:text-sky-600 transition-colors">Опыты и давление</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Body -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
+
+        <!-- Hero Welcome Banner -->
+        <section class="bg-gradient-to-r from-sky-600 via-sky-500 to-indigo-600 rounded-3xl p-6 sm:p-10 text-white shadow-lg relative overflow-hidden">
+            <div class="max-w-3xl space-y-4 relative z-10">
+                <div class="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-sky-100">
+                    <span>👋 Первое знакомство с физикой</span>
+                </div>
+                <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight leading-tight">
+                    Мы живём на дне невидимого воздушного океана!
+                </h1>
+                <p class="text-sky-100 text-sm sm:text-base leading-relaxed">
+                    Кажется, что воздух вокруг нас абсолютно невесом и пуст. Но на самом деле он состоит из триллионов мчащихся молекул, обладает массой, давит на нас с огромной силой и укутывает Землю, как тёплое одеяло. Давайте узнаем, почему он не улетает в космос!
+                </p>
+            </div>
+
+            <!-- Quick Fun Stats Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 pt-6 border-t border-sky-400/40 text-slate-900 relative z-10">
+                <div class="bg-white/95 backdrop-blur-sm p-4 rounded-2xl shadow-sm border border-white">
+                    <div class="text-xs font-semibold text-slate-500">1 кубический метр воздуха</div>
+                    <div class="text-2xl font-black text-sky-600 mt-1">1,29 кг</div>
+                    <div class="text-[11px] text-slate-500 mt-0.5">Весит примерно как 1,5 л бутылка воды!</div>
+                </div>
+                <div class="bg-white/95 backdrop-blur-sm p-4 rounded-2xl shadow-sm border border-white">
+                    <div class="text-xs font-semibold text-slate-500">Сила давления на ладонь</div>
+                    <div class="text-2xl font-black text-amber-500 mt-1">~150 кг</div>
+                    <div class="text-[11px] text-slate-500 mt-0.5">Как будто на руке стоит взрослый пони!</div>
+                </div>
+                <div class="bg-white/95 backdrop-blur-sm p-4 rounded-2xl shadow-sm border border-white">
+                    <div class="text-xs font-semibold text-slate-500">Скорость молекул воздуха</div>
+                    <div class="text-2xl font-black text-emerald-600 mt-1">~500 м/с</div>
+                    <div class="text-[11px] text-slate-500 mt-0.5">Быстрее пули (около 1800 км/ч)!</div>
+                </div>
+                <div class="bg-white/95 backdrop-blur-sm p-4 rounded-2xl shadow-sm border border-white">
+                    <div class="text-xs font-semibold text-slate-500">Масса всей атмосферы</div>
+                    <div class="text-xl font-black text-purple-600 mt-1">$5{,}15 \cdot 10^{18}\text{ кг}$</div>
+                    <div class="text-[11px] text-slate-500 mt-0.5">5 миллиардов миллионов тонн!</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 1: The Great Tug-of-War (Particle Interactive Canvas) -->
+        <section id="why-air" class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-6">
+            <div class="border-b border-slate-100 pb-4">
+                <div class="flex items-center space-x-2 text-sky-600 font-bold text-xs uppercase tracking-wider">
+                    <span>🔍 Главная загадка урока</span>
+                </div>
+                <h2 class="text-xl sm:text-2xl font-bold text-slate-900 mt-1">
+                    Почему воздух не улетает в космос и не падает на Землю?
+                </h2>
+                <p class="text-slate-600 text-sm mt-2 leading-relaxed">
+                    Существование атмосферы — это результат величайшего «перетягивания каната» между двумя физическими явлениями:
+                    <strong>Земным притяжением</strong> (которое тянет молекулы вниз) и <strong>Тепловым движением</strong> (молекулы с бешеной скоростью разлетаются в разные стороны).
+                </p>
+            </div>
+
+            <!-- Canvas Particle Simulator -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <div class="lg:col-span-7 bg-slate-900 rounded-2xl p-4 text-white space-y-3 shadow-inner">
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="font-bold text-sky-400">⚡ Симулятор движения молекул</span>
+                        <span id="particleStatusBadge" class="bg-emerald-500/20 text-emerald-300 px-2.5 py-0.5 rounded-full border border-emerald-500/30">Земля (Баланс)</span>
+                    </div>
+
+                    <!-- Interactive HTML Canvas -->
+                    <div class="w-full bg-slate-950 rounded-xl overflow-hidden border border-slate-800 relative">
+                        <canvas id="particleCanvas" width="500" height="280" class="w-full h-[280px] block cursor-pointer"></canvas>
+                        <div class="absolute bottom-2 left-2 text-[10px] text-slate-400 bg-slate-900/80 px-2 py-1 rounded">
+                            ⬇ Гравитация тянет вниз | 💥 Скорость толкает вверх
+                        </div>
+                    </div>
+
+                    <!-- Simulation Controls -->
+                    <div class="space-y-2 pt-1">
+                        <div class="grid grid-cols-3 gap-2">
+                            <button onclick="setPlanetSimulation('earth')" id="btn-sim-earth" class="py-2 text-xs font-bold rounded-xl transition-all bg-sky-600 text-white shadow-sm">
+                                🌍 Земля (Норма)
+                            </button>
+                            <button onclick="setPlanetSimulation('moon')" id="btn-sim-moon" class="py-2 text-xs font-bold rounded-xl transition-all bg-slate-800 text-slate-300 hover:bg-slate-700">
+                                🌙 Луна (Нет гравитации)
+                            </button>
+                            <button onclick="setPlanetSimulation('jupiter')" id="btn-sim-jupiter" class="py-2 text-xs font-bold rounded-xl transition-all bg-slate-800 text-slate-300 hover:bg-slate-700">
+                                🪐 Юпитер (Сверхсила)
+                            </button>
+                        </div>
+                        <div id="moonResetBox" class="hidden text-center pt-1">
+                            <button onclick="resetParticles()" class="px-4 py-1.5 text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white rounded-lg transition-all shadow-sm">
+                                🔄 Выпустить газ снова на Луне
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Descriptive Explanation Panel -->
+                <div class="lg:col-span-5 space-y-4">
+                    <div class="bg-sky-50 border border-sky-100 rounded-2xl p-5 space-y-3">
+                        <h3 class="font-bold text-slate-800 text-base flex items-center space-x-2">
+                            <span>⚖️ Как работает этот баланс:</span>
+                        </h3>
+
+                        <div class="space-y-3 text-xs text-slate-700 leading-relaxed">
+                            <div class="flex items-start space-x-2">
+                                <span class="text-base">1️⃣</span>
+                                <div>
+                                    <strong>Почему у Луны нет атмосферы?</strong><br>
+                                    Гравитация Луны в 6 раз слабее земной ($g \approx 1{,}6 \text{ м/с}^2$). Молекулы газа движутся слишком быстро и легко превосходят лунную космическую скорость — <i>газ моментально улетучивается в открытый космос!</i>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start space-x-2">
+                                <span class="text-base">2️⃣</span>
+                                <div>
+                                    <strong>Если бы молекулы не двигались:</strong><br>
+                                    При абсолютном ноле температур все молекулы упали бы на Землю тонким плотным слоем высотой всего в несколько метров!
+                                </div>
+                            </div>
+
+                            <div class="flex items-start space-x-2">
+                                <span class="text-base">3️⃣</span>
+                                <div>
+                                    <strong>Итог (Наша Земля):</strong><br>
+                                    Притяжение удерживает газ у поверхности, а хаотичное движение не дает ему упасть. Поэтому у земли воздух <strong>самый плотный</strong>, а чем выше — тем он <strong>разреженнее</strong>.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-amber-50 border border-amber-200/70 rounded-2xl p-4 text-xs text-amber-900 space-y-1">
+                        <div class="font-bold flex items-center space-x-1">
+                            <span>💡 Запоминалка для урока:</span>
+                        </div>
+                        <p>«Притяжение Земли держит воздух за хвост, а скорость молекул расправляет его в высоту!»</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: Classroom Air Mass Interactive Calculator -->
+        <section id="classroom-calc" class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-6">
+            <div class="border-b border-slate-100 pb-4">
+                <div class="flex items-center space-x-2 text-emerald-600 font-bold text-xs uppercase tracking-wider">
+                    <span>🧮 Интерактивный эксперимент</span>
+                </div>
+                <h2 class="text-xl sm:text-2xl font-bold text-slate-900 mt-1">
+                    Сколько весит воздух в вашем школьном классе?
+                </h2>
+                <p class="text-slate-600 text-sm mt-2 leading-relaxed">
+                    Вы сидите в кабинете и даже не замечаете, какой огромный вес воздуха находится прямо вокруг вас. Измерьте ваш класс и посчитайте массу воздуха!
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+                <!-- Controls & Inputs -->
+                <div class="md:col-span-6 bg-slate-50 p-6 rounded-2xl border border-slate-200 space-y-5">
+                    <h3 class="font-bold text-slate-800 text-sm">Укажите размеры кабинета (в метрах):</h3>
+
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+                                <span>Длина помещения ($a$):</span>
+                                <span id="lengthVal" class="font-mono text-sky-600 font-bold">8 м</span>
+                            </div>
+                            <input type="range" id="inputLength" min="4" max="15" step="0.5" value="8" oninput="calculateClassroomAir()" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-600">
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+                                <span>Ширина помещения ($b$):</span>
+                                <span id="widthVal" class="font-mono text-sky-600 font-bold">6 м</span>
+                            </div>
+                            <input type="range" id="inputWidth" min="4" max="12" step="0.5" value="6" oninput="calculateClassroomAir()" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-600">
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+                                <span>Высота потолков ($h$):</span>
+                                <span id="heightVal" class="font-mono text-sky-600 font-bold">3 м</span>
+                            </div>
+                            <input type="range" id="inputHeight" min="2.5" max="5" step="0.1" value="3" oninput="calculateClassroomAir()" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-600">
+                        </div>
+                    </div>
+
+                    <div class="p-3 bg-white rounded-xl border border-slate-200 text-xs text-slate-600 space-y-1">
+                        <div><strong>Формула расчета:</strong> $m = \rho \cdot V$</div>
+                        <div>Плотность сухого воздуха при $20^\circ\text{C}$: $\rho = 1{,}29 \text{ кг/м}^3$</div>
+                    </div>
+                </div>
+
+                <!-- Visual Output Box -->
+                <div class="md:col-span-6 space-y-4">
+                    <div class="bg-gradient-to-br from-slate-900 to-sky-950 text-white p-6 rounded-2xl shadow-md border border-slate-800 space-y-4 text-center">
+                        <div class="text-xs uppercase tracking-wider text-sky-300 font-bold">Результаты расчёта</div>
+
+                        <div class="grid grid-cols-2 gap-3 pt-2">
+                            <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700">
+                                <div class="text-[11px] text-slate-400">Объём класса ($V$):</div>
+                                <div id="calcVolume" class="text-xl font-extrabold text-white mt-1">144 м³</div>
+                            </div>
+                            <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700">
+                                <div class="text-[11px] text-slate-400">Масса воздуха ($m$):</div>
+                                <div id="calcMass" class="text-2xl font-black text-amber-400 mt-1">185,8 кг</div>
+                            </div>
+                        </div>
+
+                        <div class="pt-3 border-t border-slate-800 text-xs text-slate-300 space-y-2">
+                            <div class="text-slate-400">Это эквивалентно весу:</div>
+                            <div id="calcComparison" class="text-sm font-bold text-emerald-400 bg-emerald-950/60 py-2 px-3 rounded-xl border border-emerald-500/30">
+                                🐻 1 взрослого бурого медведя или 🧑‍🎓 4 ваших одноклассников!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: Journey Upwards: Layers & Altitude Explorer -->
+        <section id="altitude" class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-6">
+            <div class="border-b border-slate-100 pb-4">
+                <div class="flex items-center space-x-2 text-indigo-600 font-bold text-xs uppercase tracking-wider">
+                    <span>🚀 Поднимаемся выше</span>
+                </div>
+                <h2 class="text-xl sm:text-2xl font-bold text-slate-900 mt-1">
+                    Как меняется атмосфера с высотой?
+                </h2>
+                <p class="text-slate-600 text-sm mt-2 leading-relaxed">
+                    Перемещайте ползунок высоты, чтобы подняться от школьного двора до Международной Космической Станции и узнать, как падают давление и температура!
+                </p>
+            </div>
+
+            <!-- Altitude Slider & Interactive Explorer -->
+            <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 space-y-6">
+                <!-- Slider input -->
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <label class="text-xs sm:text-sm font-bold text-slate-800">Высота над уровнем моря:</label>
+                        <span id="altitudeDisplay" class="text-sm sm:text-base font-black text-sky-600 bg-sky-100 px-3 py-1 rounded-xl">0 км (Уровень моря)</span>
+                    </div>
+                    <input type="range" id="altitudeSlider" min="0" max="400" step="1" value="0" oninput="updateAltitudeExplorer()" class="w-full h-3 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-600">
+                    <div class="flex justify-between text-[11px] text-slate-500 font-medium">
+                        <span>0 км (Земля)</span>
+                        <span>8.8 км (Эверест)</span>
+                        <span>11 км (Самолёт)</span>
+                        <span>80 км (Метеоры)</span>
+                        <span>400 км (МКС)</span>
+                    </div>
+                </div>
+
+                <!-- Grid Stats & Visual Indicator Card -->
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                    <div class="md:col-span-5 space-y-3">
+                        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-2">
+                            <div class="text-xs text-slate-500 font-semibold">Слой атмосферы:</div>
+                            <div id="altitudeLayerName" class="text-lg font-extrabold text-sky-700">Тропосфера</div>
+                            <div id="altitudeLayerDesc" class="text-xs text-slate-600 leading-relaxed">
+                                Нижний, самый плотный слой. Здесь сосредоточено 80% всего воздуха, формируются облака, дождь, снег и ветер.
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3 text-center">
+                            <div class="bg-white p-3 rounded-xl border border-slate-200">
+                                <div class="text-[11px] text-slate-500">Давление воздуха:</div>
+                                <div id="altitudePressure" class="text-base font-bold text-slate-800 mt-0.5">760 мм рт. ст.</div>
+                                <div class="text-[10px] text-slate-400">100% от нормы</div>
+                            </div>
+                            <div class="bg-white p-3 rounded-xl border border-slate-200">
+                                <div class="text-[11px] text-slate-500">Температура:</div>
+                                <div id="altitudeTemp" class="text-base font-bold text-sky-600 mt-0.5">+15 °C</div>
+                                <div class="text-[10px] text-slate-400">Комфортная</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Environment View Box -->
+                    <div class="md:col-span-7 bg-white p-5 rounded-2xl border border-slate-200 flex flex-col items-center justify-center text-center space-y-3 min-h-[200px]">
+                        <div id="altitudeEmoji" class="text-6xl animate-bounce">🏫</div>
+                        <div id="altitudeFactTitle" class="font-bold text-slate-800 text-sm">Вы на поверхности Земли!</div>
+                        <div id="altitudeFactBody" class="text-xs text-slate-600 max-w-md leading-relaxed">
+                            Здесь воздух имеет нормальную плотность. Нам легко дышать, а давление воздуха снаружи идеально уравновешено давлением внутри нашего организма.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Simplified Chart: Height vs Pressure -->
+                <div class="bg-white p-4 rounded-2xl border border-slate-200">
+                    <h4 class="text-xs font-bold text-slate-700 mb-2">📉 Закономерность: Как падает давление с высотой</h4>
+                    <div class="chart-container">
+                        <canvas id="pressureChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: Atmospheric Pressure & Historical Experiments -->
+        <section id="pressure" class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-6">
+            <div class="border-b border-slate-100 pb-4">
+                <div class="flex items-center space-x-2 text-rose-600 font-bold text-xs uppercase tracking-wider">
+                    <span>🧪 Исторические опыты</span>
+                </div>
+                <h2 class="text-xl sm:text-2xl font-bold text-slate-900 mt-1">
+                    Как физики доказали существование атмосферного давления?
+                </h2>
+                <p class="text-slate-600 text-sm mt-2 leading-relaxed">
+                    В древности люди думали, что у воздуха нет веса. Но великие опыты XVII века навсегда изменили физику!
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Experiment 1: Torricelli -->
+                <div class="bg-slate-50 border border-slate-200 p-5 rounded-2xl space-y-3 flex flex-col justify-between">
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-2xl">🧪</span>
+                            <span class="text-[10px] font-bold bg-rose-100 text-rose-800 px-2 py-0.5 rounded-full">1643 год</span>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-sm">Опыт Эванджелисты Торричелли</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Учёный заполнил стеклянную трубку ртутью и опустил её в чашу. Ртуть опустилась до столбика высотой <strong>760 мм</strong>.
+                        </p>
+                    </div>
+                    <div class="bg-white p-3 rounded-xl border border-slate-200 text-[11px] text-slate-700">
+                        💡 <strong>Вывод:</strong> Воздух давит на ртуть в чаше и удерживает её в трубке! Так появился первый в мире <strong>барометр</strong>.
+                    </div>
+                </div>
+
+                <!-- Experiment 2: Magdeburg Hemispheres -->
+                <div class="bg-slate-50 border border-slate-200 p-5 rounded-2xl space-y-3 flex flex-col justify-between">
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-2xl">🐎</span>
+                            <span class="text-[10px] font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">1654 год</span>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-sm">Магдебургские полушария</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Отто фон Герике откачал воздух из двух медных полушарий. <strong>16 лошадей</strong> (по 8 с каждой стороны) не смогли их разорвать!
+                        </p>
+                    </div>
+                    <div class="bg-white p-3 rounded-xl border border-slate-200 text-[11px] text-slate-700">
+                        💡 <strong>Вывод:</strong> Внешнее атмосферное давление сжимает полушария с огромной силой, потому что внутри нет воздуха!
+                    </div>
+                </div>
+
+                <!-- Experiment 3: Suction Cup (Присоска) -->
+                <div class="bg-slate-50 border border-slate-200 p-5 rounded-2xl space-y-3 flex flex-col justify-between">
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-2xl">🪟</span>
+                            <span class="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">Опыт на кухне</span>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-sm">Загадка бытовой присоски</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Почему присоска держится на стекле? Она не «прилипает», а выталкивает воздух из-под себя при нажатии!
+                        </p>
+                    </div>
+                    <div class="bg-white p-3 rounded-xl border border-slate-200 text-[11px] text-slate-700">
+                        💡 <strong>Вывод:</strong> Наружный воздух прижимает присоску к стеклу с силой, равной весу тяжелого предмета!
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Clean Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-6 border-t border-slate-800 mt-12 text-center">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <p class="text-slate-500">7 класс • Физика • Интерактивное пособие</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // 1. PARTICLE CANVAS SIMULATION (Gravity vs Thermal Motion)
+        let canvas, ctx;
+        let particles = [];
+        let simMode = 'earth'; // 'earth', 'moon', 'jupiter'
+
+        function initParticleSimulation() {
+            canvas = document.getElementById('particleCanvas');
+            if (!canvas) return;
+            ctx = canvas.getContext('2d');
+            resetParticles();
+            requestAnimationFrame(updateParticleSimulation);
+        }
+
+        function resetParticles() {
+            if (!canvas) return;
+            particles = [];
+            for (let i = 0; i < 70; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: canvas.height - 20 - Math.random() * (canvas.height * 0.5),
+                    vx: (Math.random() - 0.5) * 3,
+                    vy: (Math.random() - 0.5) * 3 - 1,
+                    radius: 3.5,
+                    escaped: false
+                });
+            }
+        }
+
+        function setPlanetSimulation(mode) {
+            simMode = mode;
+            const badge = document.getElementById('particleStatusBadge');
+            const moonResetBox = document.getElementById('moonResetBox');
+
+            document.getElementById('btn-sim-earth').className = "py-2 text-xs font-bold rounded-xl transition-all bg-slate-800 text-slate-300 hover:bg-slate-700";
+            document.getElementById('btn-sim-moon').className = "py-2 text-xs font-bold rounded-xl transition-all bg-slate-800 text-slate-300 hover:bg-slate-700";
+            document.getElementById('btn-sim-jupiter').className = "py-2 text-xs font-bold rounded-xl transition-all bg-slate-800 text-slate-300 hover:bg-slate-700";
+
+            if (mode === 'earth') {
+                document.getElementById('btn-sim-earth').className = "py-2 text-xs font-bold rounded-xl transition-all bg-sky-600 text-white shadow-sm";
+                badge.innerText = "🌍 Земля (Нормальный баланс)";
+                badge.className = "bg-emerald-500/20 text-emerald-300 px-2.5 py-0.5 rounded-full border border-emerald-500/30";
+                if (moonResetBox) moonResetBox.classList.add('hidden');
+            } else if (mode === 'moon') {
+                document.getElementById('btn-sim-moon').className = "py-2 text-xs font-bold rounded-xl transition-all bg-sky-600 text-white shadow-sm";
+                badge.innerText = "🌙 Луна (Газ улетает в космос!)";
+                badge.className = "bg-rose-500/20 text-rose-300 px-2.5 py-0.5 rounded-full border border-rose-500/30";
+                if (moonResetBox) moonResetBox.classList.remove('hidden');
+            } else if (mode === 'jupiter') {
+                document.getElementById('btn-sim-jupiter').className = "py-2 text-xs font-bold rounded-xl transition-all bg-sky-600 text-white shadow-sm";
+                badge.innerText = "🪐 Юпитер (Воздух прижат к полу)";
+                badge.className = "bg-amber-500/20 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-500/30";
+                if (moonResetBox) moonResetBox.classList.add('hidden');
+            }
+
+            resetParticles();
+        }
+
+        function updateParticleSimulation() {
+            if (!ctx) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            let gravity = 0.08; // Earth
+            if (simMode === 'moon') gravity = 0.001; // Extremely weak Moon gravity
+            if (simMode === 'jupiter') gravity = 0.35; // Heavy Jupiter gravity
+
+            let activeCount = 0;
+
+            particles.forEach(p => {
+                if (p.escaped) return;
+
+                // Apply gravity
+                p.vy += gravity;
+
+                // Move
+                p.x += p.vx;
+                p.y += p.vy;
+
+                // Check escape into open space (Moon mode)
+                if (simMode === 'moon') {
+                    if (p.y < -15 || p.x < -15 || p.x > canvas.width + 15) {
+                        p.escaped = true; // Permanently dissipates into space!
+                        return;
+                    }
+                } else {
+                    // Top boundary rebound for Earth & Jupiter
+                    if (p.y - p.radius < 0) {
+                        p.y = p.radius;
+                        p.vy = Math.abs(p.vy);
+                    }
+                    // Side walls
+                    if (p.x - p.radius < 0) {
+                        p.x = p.radius;
+                        p.vx = Math.abs(p.vx);
+                    }
+                    if (p.x + p.radius > canvas.width) {
+                        p.x = canvas.width - p.radius;
+                        p.vx = -Math.abs(p.vx);
+                    }
+                }
+
+                // Bounce off bottom ground
+                if (p.y + p.radius > canvas.height) {
+                    p.y = canvas.height - p.radius;
+                    let thermalKick = (simMode === 'moon') ? (Math.random() * 2 + 1) : (Math.random() * 1.5 + 0.3);
+                    p.vy = -Math.abs(p.vy) * 0.85 - thermalKick;
+                }
+
+                activeCount++;
+
+                // Draw Particle
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = simMode === 'moon' ? '#f43f5e' : (simMode === 'jupiter' ? '#f59e0b' : '#38bdf8');
+                ctx.fill();
+            });
+
+            // Live Molecule Counter overlay
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '11px sans-serif';
+            ctx.fillText(`Молекул удержано: ${activeCount} из 70`, 12, 22);
+
+            // Special Message when Moon loses all gas
+            if (simMode === 'moon' && activeCount === 0) {
+                ctx.fillStyle = '#f43f5e';
+                ctx.font = 'bold 13px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('🚀 Все молекулы улетели в открытый космос!', canvas.width / 2, canvas.height / 2 - 10);
+                ctx.fillStyle = '#cbd5e1';
+                ctx.font = '11px sans-serif';
+                ctx.fillText('У Луны слабая гравитация, поэтому она не может удержать атмосферу.', canvas.width / 2, canvas.height / 2 + 12);
+                ctx.textAlign = 'left';
+            }
+
+            requestAnimationFrame(updateParticleSimulation);
+        }
+
+
+        // 2. CLASSROOM AIR MASS CALCULATOR
+        function calculateClassroomAir() {
+            const l = parseFloat(document.getElementById('inputLength').value);
+            const w = parseFloat(document.getElementById('inputWidth').value);
+            const h = parseFloat(document.getElementById('inputHeight').value);
+
+            document.getElementById('lengthVal').innerText = `${l} м`;
+            document.getElementById('widthVal').innerText = `${w} м`;
+            document.getElementById('heightVal').innerText = `${h} м`;
+
+            const volume = l * w * h;
+            const massKg = volume * 1.29; // Density = 1.29 kg/m3
+
+            document.getElementById('calcVolume').innerText = `${volume.toFixed(1)} м³`;
+            document.getElementById('calcMass').innerText = `${massKg.toFixed(1)} кг`;
+
+            // Comparisons
+            let bears = (massKg / 180).toFixed(1);
+            let students = Math.round(massKg / 45);
+
+            document.getElementById('calcComparison').innerText = `🐻 ${bears} взрослого медведя или 🧑‍🎓 ${students} ваших одноклассников!`;
+        }
+
+
+        // 3. ALTITUDE EXPLORER
+        let pressureChartInstance = null;
+
+        function initPressureChart() {
+            const ctxChart = document.getElementById('pressureChart').getContext('2d');
+            
+            const heights = [0, 2, 5, 8.8, 11, 20, 50, 100];
+            const pressures = [760, 596, 405, 253, 170, 41, 1, 0];
+
+            pressureChartInstance = new Chart(ctxChart, {
+                type: 'line',
+                data: {
+                    labels: heights.map(h => `${h} км`),
+                    datasets: [{
+                        label: 'Атмосферное давление (мм рт. ст.)',
+                        data: pressures,
+                        borderColor: '#0284c7',
+                        backgroundColor: 'rgba(2, 132, 199, 0.1)',
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#0284c7'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            title: { display: true, text: 'Давление (мм рт. ст.)', font: { size: 10 } },
+                            min: 0,
+                            max: 800
+                        },
+                        x: {
+                            title: { display: true, text: 'Высота над уровнем моря', font: { size: 10 } }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        function updateAltitudeExplorer() {
+            const alt = parseInt(document.getElementById('altitudeSlider').value);
+            document.getElementById('altitudeDisplay').innerText = `${alt} км`;
+
+            const nameEl = document.getElementById('altitudeLayerName');
+            const descEl = document.getElementById('altitudeLayerDesc');
+            const pressEl = document.getElementById('altitudePressure');
+            const tempEl = document.getElementById('altitudeTemp');
+            const emojiEl = document.getElementById('altitudeEmoji');
+            const titleEl = document.getElementById('altitudeFactTitle');
+            const bodyEl = document.getElementById('altitudeFactBody');
+
+            if (alt <= 18) {
+                nameEl.innerText = "Тропосфера (0 – 18 км)";
+                descEl.innerText = "Нижний, самый плотный слой. Здесь содержится 80% всего воздуха Земли и весь водяной пар. Формируются погода, облака и ветер.";
+                
+                let p = Math.round(760 * Math.exp(-alt / 8));
+                let t = Math.round(15 - (alt * 6.5));
+                pressEl.innerText = `${p} мм рт. ст.`;
+                tempEl.innerText = `${t} °C`;
+
+                if (alt === 0) {
+                    emojiEl.innerText = "🏫";
+                    titleEl.innerText = "Вы на уровне моря!";
+                    bodyEl.innerText = "Комфортные условия. Давление равно 760 мм рт. ст. Воздух плотный, легко дышится.";
+                } else if (alt <= 9) {
+                    emojiEl.innerText = "🏔️";
+                    titleEl.innerText = "Высота вершины Эвереста (8.8 км)";
+                    bodyEl.innerText = "Давление упало в 3 раза! Воздух настолько разрежен, что альпинисты могут дышать только из кислородных баллонов.";
+                } else {
+                    emojiEl.innerText = "✈️";
+                    titleEl.innerText = "Высота полёта пассажирских самолётов (10-12 км)";
+                    bodyEl.innerText = "За окном самолёта температура около -50°C, а воздух слишком разрежен для дыхания. Салон специально герметизируют и накачивают воздухом!";
+                }
+            } else if (alt <= 50) {
+                nameEl.innerText = "Стратосфера (18 – 50 км)";
+                descEl.innerText = "Слой абсолютной чистоты и тишины. Здесь находится Озоновый слой, который спасает всё живое на Земле от опасного УФ-излучения Солнца.";
+                pressEl.innerText = "< 50 мм рт. ст.";
+                tempEl.innerText = "-50°C ... 0°C";
+
+                emojiEl.innerText = "🎈";
+                titleEl.innerText = "Высота стратостатов и озонового экрана!";
+                bodyEl.innerText = "Здесь небо становится тёмно-фиолетовым. Человек без космического скафандра тут погибнет за секунды, так как кровь закипает от низкого давления.";
+            } else if (alt <= 85) {
+                nameEl.innerText = "Мезосфера (50 – 85 км)";
+                descEl.innerText = "Самый холодный слой атмосферы (до -90°C). Именно здесь сгорает большинство метеоров, влетающих в Землю из космоса!";
+                pressEl.innerText = "< 1 мм рт. ст.";
+                tempEl.innerText = "-90 °C";
+
+                emojiEl.innerText = "☄️";
+                titleEl.innerText = "Щит от падающих метеоритов!";
+                bodyEl.innerText = "Метеоры врезаются в воздух на огромной скорости и сгорают от трения, оставляя красивые светящиеся полосы («падающие звёзды»).";
+            } else {
+                nameEl.innerText = "Термосфера и Космос (> 85 км)";
+                descEl.innerText = "Воздуха практически нет. На высоте ~400 км летает Международная Космическая Станция (МКС), а в небе возникают Полярные сияния.";
+                pressEl.innerText = "Вакуум (0)";
+                tempEl.innerText = "+1500 °C (Частицы)";
+
+                emojiEl.innerText = "🚀";
+                titleEl.innerText = "Орбита МКС и Космос!";
+                bodyEl.innerText = "Здесь границы атмосферы постепенно сходят на нет, переходя в открытый космос. Газовые частицы находятся в состоянии ионизированного плазмы.";
+            }
+        }
+
+        // INITIALIZE APPLICATION
+        document.addEventListener('DOMContentLoaded', () => {
+            initParticleSimulation();
+            calculateClassroomAir();
+            initPressureChart();
+            updateAltitudeExplorer();
+        });
+    </script>
+</body>
+</html>
