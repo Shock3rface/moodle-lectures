@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#08a9df">
+  <meta name="description" content="Интерактивный лабораторный практикум: измерение выталкивающей силы по показаниям динамометра.">
+  <title>Лабораторная работа № 8 · Выталкивающая сила</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2308a9df'/%3E%3Cpath d='M17 43h30M22 43V23h20v20M32 16v21m-7-7 7 7 7-7' fill='none' stroke='white' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <style>
+    :root{--blue:#08a9df;--blue-dark:#087ca8;--ink:#202326;--muted:#677178;--line:#d8e0e4;--paper:#fff;--wash:#f4f8fa;--pale:#dff5fc;--grey:#e2e2e2;--green:#16784d;--shadow:0 18px 60px #22364312}
+    *{box-sizing:border-box} body{margin:0;background:#edf2f4;color:var(--ink);font:16px/1.5 Georgia,"Times New Roman",serif}
+    .page{max-width:1060px;margin:34px auto;background:var(--paper);box-shadow:var(--shadow);padding:38px 54px 46px;min-height:100vh}
+    .topline{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font:600 12px/1.3 Arial,sans-serif;text-transform:uppercase;letter-spacing:.09em;margin-bottom:20px}
+    .titlebar{display:grid;grid-template-columns:92px 1fr;align-items:stretch;margin-bottom:22px}
+    .number{display:grid;place-items:center;background:var(--blue);color:white;font:800 34px/1 Arial,sans-serif;min-height:76px}
+    h1{margin:0;background:var(--grey);padding:14px 26px;display:flex;align-items:center;font:800 clamp(20px,3vw,27px)/1.12 Arial,sans-serif;text-transform:uppercase;letter-spacing:.005em}
+    .lead{font-size:19px;margin:0 0 26px;color:#41484c}
+    .meta{display:grid;grid-template-columns:160px 1fr;gap:12px 18px;margin:0 0 30px;align-items:start}
+    .meta dt{font:700 14px/1.25 Arial,sans-serif}.meta dd{margin:0;font-size:19px;line-height:1.35}
+    .section-ribbon{display:inline-block;margin:0 0 16px;background:var(--blue);color:white;padding:5px 12px;font:800 14px/1.1 Arial,sans-serif;letter-spacing:.045em;text-transform:uppercase}
+    .steps{list-style:none;counter-reset:step;padding:0;margin:0 0 29px}
+    .steps li{counter-increment:step;display:grid;grid-template-columns:30px 1fr;gap:12px;margin:0 0 14px;font-size:19px;line-height:1.35}
+    .steps li::before{content:counter(step) ".";color:var(--blue);font:800 18px/1.45 Arial,sans-serif;text-align:right}
+    .steps strong{font-weight:700}
+    .note{background:#f5fbfd;border-left:4px solid var(--blue);padding:13px 16px;margin:22px 0 30px;color:#35444b;font-size:16px}
+    .formula{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:16px 20px;margin:14px 0 24px;background:var(--pale);font-size:20px}
+    .formula b{font-size:24px;color:var(--blue-dark)} .formula small{font:14px/1.4 Arial,sans-serif;color:#52636a}
+    .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:4px;margin:12px 0 12px}
+    table{border-collapse:collapse;width:100%;min-width:900px} th{background:#dff5fc;font:700 14px/1.3 Arial,sans-serif;text-align:center;padding:12px 10px;border:1px solid white;vertical-align:middle} td{padding:9px 8px;border:1px solid var(--line);text-align:center;background:#fff} .fluid-label{min-width:190px;text-align:left}
+    tbody tr:nth-child(even) td{background:#f6fbfd} td input{width:100%;min-width:74px;border:1px solid #cad7dc;border-radius:4px;background:white;padding:8px;text-align:center;color:var(--ink);font:16px Georgia,serif} td input:focus{outline:2px solid #81d9f4;border-color:var(--blue)} td .trial{font:700 15px Arial,sans-serif;color:var(--blue-dark)} .calc{font-weight:700;color:#123847}.empty{color:#8a9498}
+    .table-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--muted);font:13px/1.4 Arial,sans-serif}
+    .actions{display:flex;gap:8px;flex-wrap:wrap}.button{border:1px solid #b8c9cf;background:white;color:#25343a;border-radius:5px;padding:9px 13px;cursor:pointer;font:700 13px Arial,sans-serif}.button:hover{border-color:var(--blue);color:var(--blue-dark)}.button.primary{background:var(--blue);border-color:var(--blue);color:white}.button.danger{border-color:#e2c6c6;color:#9b4141}.button:focus-visible{outline:3px solid #89ddf5;outline-offset:2px}
+    .conclusion{border:1px solid var(--line);background:var(--wash);padding:18px 20px;margin:18px 0 28px}.conclusion-label{font:800 14px Arial,sans-serif;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}.conclusion p{font-size:18px;margin:0;min-height:52px}.conclusion .prompt{font:14px Arial,sans-serif;color:var(--muted);margin-top:9px}
+    .footer{margin-top:40px;padding-top:10px;border-top:4px solid var(--blue);display:flex;justify-content:space-between;color:var(--muted);font:12px Arial,sans-serif}
+    @media(max-width:680px){.page{margin:0;padding:22px 18px;box-shadow:none}.titlebar{grid-template-columns:66px 1fr}.number{font-size:28px;min-height:68px}h1{padding:12px 14px;font-size:19px}.meta{grid-template-columns:1fr;gap:5px}.meta dd{margin-bottom:10px;font-size:17px}.steps li{font-size:17px;grid-template-columns:26px 1fr;gap:9px}.lead{font-size:17px}.topline{font-size:10px}}
+    @media print{body{background:white}.page{box-shadow:none;margin:0;max-width:none;padding:15mm}.actions,.topline .status,.table-foot .hint{display:none!important}.table-wrap{overflow:visible}td input{border:0;padding:0}.button{display:none}.conclusion{break-inside:avoid}}
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="topline"><span>Физика · 7 класс · лабораторный практикум</span><span class="status" id="saveStatus" aria-live="polite">Заполнение сохраняется на этом устройстве</span></div>
+    <header class="titlebar"><div class="number">№ 8</div><h1>Определение выталкивающей силы, действующей на погружённое в жидкость тело</h1></header>
+    <p class="lead">Сравните выталкивающую силу для двух цилиндров в воде и в насыщенном растворе соли.</p>
+
+    <dl class="meta">
+      <dt>Цель работы</dt><dd>Определить выталкивающую силу, действующую на цилиндры разного объёма в разных жидкостях, и сравнить результаты.</dd>
+      <dt>Приборы и материалы</dt><dd>Динамометр, два цилиндра разного объёма, стаканы с водой и насыщенным раствором соли.</dd>
+    </dl>
+
+    <h2 class="section-ribbon">Указания к работе</h2>
+    <ol class="steps">
+      <li><span>Подвесьте первый цилиндр к динамометру и измерьте его вес в воздухе. Повторите измерение со вторым цилиндром.</span></li>
+      <li><span>По очереди полностью погрузите цилиндры в воду, не касаясь дна и стенок стакана. Запишите показания динамометра.</span></li>
+      <li><span>Повторите измерения для обоих цилиндров в насыщенном растворе соли.</span></li>
+      <li><span><strong>Обработка результатов измерений.</strong> Для каждого цилиндра и каждой жидкости вычислите выталкивающую силу как разность веса в воздухе и показания динамометра в жидкости.</span></li>
+      <li><span>Сравните результаты для двух цилиндров и двух жидкостей. Сформулируйте вывод, от чего зависит выталкивающая сила.</span></li>
+    </ol>
+    <aside class="note"><strong>Важно.</strong> Снимайте показания, когда цилиндр неподвижен. При полном погружении он не должен касаться дна и стенок стакана. Записывайте показания в ньютонах.</aside>
+
+    <h2 class="section-ribbon">Формула для расчёта</h2>
+    <div class="formula" aria-label="Выталкивающая сила равна весу тела в воздухе минус вес тела в жидкости">
+      <span><i>F</i><sub>A</sub> = <i>P</i><sub>возд</sub> − <i>P</i><sub>жидк</sub></span>
+      <b id="formulaExample">Введите показания в таблицу →</b>
+      <small><i>P</i><sub>возд</sub> — вес цилиндра в воздухе; <i>P</i><sub>жидк</sub> — показание динамометра при погружении.</small>
+    </div>
+
+    <h2 class="section-ribbon">Обработка результатов измерений</h2>
+    <div class="table-wrap">
+      <table aria-label="Таблица результатов опыта для воды и раствора соли">
+        <thead>
+          <tr><th scope="col" rowspan="2">Жидкость</th><th scope="colgroup" colspan="2">Вес цилиндра в воздухе, <i>P</i><sub>возд</sub>, Н</th><th scope="colgroup" colspan="2">Вес цилиндра в жидкости, <i>P</i><sub>жидк</sub>, Н</th><th scope="colgroup" colspan="2">Выталкивающая сила, <i>F</i><sub>A</sub>, Н</th></tr>
+          <tr><th scope="col">Цилиндр 1</th><th scope="col">Цилиндр 2</th><th scope="col">Цилиндр 1</th><th scope="col">Цилиндр 2</th><th scope="col"><i>F</i><sub>A1</sub></th><th scope="col"><i>F</i><sub>A2</sub></th></tr>
+        </thead>
+        <tbody id="resultsBody"></tbody>
+      </table>
+    </div>
+    <div class="table-foot"><span class="hint">Заполните показания обоих цилиндров для каждой жидкости. Таблица и вывод сохраняются в этом браузере.</span><div class="actions"><button class="button" id="print" type="button">Печать / PDF</button><button class="button danger" id="clear" type="button">Очистить таблицу</button></div></div>
+    <aside class="note"><strong>Пример с видео.</strong> Для цилиндра 1 показания: в воде 0,54 − 0,32 = 0,22 Н; в растворе соли 0,54 − 0,28 = 0,26 Н. Для цилиндра 2: 0,28 − 0,18 = 0,10 Н и 0,28 − 0,16 = 0,12 Н. Введите свои измерения в таблицу выше.</aside>
+
+    <div class="conclusion"><div class="conclusion-label">Вывод</div><p id="conclusionText" aria-live="polite">Заполните таблицу — здесь появится сравнение для двух цилиндров и двух жидкостей.</p><p class="prompt">Сопоставьте полученные силы Архимеда для цилиндров разного объёма и для воды с раствором соли.</p></div>
+
+    <footer class="footer"><span>Лабораторная работа № 8</span><span>Физика · Измерения и вывод</span></footer>
+  </main>
+  <script>
+  (()=>{
+    const KEY='physics-lab-8-v2';
+    const body=document.querySelector('#resultsBody');
+    const fluids=[{id:'water',label:'Вода'},{id:'salt',label:'Насыщенный раствор соли в воде'}];
+    const empty=()=>Object.fromEntries(fluids.map(f=>[f.id,{air1:'',air2:'',liq1:'',liq2:''}]));
+    let records=empty();
+    const num=v=>{if(v===''||v===null||v===undefined)return null;const n=Number(String(v).replace(',','.'));return Number.isFinite(n)?n:null};
+    const fmt=n=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:3}).format(n);
+    const pair=(record,cylinder)=>{const air=num(record[`air${cylinder}`]),liq=num(record[`liq${cylinder}`]);return air===null||liq===null?null:air-liq;};
+    function save(){try{localStorage.setItem(KEY,JSON.stringify(records));document.querySelector('#saveStatus').textContent='Сохранено на этом устройстве';}catch{document.querySelector('#saveStatus').textContent='Автосохранение недоступно';}}
+    function render(){
+      body.replaceChildren();
+      fluids.forEach(fluid=>{
+        const tr=document.createElement('tr');tr.dataset.fluid=fluid.id;
+        tr.innerHTML=`<th scope="row" class="fluid-label">${fluid.label}</th><td><input data-k="air1" aria-label="Вес цилиндра 1 в воздухе, ${fluid.label}" inputmode="decimal" placeholder="Н"></td><td><input data-k="air2" aria-label="Вес цилиндра 2 в воздухе, ${fluid.label}" inputmode="decimal" placeholder="Н"></td><td><input data-k="liq1" aria-label="Показание для цилиндра 1 в жидкости, ${fluid.label}" inputmode="decimal" placeholder="Н"></td><td><input data-k="liq2" aria-label="Показание для цилиндра 2 в жидкости, ${fluid.label}" inputmode="decimal" placeholder="Н"></td><td class="calc" data-out="fa1">—</td><td class="calc" data-out="fa2">—</td>`;
+        tr.querySelectorAll('input').forEach(input=>{input.value=records[fluid.id]?.[input.dataset.k]||'';input.addEventListener('input',update);});body.append(tr);
+      });update();
+    }
+    function update(){
+      fluids.forEach(fluid=>{
+        const tr=body.querySelector(`[data-fluid="${fluid.id}"]`), record=records[fluid.id];
+        tr.querySelector('[data-out="fa1"]').textContent=pair(record,1)===null?'—':fmt(pair(record,1));
+        tr.querySelector('[data-out="fa2"]').textContent=pair(record,2)===null?'—':fmt(pair(record,2));
+        tr.querySelectorAll('input').forEach(input=>{record[input.dataset.k]=input.value;});
+      });
+      const water=records.water,salt=records.salt,w1=pair(water,1),w2=pair(water,2),s1=pair(salt,1),s2=pair(salt,2);
+      const formulas=[];
+      if(w1!==null)formulas.push(`в воде: ${fmt(num(water.air1))} − ${fmt(num(water.liq1))} = ${fmt(w1)} Н`);
+      if(w2!==null)formulas.push(`${formulas.length?'':'в воде: '}цилиндр 2: ${fmt(num(water.air2))} − ${fmt(num(water.liq2))} = ${fmt(w2)} Н`);
+      document.querySelector('#formulaExample').textContent=formulas.length?formulas.join(' · '):'Введите показания в таблицу →';
+      const conclusions=[];
+      [[1,w1,s1],[2,w2,s2]].forEach(([c,w,s])=>{if(w!==null&&s!==null){const relation=s>w?'больше в солевом растворе':s<w?'меньше в солевом растворе':'одинакова в обеих жидкостях';conclusions.push(`для цилиндра ${c}: ${fmt(w)} Н в воде и ${fmt(s)} Н в растворе соли — сила ${relation}`);}});
+      if(w1!==null&&w2!==null)conclusions.push(`в воде сила для цилиндра 1 ${w1>w2?'больше, чем':w1<w2?'меньше, чем':'равна'} для цилиндра 2`);
+      if(s1!==null&&s2!==null)conclusions.push(`в растворе соли сила для цилиндра 1 ${s1>s2?'больше, чем':s1<s2?'меньше, чем':'равна'} для цилиндра 2`);
+      const p=document.querySelector('#conclusionText');
+      p.textContent=conclusions.length?conclusions.join('; ')+'.':'Заполните показания в воздухе и в каждой жидкости — здесь появится сравнение выталкивающих сил.';
+      save();
+    }
+    document.querySelector('#print').addEventListener('click',()=>window.print());
+    document.querySelector('#clear').addEventListener('click',()=>{records=empty();render();});
+    try{const saved=JSON.parse(localStorage.getItem(KEY));if(saved&&typeof saved==='object')records={...empty(),...saved};}catch{}
+    render();
+  })();
+  </script>
+</body>
+</html>
