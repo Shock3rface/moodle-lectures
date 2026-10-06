@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ru"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#08a9df"><title>Лабораторная работа · Мощность при подъёме по лестнице</title>
+<style>
+:root{--blue:#08a9df;--dark:#087ca8;--ink:#202326;--muted:#677178;--line:#d8e0e4;--wash:#f4f8fa;--pale:#dff5fc;--grey:#e2e2e2;--shadow:0 18px 60px #22364312}
+*{box-sizing:border-box}body{margin:0;background:#edf2f4;color:var(--ink);font:16px/1.5 Georgia,"Times New Roman",serif}.page{max-width:1060px;margin:34px auto;background:#fff;box-shadow:var(--shadow);padding:38px 54px 46px}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:12px;color:var(--muted);font:600 12px/1.3 Arial,sans-serif;text-transform:uppercase;letter-spacing:.09em;margin-bottom:20px}.titlebar{display:grid;grid-template-columns:92px 1fr;margin-bottom:22px}.number{display:grid;place-items:center;background:var(--blue);color:#fff;font:800 27px/1 Arial,sans-serif;min-height:76px}h1{margin:0;background:var(--grey);padding:14px 26px;display:flex;align-items:center;font:800 clamp(20px,3vw,27px)/1.12 Arial,sans-serif;text-transform:uppercase}.lead{font-size:19px;margin:0 0 26px;color:#41484c}
+.meta{display:grid;grid-template-columns:160px 1fr;gap:12px 18px;margin:0 0 30px}.meta dt{font:700 14px/1.25 Arial,sans-serif}.meta dd{margin:0;font-size:19px;line-height:1.35}.section-ribbon{display:inline-block;margin:0 0 16px;background:var(--blue);color:#fff;padding:5px 12px;font:800 14px/1.1 Arial,sans-serif;letter-spacing:.045em;text-transform:uppercase}
+.steps{list-style:none;counter-reset:step;padding:0;margin:0 0 29px}.steps li{counter-increment:step;display:grid;grid-template-columns:30px 1fr;gap:12px;margin:0 0 14px;font-size:19px;line-height:1.35}.steps li:before{content:counter(step) ".";color:var(--blue);font:800 18px/1.45 Arial,sans-serif;text-align:right}.step-text{display:block}.note{background:#f5fbfd;border-left:4px solid var(--blue);padding:13px 16px;margin:22px 0 30px;color:#35444b;font-size:16px}.formula{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:16px 20px;margin:14px 0 24px;background:var(--pale);font-size:20px}.formula b{font-size:21px;color:var(--dark)}.formula small{font:14px/1.4 Arial,sans-serif;color:#52636a}
+.measure-box{display:grid;grid-template-columns:repeat(3,minmax(130px,1fr));gap:12px;padding:16px 18px;margin:12px 0 18px;background:var(--wash);border:1px solid var(--line)}.measure-box label{display:grid;gap:6px;font:700 14px/1.3 Arial,sans-serif}.measure-box input,.table-wrap input{width:100%;min-width:72px;border:1px solid #cad7dc;border-radius:4px;background:#fff;padding:9px;text-align:center;color:var(--ink);font:16px Georgia,serif}.measure-box input:focus,.table-wrap input:focus{outline:2px solid #81d9f4;border-color:var(--blue)}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:4px;margin:12px 0}.table-wrap table{border-collapse:collapse;width:100%;min-width:700px}th{background:#dff5fc;font:700 14px/1.3 Arial,sans-serif;text-align:center;padding:11px 9px;border:1px solid #fff;vertical-align:middle}td{padding:8px;border:1px solid var(--line);text-align:center;background:#fff}tbody tr:nth-child(even) td{background:#f6fbfd}.trial{font:700 15px Arial,sans-serif;color:var(--dark)}.calc{font-weight:700;color:#123847}.table-foot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--muted);font:13px/1.4 Arial,sans-serif}.actions{display:flex;gap:8px;flex-wrap:wrap}.button{border:1px solid #b8c9cf;background:#fff;color:#25343a;border-radius:5px;padding:9px 13px;cursor:pointer;font:700 13px Arial,sans-serif}.button:hover{border-color:var(--blue);color:var(--dark)}.danger{border-color:#e2c6c6;color:#9b4141}
+.conclusion{border:1px solid var(--line);background:var(--wash);padding:18px 20px;margin:18px 0 28px}.conclusion-label{font:800 14px Arial,sans-serif;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}.conclusion p{font-size:18px;margin:0;min-height:52px}.prompt{font:14px Arial,sans-serif;color:var(--muted);margin-top:9px!important}.footer{margin-top:40px;padding-top:10px;border-top:4px solid var(--blue);display:flex;justify-content:space-between;color:var(--muted);font:12px Arial,sans-serif}.source a{color:var(--dark)}
+@media(max-width:720px){.page{margin:0;padding:24px 18px 34px}.titlebar{grid-template-columns:66px 1fr}.number{min-height:70px;font-size:21px}h1{padding:12px 15px;font-size:20px}.meta{grid-template-columns:1fr;gap:5px;margin-bottom:24px}.meta dd{margin-bottom:10px}.steps li{grid-template-columns:26px 1fr;font-size:17px}.formula{font-size:18px;padding:13px}.measure-box{grid-template-columns:1fr}.footer{gap:12px;flex-wrap:wrap}.topline{align-items:flex-start;flex-direction:column}}
+@media print{body{background:#fff}.page{max-width:none;margin:0;box-shadow:none;padding:12mm;min-height:auto}.actions,.save-status{display:none!important}.table-wrap{overflow:visible}table{min-width:0!important}input{border:0!important;padding:2px!important}.note,.formula,.conclusion,.measure-box{break-inside:avoid}}
+</style></head><body><main class="page">
+<div class="topline"><span>Физика · 7 класс · лабораторный практикум</span><span id="saveStatus" class="save-status" aria-live="polite">Заполнение сохраняется на этом устройстве</span></div>
+<header class="titlebar"><div class="number">ЛР</div><h1>Расчёт мощности, развиваемой при подъёме по лестнице</h1></header>
+<p class="lead">Измерьте работу, которую совершаете при подъёме по лестнице, и рассчитайте среднюю мощность своего движения.</p>
+<dl class="meta"><dt>Цель работы</dt><dd>Научиться рассчитывать мощность человека при подъёме по лестнице и выяснить, от каких величин она зависит.</dd><dt>Оборудование и материалы</dt><dd>Часы или секундомер, линейка или измерительная лента, напольные весы, лестница.</dd></dl>
+<h2 class="section-ribbon">Техника безопасности</h2>
+<aside class="note"><strong>Перед началом.</strong> Держитесь за перила, поднимайтесь и спускайтесь осторожно, ставьте ступню полностью. Не бегите, не перепрыгивайте через ступени, не обгоняйте и не толкайте других. На лестнице двигайтесь по одному.</aside>
+<h2 class="section-ribbon">Указания к работе</h2>
+<ol class="steps">
+<li><span class="step-text">Измерьте массу тела на напольных весах и запишите её в килограммах.</span></li>
+<li><span class="step-text">Измерьте высоту одной ступени h и подсчитайте количество ступеней n на выбранном лестничном пролёте. Используйте один и тот же пролёт во всех попытках.</span></li>
+<li><span class="step-text">Рассчитайте силу тяжести F = mg и высоту подъёма R = hn. Примите g = 9,8 Н/кг.</span></li>
+<li><span class="step-text">Поднимитесь по выбранному пролёту в обычном безопасном темпе. Измерьте время подъёма t. Повторите опыт трижды, не бегая и не подвергая себя риску.</span></li>
+<li><span class="step-text"><strong>Обработка результатов измерений.</strong> Найдите работу A = FR, совершённую при подъёме, и среднюю мощность N = A/t. Запишите результаты в таблицу.</span></li>
+<li><span class="step-text">Сравните мощность в попытках и обсудите, как на неё влияют масса тела, высота подъёма и время движения. Сформулируйте вывод.</span></li></ol>
+<aside class="note"><strong>Важно.</strong> Измеряйте время для того же пролёта, для которого определили высоту подъёма. Не ускоряйтесь до бега: безопасность важнее результата.</aside>
+<h2 class="section-ribbon">Формулы для расчёта</h2>
+<div class="formula"><span>F = mg</span><span>R = hn</span><span>A = FR</span><b>N = A/t</b><small>m — масса тела, h — высота ступени, n — число ступеней, t — время подъёма. Единицы: кг, м, с; работа — Дж, мощность — Вт.</small></div>
+<h2 class="section-ribbon">Ход исследования</h2>
+<div class="measure-box"><label for="mass">Масса тела m, кг<input id="mass" inputmode="decimal" aria-label="Масса тела в килограммах" placeholder="кг"></label><label for="stepHeight">Высота ступени h, м<input id="stepHeight" inputmode="decimal" aria-label="Высота ступени в метрах" placeholder="м"></label><label for="stepCount">Количество ступеней n<input id="stepCount" inputmode="numeric" aria-label="Количество ступеней" placeholder="ступеней"></label></div>
+<div class="table-wrap"><table aria-label="Измерения времени и расчёт мощности при подъёме по лестнице"><thead><tr><th>№ опыта</th><th>Время подъёма t, с</th><th>Сила тяжести F = mg, Н</th><th>Высота подъёма R = hn, м</th><th>Работа A = FR, Дж</th><th>Мощность N = A/t, Вт</th></tr></thead><tbody id="results"></tbody></table></div>
+<div class="table-foot"><span>Введите измерения. Таблица сохраняется в этом браузере.</span><div class="actions"><button class="button" id="print" type="button">Печать / PDF</button><button class="button danger" id="clear" type="button">Очистить таблицу</button></div></div>
+<div class="conclusion"><div class="conclusion-label">Вывод</div><p id="conclusion">Заполните массу, параметры лестницы и время подъёма. Сравните мощность в трёх попытках.</p><p class="prompt">При одинаковой работе сокращение времени увеличивает мощность. Для одного человека на том же пролёте работа почти постоянна, поэтому мощность зависит прежде всего от времени подъёма.</p></div>
+<h2 class="section-ribbon">Вопросы для обсуждения</h2>
+<ol class="steps"><li><span class="step-text">Как меняется мощность при увеличении высоты подъёма, если масса тела и время остаются одинаковыми?</span></li><li><span class="step-text">Как изменится мощность на том же лестничном пролёте, если подняться за большее время?</span></li><li><span class="step-text">Предложите безопасный способ получить большее или меньшее значение мощности в исследовании.</span></li></ol>
+<p class="source">Материал: <a href="https://multiurok.ru/files/urok-issledovanie-raschet-moshchnosti-razvivaemo-1.html" target="_blank" rel="noopener">урок-исследование «Расчёт мощности при подъёме по лестнице»</a>.</p>
+<footer class="footer"><span>Лабораторная работа · Мощность</span><span>Физика · Измерения и вывод</span></footer></main>
+<script>
+(()=>{const KEY='physics-lab-stairs-power-v1',body=document.querySelector('#results'),mass=document.querySelector('#mass'),height=document.querySelector('#stepHeight'),count=document.querySelector('#stepCount');let data={mass:'',height:'',count:'',times:['','','']};const num=x=>{if(x===''||x==null)return null;const n=Number(String(x).replace(',','.'));return Number.isFinite(n)?n:null},fmt=x=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:3}).format(x);
+function save(){try{localStorage.setItem(KEY,JSON.stringify(data));document.querySelector('#saveStatus').textContent='Сохранено на этом устройстве'}catch{document.querySelector('#saveStatus').textContent='Автосохранение недоступно'}}
+function render(){body.replaceChildren();data.times.forEach((t,i)=>{const tr=document.createElement('tr');tr.innerHTML='<th scope="row" class="trial">'+(i+1)+'</th><td><input data-time="'+i+'" aria-label="Время подъёма, опыт '+(i+1)+', секунды" inputmode="decimal" placeholder="с" value="'+t+'"></td><td class="calc" data-force="'+i+'">—</td><td class="calc" data-distance="'+i+'">—</td><td class="calc" data-work="'+i+'">—</td><td class="calc" data-power="'+i+'">—</td>';body.append(tr)});mass.value=data.mass;height.value=data.height;count.value=data.count;document.querySelectorAll('#mass,#stepHeight,#stepCount,[data-time]').forEach(el=>el.addEventListener('input',update));update()}
+function update(){data.mass=mass.value;data.height=height.value;data.count=count.value;const m=num(data.mass),h=num(data.height),n=num(data.count),force=m===null?null:m*9.8,distance=h===null||n===null?null:h*n,work=force===null||distance===null?null:force*distance;const powers=[];body.querySelectorAll('tr').forEach((row,i)=>{const input=row.querySelector('[data-time="'+i+'"]');data.times[i]=input.value;const t=num(input.value),power=work===null||t===null||t<=0?null:work/t;row.querySelector('[data-force="'+i+'"]').textContent=force===null?'—':fmt(force);row.querySelector('[data-distance="'+i+'"]').textContent=distance===null?'—':fmt(distance);row.querySelector('[data-work="'+i+'"]').textContent=work===null?'—':fmt(work);row.querySelector('[data-power="'+i+'"]').textContent=power===null?'—':fmt(power);if(power!==null)powers.push(power)});let result='Заполните массу, параметры лестницы и время подъёма. Сравните мощность в трёх попытках.';if(powers.length){const avg=powers.reduce((a,b)=>a+b,0)/powers.length;result='Средняя мощность по заполненным попыткам — '+fmt(avg)+' Вт. При одинаковой работе более короткое время подъёма даёт большую мощность. Сравните результаты и укажите возможные причины различий.'}document.querySelector('#conclusion').textContent=result;save()}
+document.querySelector('#print').addEventListener('click',()=>window.print());document.querySelector('#clear').addEventListener('click',()=>{data={mass:'',height:'',count:'',times:['','','']};render()});try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&Array.isArray(s.times))data={mass:s.mass||'',height:s.height||'',count:s.count||'',times:Array.from({length:3},(_,i)=>s.times[i]||'')}}catch{}render()})();
+</script>
+
+<script>
+function resizeIframe() {
+    const container = document.querySelector('.page') || document.body;
+    
+    const style = window.getComputedStyle(container);
+    const marginTop = parseFloat(style.marginTop) || 0;
+    const marginBottom = parseFloat(style.marginBottom) || 0;
+    
+    const height = container.offsetHeight + marginTop + marginBottom;
+    
+    window.parent.postMessage({
+        type: "resizeIframe",
+        height: Math.ceil(height)
+    }, "*");
+}
+
+window.addEventListener("load", resizeIframe);
+window.addEventListener("resize", resizeIframe);
+
+const target = document.querySelector('.page') || document.body;
+new ResizeObserver(resizeIframe).observe(target);
+</script>
+</body></html>
