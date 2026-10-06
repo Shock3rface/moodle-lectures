@@ -114,7 +114,7 @@
   function save(){
     try{
       localStorage.setItem(KEY,JSON.stringify(data));
-      document.querySelector('#saveStatus').textContent='Сохранено на этом устройстве';
+      document.querySelector('#saveStatus').textContent='';
     }catch{
       document.querySelector('#saveStatus').textContent='Автосохранение недоступно';
     }
