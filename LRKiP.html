@@ -26,4 +26,252 @@
 .sim-btn:disabled{background:var(--muted);cursor:not-allowed}
 
 @media(max-width:720px){.page{margin:0;padding:24px 18px 34px}.titlebar{grid-template-columns:66px 1fr}.number{min-height:70px;font-size:21px}h1{padding:12px 15px;font-size:20px}.meta{grid-template-columns:1fr;gap:5px;margin-bottom:24px}.meta dd{margin-bottom:10px}.steps li{grid-template-columns:26px 1fr;font-size:17px}.formula{font-size:18px;padding:13px}.massbox{align-items:stretch;flex-direction:column;gap:8px}.massbox input{width:100%}.footer{gap:12px;flex-wrap:wrap}.topline{align-items:flex-start;flex-direction:column}}
-@media print{body{background:#fff}.page{max-width:none;margin:0;box-shadow:none;padding:12mm;min-height:auto}.actions,.save-status,.lab-simulator
+@media print{body{background:#fff}.page{max-width:none;margin:0;box-shadow:none;padding:12mm;min-height:auto}.actions,.save-status,.lab-simulator{display:none!important}.table-wrap{overflow:visible}table{min-width:0!important}input{border:0!important;padding:2px!important}.note,.formula,.conclusion{break-inside:avoid}}
+</style></head><body><main class="page">
+<div class="topline"><span>Физика · 7 класс · лабораторный практикум</span><span id="saveStatus" class="save-status" aria-live="polite">Заполнение сохраняется на этом устройстве</span></div>
+<header class="titlebar"><div class="number">ЛР</div><h1>Экспериментальное определение изменения кинетической и потенциальной энергии при скатывании тела по наклонной плоскости</h1></header>
+<p class="lead">Исследуйте, как при спуске шарика потенциальная энергия превращается в кинетическую, и сравните механическую энергию в начале и конце движения.</p>
+<dl class="meta"><dt>Цель работы</dt><dd>Определить потенциальную и кинетическую энергию шарика при движении по наклонной плоскости и сравнить полную механическую энергию в начале и конце спуска.</dd><dt>Приборы и материалы</dt><dd>Шарик, наклонная плоскость с желобом, линейка, секундомер, весы.</dd></dl>
+<h2 class="section-ribbon">Указания к работе</h2>
+<ol class="steps">
+<li><span class="step-text">Соберите установку с наклонной плоскостью и желобом. Измерьте массу шарика на весах и переведите её в килограммы.</span></li>
+<li><span class="step-text">Отметьте на наклонной плоскости три точки запуска: вверху, посередине и ближе к концу. Измерьте для каждого положения путь шарика S и высоту h₀ относительно нижнего конца желоба.</span></li>
+<li><span class="step-text">Отпускайте шарик без толчка. Для каждого положения измерьте время движения t от точки старта до конца желоба. Повторите опыт три раза, сохраняя те же точки запуска.</span></li>
+<li><span class="step-text"><strong>Обработка результатов измерений.</strong> Найдите скорость в конце спуска по формуле v = 2S/t (шарик начинает движение из состояния покоя с приблизительно постоянным ускорением).</span></li>
+<li><span class="step-text">Рассчитайте начальную потенциальную энергию Eₚ₀ = mgh₀ и конечную кинетическую энергию Eₖ = mv²/2. В начале спуска Eₖ₀ = 0, в конце спуска Eₚ = 0, если за нулевой уровень принять конец желоба.</span></li>
+<li><span class="step-text">Сравните полную механическую энергию в начале и конце спуска. Объясните, почему измеренная кинетическая энергия может оказаться меньше начальной потенциальной энергии.</span></li></ol>
+
+<h2 class="section-ribbon">Интерактивная лабораторная установка</h2>
+<div class="lab-simulator">
+  <div class="sim-container" id="simContainer">
+    <svg id="simSvg" width="100%" height="100%" viewBox="0 0 700 240" preserveAspectRatio="xMidYMid meet">
+      <rect x="0" y="210" width="700" height="30" fill="#e2e8f0"/>
+      <polygon id="rampPoly" points="100,60 100,210 600,210" fill="#cbd5e1" stroke="#94a3b8" stroke-width="2"/>
+      <line x1="100" y1="210" x2="600" y2="210" stroke="#64748b" stroke-width="3"/>
+      <circle cx="150" cy="90" r="4" fill="#087ca8"/>
+      <text x="145" y="80" font-size="11" fill="#087ca8" font-family="Arial">Опыт 1 (Верх)</text>
+      <circle cx="275" cy="127.5" r="4" fill="#087ca8"/>
+      <text x="250" y="120" font-size="11" fill="#087ca8" font-family="Arial">Опыт 2 (Сред.)</text>
+      <circle cx="400" cy="165" r="4" fill="#087ca8"/>
+      <text x="385" y="157" font-size="11" fill="#087ca8" font-family="Arial">Опыт 3 (Низ)</text>
+      <circle id="ball" cx="150" cy="80" r="10" fill="#08a9df" stroke="#087ca8" stroke-width="2"/>
+    </svg>
+  </div>
+  <div class="sim-controls">
+    <div class="sim-control-group">
+      <label for="simTrialSelect">Выберите точку запуска:</label>
+      <select id="simTrialSelect" style="padding:8px;border:1px solid #cad7dc;border-radius:4px;font:15px Georgia,serif;">
+        <option value="0">Опыт 1 (Верхняя точка)</option>
+        <option value="1">Опыт 2 (Средняя точка)</option>
+        <option value="2">Опыт 3 (Нижняя точка)</option>
+      </select>
+    </div>
+    <div class="sim-control-group">
+      <label for="simMassRange">Масса шарика m: <span id="simMassVal">0.05</span> кг</label>
+      <input type="range" id="simMassRange" min="0.01" max="0.20" step="0.01" value="0.05">
+    </div>
+  </div>
+  <div class="sim-panel-row">
+    <div>
+      <span>Путь S: <b id="simS">—</b> м</span> | 
+      <span>Высота h₀: <b id="simH">—</b> м</span> | 
+      <span>Время t: <b id="simT">—</b> с</span>
+    </div>
+    <button class="sim-btn" id="simRunBtn" type="button">Запустить эксперимент</button>
+  </div>
+  <div style="margin-top: 12px; text-align: right;">
+    <button class="button" id="simTransferBtn" type="button">Перенести данные в таблицу измерений</button>
+  </div>
+</div>
+
+<aside class="note"><strong>Измерения.</strong> Массу шарика введите один раз в килограммах. Для каждого опыта внесите путь S в метрах, высоту h₀ в метрах и время t в секундах. Таблицы рассчитают скорость и энергии; значения сохраняются в этом браузере.</aside>
+<h2 class="section-ribbon">Формулы для расчёта</h2>
+<div class="formula"><span>v = 2S/t</span><span>Eₚ = mgh</span><span>Eₖ = mv²/2</span><b>g = 10 Н/кг</b><small>В начале спуска Eₖ₀ = 0; у конца желоба Eₚ = 0. Полная энергия E = Eₚ + Eₖ.</small></div>
+<h2 class="section-ribbon">Результаты измерений</h2>
+<div class="massbox"><label for="massInput"><strong>Масса шарика m, кг</strong></label> <input id="massInput" aria-label="Масса шарика в килограммах" inputmode="decimal" placeholder="например, 0,05"></div>
+<div class="table-wrap"><table aria-label="Результаты измерений движения шарика по наклонной плоскости"><thead><tr><th>№ опыта</th><th>Путь S, м</th><th>Высота h₀, м</th><th>Время t, с</th><th>Скорость v = 2S/t, м/с</th></tr></thead><tbody id="measurements"></tbody></table></div>
+<h2 class="section-ribbon subhead">Расчёт энергий</h2>
+<div class="table-wrap"><table aria-label="Расчёт кинетической и потенциальной энергии"><thead><tr><th>№ опыта</th><th>Eₚ в начале, Дж</th><th>Eₖ в начале, Дж</th><th>Eₚ в конце, Дж</th><th>Eₖ в конце, Дж</th><th>Eполная в начале, Дж</th><th>Eполная в конце, Дж</th></tr></thead><tbody id="energies"></tbody></table></div>
+<div class="table-foot"><span>Введите собственные измерения. Расчёты обновляются автоматически.</span><div class="actions"><button class="button" id="print" type="button">Печать / PDF</button><button class="button danger" id="clear" type="button">Очистить таблицу</button></div></div>
+<div class="conclusion"><div class="conclusion-label">Вывод</div><p id="conclusion">Заполните результаты измерений и сравните полную механическую энергию в начале и конце движения шарика.</p><p class="prompt">Объясните разницу работой силы трения качения и сопротивления воздуха: часть механической энергии переходит во внутреннюю энергию.</p></div>
+<h2 class="section-ribbon">Дополнительные задания</h2>
+<ol class="steps"><li><span class="step-text">Во сколько раз уменьшится кинетическая энергия тела, если его скорость уменьшится в 4 раза?</span></li><li><span class="step-text">Шар массой 2 кг падает с высоты 100 м из состояния покоя. Найдите кинетическую энергию перед ударом о землю, считая сопротивлением воздуха пренебрежимо малым и g = 10 Н/кг.</span></li></ol>
+<p class="source">Материал: <a href="https://nsportal.ru/shkola/fizika/library/2025/05/11/eksperimentalnoe-opredelenie-izmeneniya-kineticheskoy-i" target="_blank" rel="noopener">методическая разработка по лабораторной работе</a>.</p>
+<footer class="footer"><span>Лабораторная работа · Механическая энергия</span><span>Физика · Измерения и вывод</span></footer></main>
+
+<script>
+(()=>{
+  // --- ЛОГИКА ТАБЛИЦ И РАСЧЁТОВ ---
+  const KEY='physics-lab-mechanical-energy-v1';
+  const measurements=document.querySelector('#measurements');
+  const energies=document.querySelector('#energies');
+  const massInput=document.querySelector('#massInput');
+
+  let data={mass:'',rows:Array.from({length:3},()=>({s:'',h:'',t:''}))};
+
+  const num=v=>{if(v===''||v==null)return null;const n=Number(String(v).replace(',','.'));return Number.isFinite(n)?n:null};
+  const fmt=n=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:3}).format(n);
+
+  function save(){
+    try{
+      localStorage.setItem(KEY,JSON.stringify(data));
+      document.querySelector('#saveStatus').textContent='Сохранено на этом устройстве';
+    }catch{
+      document.querySelector('#saveStatus').textContent='Автосохранение недоступно';
+    }
+  }
+
+  function render(){
+    measurements.replaceChildren();
+    energies.replaceChildren();
+    
+    data.rows.forEach((r,i)=>{
+      const tr=document.createElement('tr');
+      tr.innerHTML=`<th class="trial" scope="row">${i+1}</th>`+
+        `<td><input data-row="${i}" data-key="s" aria-label="Путь опыта ${i+1} в метрах" inputmode="decimal" placeholder="м" value="${r.s}"></td>`+
+        `<td><input data-row="${i}" data-key="h" aria-label="Высота опыта ${i+1} в метрах" inputmode="decimal" placeholder="м" value="${r.h}"></td>`+
+        `<td><input data-row="${i}" data-key="t" aria-label="Время опыта ${i+1} в секундах" inputmode="decimal" placeholder="с" value="${r.t}"></td>`+
+        `<td class="calc" data-speed="${i}">—</td>`;
+      measurements.append(tr);
+
+      const er=document.createElement('tr');
+      er.innerHTML=`<th class="trial" scope="row">${i+1}</th>`+
+        `<td class="calc" data-ep0="${i}">—</td>`+
+        `<td>0</td><td>0</td>`+
+        `<td class="calc" data-ek="${i}">—</td>`+
+        `<td class="calc" data-etot0="${i}">—</td>`+
+        `<td class="calc" data-etotk="${i}">—</td>`;
+      energies.append(er);
+    });
+    
+    measurements.querySelectorAll('input').forEach(input=>input.addEventListener('input',update));
+    massInput.value=data.mass||'';
+    update();
+  }
+
+  function update(){
+    data.mass=massInput.value;
+    const m=num(data.mass);
+    measurements.querySelectorAll('tr').forEach((row,i)=>{
+      const r=data.rows[i];
+      row.querySelectorAll('input').forEach(input=>{r[input.dataset.key]=input.value;});
+      
+      const s=num(r.s), h=num(r.h), t=num(r.t);
+      const v=(s!==null && t!==null && t>0) ? 2*s/t : null;
+      row.querySelector(`[data-speed="${i}"]`).textContent = v===null ? '—' : fmt(v);
+
+      const er = energies.querySelectorAll('tr')[i];
+      const ep0 = (m!==null && h!==null) ? m * 10 * h : null;
+      const ek = (m!==null && v!==null) ? 0.5 * m * v * v : null;
+
+      er.querySelector(`[data-ep0="${i}"]`).textContent = ep0===null ? '—' : fmt(ep0);
+      er.querySelector(`[data-ek="${i}"]`).textContent = ek===null ? '—' : fmt(ek);
+      er.querySelector(`[data-etot0="${i}"]`).textContent = ep0===null ? '—' : fmt(ep0);
+      er.querySelector(`[data-etotk="${i}"]`).textContent = ek===null ? '—' : fmt(ek);
+    });
+    save();
+  }
+
+  massInput.addEventListener('input',update);
+  document.querySelector('#print').addEventListener('click',()=>window.print());
+  document.querySelector('#clear').addEventListener('click',()=>{
+    data={mass:'',rows:Array.from({length:3},()=>({s:'',h:'',t:''}))};
+    render();
+  });
+
+  try{
+    const s=JSON.parse(localStorage.getItem(KEY));
+    if(s && Array.isArray(s.rows)){
+      data={mass:s.mass||'',rows:Array.from({length:3},(_,i)=>s.rows[i]||{s:'',h:'',t:''})};
+    }
+  }catch{}
+  render();
+
+  // --- ЛОГИКА СИМУЛЯТОРА ---
+  const trials = [
+    { s: 1.0, h: 0.3, t: 1.15, cx: 150, cy: 80 },
+    { s: 0.75, h: 0.225, t: 1.0, cx: 275, cy: 117.5 },
+    { s: 0.5, h: 0.15, t: 0.81, cx: 400, cy: 155 }
+  ];
+  
+  const simTrialSelect = document.querySelector('#simTrialSelect');
+  const simMassRange = document.querySelector('#simMassRange');
+  const simMassVal = document.querySelector('#simMassVal');
+  const simRunBtn = document.querySelector('#simRunBtn');
+  const simTransferBtn = document.querySelector('#simTransferBtn');
+  const ball = document.querySelector('#ball');
+  
+  simMassRange.addEventListener('input', () => { simMassVal.textContent = simMassRange.value; });
+  
+  simTrialSelect.addEventListener('change', () => {
+     const tr = trials[simTrialSelect.value];
+     ball.style.transition = 'none';
+     ball.setAttribute('cx', tr.cx);
+     ball.setAttribute('cy', tr.cy);
+  });
+
+  simRunBtn.addEventListener('click', () => {
+    const idx = simTrialSelect.value;
+    const tr = trials[idx];
+    
+    document.querySelector('#simS').textContent = tr.s;
+    document.querySelector('#simH').textContent = tr.h;
+    document.querySelector('#simT').textContent = tr.t;
+    
+    simRunBtn.disabled = true;
+    ball.style.transition = `all ${tr.t}s cubic-bezier(0.5, 0, 1, 1)`;
+    ball.setAttribute('cx', 600);
+    ball.setAttribute('cy', 200); 
+    
+    setTimeout(() => {
+      ball.style.transition = 'none';
+      ball.setAttribute('cx', tr.cx);
+      ball.setAttribute('cy', tr.cy);
+      simRunBtn.disabled = false;
+    }, tr.t * 1000 + 500);
+  });
+
+  simTransferBtn.addEventListener('click', () => {
+    const idx = simTrialSelect.value;
+    const tr = trials[idx];
+    
+    massInput.value = simMassRange.value;
+    massInput.dispatchEvent(new Event('input'));
+    
+    const row = measurements.children[idx];
+    if(row) {
+       const inputs = row.querySelectorAll('input');
+       inputs[0].value = tr.s;
+       inputs[1].value = tr.h;
+       inputs[2].value = tr.t;
+       inputs[0].dispatchEvent(new Event('input'));
+    }
+  });
+})();
+</script>
+
+<script>
+// Автоматический ресайз высоты iframe
+function resizeIframe() {
+    const container = document.querySelector('.page') || document.body;
+    
+    const style = window.getComputedStyle(container);
+    const marginTop = parseFloat(style.marginTop) || 0;
+    const marginBottom = parseFloat(style.marginBottom) || 0;
+    
+    const height = container.offsetHeight + marginTop + marginBottom;
+    
+    window.parent.postMessage({
+        type: "resizeIframe",
+        height: Math.ceil(height)
+    }, "*");
+}
+
+window.addEventListener("load", resizeIframe);
+window.addEventListener("resize", resizeIframe);
+
+const target = document.querySelector('.page') || document.body;
+new ResizeObserver(resizeIframe).observe(target);
+</script>
+</body>
+</html>
