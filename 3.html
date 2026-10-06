@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мир под давлением | Интерактивный урок</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- MathJax for Formulas -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+    </script>
+
+    <!-- Mermaid for Flowcharts -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+
+    <!-- Lenis & GSAP for Smooth Scroll and Animations -->
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.39/dist/lenis.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#0ea5e9',
+                        secondary: '#3b82f6',
+                        dark: '#0f172a',
+                        light: '#f8fafc'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        
+        /* Исправление конфликта Tailwind CSS и MathJax: возвращаем инлайн-формулам строчное поведение */
+        mjx-container svg {
+            display: inline !important;
+        }
+        mjx-container[display="true"] svg {
+            display: block !important;
+            margin: auto;
+        }
+
+        .gradient-text {
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+        
+        /* Interactive Blueprint Background */
+        .interactive-bg {
+            background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+        }
+        /* Force Mermaid SVG to render large and clear */
+        #mindmap-content .mermaid > svg {
+            min-width: 900px;
+            max-width: none !important;
+            height: auto;
+            filter: drop-shadow(0 10px 15px -3px rgba(0, 0, 0, 0.1));
+        }
+
+        /* Custom Lab Styles - Увеличенные и отцентрированные размеры для банки */
+        .can-wrapper { position: relative; width: 130px; height: 180px; margin: 0 auto; perspective: 600px; display: flex; align-items: center; justify-content: center; }
+        .the-can { width: 110px; height: 160px; background: linear-gradient(to right, #94a3b8, #e2e8f0, #94a3b8); border-radius: 12px; transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94); position: relative; overflow: hidden; border: 2px solid #64748b; z-index: 2; }
+        .the-can::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 14px; background: rgba(0,0,0,0.2); border-radius: 50%; z-index: 3; }
+        .the-can::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 14px; background: rgba(0,0,0,0.2); border-radius: 50%; z-index: 3; }
+        .the-can.crushed { transform: scaleX(0.75) scaleY(0.85) skew(6deg, -3deg) rotate(-2deg); border-radius: 25px 15px 35px 20px; box-shadow: inset 20px 0 30px rgba(0,0,0,0.6); }
+        
+        /* Внутренности банки: вода и кипение */
+        .can-water { position: absolute; bottom: 0; left: 0; right: 0; height: 45px; background: rgba(14, 165, 233, 0.65); transition: height 1s ease; z-index: 1; }
+        .can-bubbles { position: absolute; bottom: 0; left: 0; right: 0; height: 45px; overflow: hidden; opacity: 0; transition: opacity 0.5s; z-index: 2; pointer-events: none; }
+        .can-bubbles.active { opacity: 1; }
+        .bubble { position: absolute; background: rgba(255,255,255,0.8); border-radius: 50%; animation: bubbleRise 0.8s infinite ease-in; }
+        @keyframes bubbleRise { 0% { transform: translateY(0) scale(0.6); opacity: 0.8; } 100% { transform: translateY(-40px) scale(1.3); opacity: 0; } }
+
+        .steam-container { position: absolute; top: -65px; left: 50%; transform: translateX(-50%); width: 80px; height: 70px; pointer-events: none; opacity: 0; transition: opacity 0.8s; z-index: 10;}
+        .steam-container.active { opacity: 1; }
+        .steam-particle { position: absolute; bottom: 0; background: rgba(255,255,255,0.75); border-radius: 50%; filter: blur(5px); animation: steamRise 1.2s infinite ease-out; }
+        @keyframes steamRise { 0% { transform: translateY(0) scale(1); opacity: 0.9; } 100% { transform: translateY(-55px) scale(2.5); opacity: 0; } }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased selection:bg-primary selection:text-white">
+
+    <header class="relative bg-dark text-white overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <!-- Decorative background pattern -->
+            <svg class="absolute right-0 top-0 h-full w-full object-cover opacity-20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+                <path fill="#0ea5e9" fill-opacity="1" d="M0,192L48,197.3C96,203,192,213,288,229.3C384,245,480,267,576,250.7C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+            </svg>
+        </div>
+        <div class="container mx-auto px-6 py-24 md:py-32 relative z-10 flex flex-col items-center text-center">
+            <div class="inline-flex items-center justify-center px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-6">
+                <i class="fa-solid fa-graduation-cap text-primary mr-2"></i>
+                <span class="text-sm font-medium tracking-wide uppercase">Физика • 7 Класс</span>
+            </div>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight">
+                Мир под <span class="bg-gradient-to-r from-primary to-cyan-400 gradient-text">давлением</span>
+            </h1>
+            <p class="text-lg md:text-2xl text-slate-300 max-w-3xl mb-10 leading-relaxed">
+                Погрузитесь в изучение давления в твёрдых телах, жидкостях и газах через живые примеры, интерактивные эксперименты и научные визуализации.
+            </p>
+            <div class="flex gap-4">
+                <a href="#theory" class="bg-primary hover:bg-sky-400 text-white font-semibold py-3 px-8 rounded-full shadow-lg shadow-primary/30 transition-all duration-300">
+                    Начать изучение
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-16 space-y-24">
+        
+        <!-- Section: Theory & Formulas -->
+        <section id="theory" class="scroll-mt-24">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-dark mb-4">Ключевые понятия и формулы</h2>
+                <div class="w-24 h-1 bg-primary mx-auto rounded-full"></div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Concept 1 -->
+                <div class="bg-white rounded-3xl p-8 shadow-xl shadow-slate-200/50 card-hover border border-slate-100">
+                    <div class="w-14 h-14 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-2xl mb-6">
+                        <i class="fa-solid fa-down-left-and-up-right-to-center"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Давление твердых тел</h3>
+                    <p class="text-slate-600 mb-4 text-sm leading-relaxed">Скалярная величина, равная отношению нормальной силы \( F \) к площади опоры \( S \). Чем меньше площадь, тем больше давление.</p>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 text-center font-semibold text-lg overflow-x-auto">
+                        $$P = \frac{F}{S}$$
+                    </div>
+                    <p class="text-xs text-slate-400 mt-3 text-center">Единица измерения: Паскаль (1 Па = 1 Н/м²)</p>
+                </div>
+
+                <!-- Concept 2 -->
+                <div class="bg-white rounded-3xl p-8 shadow-xl shadow-slate-200/50 card-hover border border-slate-100">
+                    <div class="w-14 h-14 bg-cyan-100 text-cyan-600 rounded-2xl flex items-center justify-center text-2xl mb-6">
+                        <i class="fa-solid fa-water"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Гидростатика</h3>
+                    <p class="text-slate-600 mb-4 text-sm leading-relaxed">Давление в покоящейся жидкости из-за её веса. Оно линейно растёт с глубиной \( h \). Плотность \( \rho \) и ускорение свободного падения \( g \).</p>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 text-center font-semibold text-lg overflow-x-auto">
+                        $$p = p_0 + \rho g h$$
+                    </div>
+                    <p class="text-xs text-slate-400 mt-3 text-center">На каждые 10 м глубины добавляется ~1 атм.</p>
+                </div>
+
+                <!-- Concept 3 -->
+                <div class="bg-white rounded-3xl p-8 shadow-xl shadow-slate-200/50 card-hover border border-slate-100">
+                    <div class="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center text-2xl mb-6">
+                        <i class="fa-solid fa-arrows-to-circle"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Закон Паскаля</h3>
+                    <p class="text-slate-600 mb-4 text-sm leading-relaxed">В статической жидкости (и газе) давление действует во все стороны одинаково. Основа работы гидравлического пресса.</p>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 flex items-center justify-center min-h-[72px]">
+                        <span class="text-slate-700 font-medium italic text-center">Давление передается без изменений по всем направлениям.</span>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-3 text-center">Открыт в 1647 году.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Mind Map -->
+        <section class="bg-white rounded-3xl p-8 shadow-lg shadow-slate-200/50 border border-slate-100">
+            <h3 class="text-2xl font-bold text-dark mb-6 text-center">Структура явлений</h3>
+            
+            <div class="relative group">
+                <!-- Панель управления масштабом -->
+                <div class="absolute top-4 right-4 z-10 flex flex-col gap-1 bg-white/90 backdrop-blur shadow-md border border-slate-200 rounded-lg p-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <button id="zoom-in" class="w-8 h-8 flex items-center justify-center rounded hover:bg-slate-100 text-slate-700 transition-colors" title="Увеличить"><i class="fa-solid fa-plus"></i></button>
+                    <div class="w-full h-px bg-slate-200"></div>
+                    <button id="zoom-out" class="w-8 h-8 flex items-center justify-center rounded hover:bg-slate-100 text-slate-700 transition-colors" title="Уменьшить"><i class="fa-solid fa-minus"></i></button>
+                    <div class="w-full h-px bg-slate-200"></div>
+                    <button id="zoom-reset" class="w-8 h-8 flex items-center justify-center rounded hover:bg-slate-100 text-slate-700 transition-colors" title="Сбросить"><i class="fa-solid fa-expand"></i></button>
+                </div>
+
+                <!-- Интерактивный холст -->
+                <div id="mindmap-container" class="w-full h-[500px] border-2 border-dashed border-slate-200 rounded-2xl relative overflow-hidden bg-slate-50 cursor-grab interactive-bg shadow-inner">
+                    <div id="mindmap-content" class="w-full h-full flex items-center justify-center origin-center will-change-transform">
+                        <div class="mermaid text-center" style="background: transparent;">
+                            flowchart LR
+                            A[Давление] --> B["P = F / S"]
+                            A --> C["**Гидростатика**<br/>(p = p_0 + ρgh)"]
+                            A --> D["**Паскаль**<br/>(статическая жидкость)"]
+                            A --> E["**Единицы**<br/>(Па = Н/м²)"]
+                            C --> F["глубина ➜ давление"]
+                            D --> G["Гидравлический пресс<br/>применяет закон Паскаля"]
+                            A --> H["Силы в средах"]
+                            H --> I["Твёрдые тела"]
+                            H --> J["Жидкости"]
+                            H --> K["Газы"]
+                            I --> I1["давление стопы на землю"]
+                            J --> J1["подводное давление<br/>(глубина)"]
+                            K --> K1["атмосферное давление<br/>(высота)"]
+                            
+                            %% Styling
+                            classDef default fill:#ffffff,stroke:#cbd5e1,stroke-width:2px,color:#334155,rx:12px,ry:12px;
+                            classDef main fill:#e0f2fe,stroke:#0ea5e9,stroke-width:3px,color:#0369a1,font-weight:bold,rx:12px,ry:12px;
+                            class A,H main;
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Подсказка -->
+                <div class="absolute bottom-4 left-0 right-0 flex justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div class="bg-dark/80 backdrop-blur text-white text-xs px-4 py-2 rounded-full shadow-lg flex items-center gap-2">
+                        <i class="fa-solid fa-hand-pointer text-primary"></i>
+                        <span>Колесико для масштаба, тяните для перемещения</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Examples in Nature & Tech -->
+        <section>
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-dark mb-4">Давление в природе и технике</h2>
+                <div class="w-24 h-1 bg-primary mx-auto rounded-full mb-4"></div>
+                <p class="text-slate-500">Удивительные факты о том, как физика работает в реальной жизни.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Example: Giraffe -->
+                <div class="flex flex-col md:flex-row bg-white rounded-3xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-slate-100 group">
+                    <div class="md:w-1/3 relative h-56 md:h-auto overflow-hidden">
+                        <img src="https://api.uh.app/media/images-1440/c6ca6a96-8f44-4943-a08d-6290bb83a27c.webp" 
+                             alt="Жираф" 
+                             class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                             onerror="this.src='https://placehold.co/400x400/ffedd5/ea580c?text=Жираф'">
+                    </div>
+                    <div class="p-6 md:w-2/3 flex flex-col justify-center">
+                        <h4 class="text-xl font-bold mb-2 group-hover:text-primary transition-colors">Кровяное давление жирафа</h4>
+                        <p class="text-slate-600 text-sm mb-4 leading-relaxed">Сердце жирафа (весом 12 кг) вырабатывает давление, в 3 раза превышающее человеческое. Это необходимо, чтобы преодолеть гравитацию и доставить кровь к голове на высоту 2-3 метра.</p>
+                        <div class="mt-auto">
+                            <span class="inline-block bg-orange-100 text-orange-700 font-medium text-xs px-3 py-1 rounded-full"><i class="fa-solid fa-heart-pulse mr-1"></i>Биология</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example: Plants -->
+                <div class="flex flex-col md:flex-row bg-white rounded-3xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-slate-100 group">
+                    <div class="md:w-1/3 relative h-56 md:h-auto overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?auto=format&fit=crop&w=400&q=80" 
+                             alt="Растения" 
+                             class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                             onerror="this.src='https://placehold.co/400x400/d1fae5/10b981?text=Тургор'">
+                    </div>
+                    <div class="p-6 md:w-2/3 flex flex-col justify-center">
+                        <h4 class="text-xl font-bold mb-2 group-hover:text-primary transition-colors">Тургор клеток растений</h4>
+                        <p class="text-slate-600 text-sm mb-4 leading-relaxed">Внутреннее давление (тургор) в клетках растений достигает 5-10 атм, а у некоторых кактусов — до 100 атм! Это помогает им сохранять упругую форму без скелета.</p>
+                        <div class="mt-auto">
+                            <span class="inline-block bg-emerald-100 text-emerald-700 font-medium text-xs px-3 py-1 rounded-full"><i class="fa-solid fa-seedling mr-1"></i>Природа</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example: Deep Sea -->
+                <div class="flex flex-col md:flex-row bg-white rounded-3xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-slate-100 group">
+                    <div class="md:w-1/3 relative h-56 md:h-auto overflow-hidden">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSH26vbMpSY8O0WXEcjSsvjl8p08eUaUifI0hWRsHhGzI4FI04-Tmr0_s8N&s=10" 
+                             alt="Глубоководные рыбы" 
+                             class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                             onerror="this.src='https://placehold.co/400x400/1e3a8a/93c5fd?text=Океан'">
+                    </div>
+                    <div class="p-6 md:w-2/3 flex flex-col justify-center">
+                        <h4 class="text-xl font-bold mb-2 group-hover:text-primary transition-colors">Глубоководные рыбы</h4>
+                        <p class="text-slate-600 text-sm mb-4 leading-relaxed">На каждые 10 метров глубины давление растет на 1 атм. На глубине 1000 м оно составляет 100 атм. Молекулярная структура рыб адаптирована к таким условиям, чтобы их не раздавило.</p>
+                        <div class="mt-auto">
+                            <span class="inline-block bg-blue-100 text-blue-700 font-medium text-xs px-3 py-1 rounded-full"><i class="fa-solid fa-water mr-1"></i>Океан</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example: Press -->
+                <div class="flex flex-col md:flex-row bg-white rounded-3xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-slate-100 group">
+                    <div class="md:w-1/3 relative h-56 md:h-auto overflow-hidden">
+                        <img src="https://img.directindustry.com.ru/images_di/photo-mg/40085-15612045.jpg" 
+                             alt="Гидравлический пресс" 
+                             class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                             onerror="this.src='https://placehold.co/400x400/1e293b/cbd5e1?text=Пресс'">
+                    </div>
+                    <div class="p-6 md:w-2/3 flex flex-col justify-center">
+                        <h4 class="text-xl font-bold mb-2 group-hover:text-primary transition-colors">Гидравлический пресс</h4>
+                        <p class="text-slate-600 text-sm mb-4 leading-relaxed">Применение закона Паскаля: небольшое усилие на малую площадь передается жидкости и создает огромное усилие на большую площадь. Так работают автоподъемники и тормоза.</p>
+                        <div class="mt-auto">
+                            <span class="inline-block bg-slate-100 text-slate-700 font-medium text-xs px-3 py-1 rounded-full"><i class="fa-solid fa-wrench mr-1"></i>Техника</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Interactive Labs & Experiments -->
+        <section class="bg-slate-900 rounded-[3rem] p-8 md:p-12 text-white relative overflow-hidden">
+            <!-- Decorative circle -->
+            <div class="absolute -right-20 -top-20 w-64 h-64 bg-primary/20 rounded-full blur-3xl"></div>
+            
+            <div class="text-center mb-10 relative z-10">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Виртуальная лаборатория</h2>
+                <p class="text-slate-400">Опыты и демонстрации, которые можно провести в классе или дома.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
+                
+                <!-- Lab 1 -->
+                <div class="lab-card bg-slate-800/50 backdrop-blur-md p-6 rounded-2xl border border-slate-700 flex flex-col h-full">
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold mr-4">1</div>
+                        <h4 class="text-lg font-bold">Опыт с бутылкой</h4>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-4">Из нижних отверстий струя бьет дальше. Это наглядно доказывает формулу $p = \rho gh$ — чем больше глубина, тем выше давление.</p>
+                    <div class="flex-grow flex flex-col items-center justify-center bg-slate-900/50 rounded-xl p-4 relative overflow-hidden">
+                        <canvas id="lab1-canvas" width="480" height="320" class="w-full h-auto max-w-[480px]"></canvas>
+                        <button id="lab1-btn" class="mt-4 px-6 py-2 bg-primary hover:bg-sky-400 text-white rounded-full text-sm font-semibold transition-colors shadow-lg shadow-primary/30">Заполнить водой</button>
+                    </div>
+                </div>
+
+                <!-- Lab 2 -->
+                <div class="lab-card bg-slate-800/50 backdrop-blur-md p-6 rounded-2xl border border-slate-700 flex flex-col h-full">
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold mr-4">2</div>
+                        <h4 class="text-lg font-bold">Сплющенная банка</h4>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-4">Нагрейте воду до образования пара, затем резко охладите. Пар сконденсируется, давление внутри упадет, и внешнее атмосферное давление мгновенно сплющит банку!</p>
+                    
+                    <!-- Обновленная центрированная и увеличенная зона банки -->
+                    <div class="flex-grow flex flex-col items-center justify-center bg-slate-900/50 rounded-xl p-6 min-h-[260px]">
+                        <div class="can-wrapper my-2">
+                            <!-- Пар сверху -->
+                            <div id="lab2-steam" class="steam-container">
+                                <div class="steam-particle" style="left: 15px; animation-delay: 0s; width: 16px; height: 16px;"></div>
+                                <div class="steam-particle" style="left: 38px; animation-delay: 0.4s; width: 22px; height: 22px;"></div>
+                                <div class="steam-particle" style="left: 25px; animation-delay: 0.8s; width: 18px; height: 18px;"></div>
+                            </div>
+                            
+                            <!-- Сама банка -->
+                            <div id="lab2-can" class="the-can">
+                                <div id="lab2-water" class="can-water"></div>
+                                <div id="lab2-bubbles" class="can-bubbles">
+                                    <div class="bubble" style="left: 20px; width: 9px; height: 9px; animation-delay: 0s;"></div>
+                                    <div class="bubble" style="left: 50px; width: 7px; height: 7px; animation-delay: 0.3s;"></div>
+                                    <div class="bubble" style="left: 75px; width: 10px; height: 10px; animation-delay: 0.15s;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3 w-full max-w-[320px] mt-6">
+                            <button id="lab2-btn-heat" class="flex-1 px-4 py-2.5 bg-orange-500 hover:bg-orange-400 text-white rounded-full text-xs font-semibold transition-colors shadow-lg shadow-orange-500/30"><i class="fa-solid fa-fire mr-1"></i> Нагреть</button>
+                            <button id="lab2-btn-cool" class="flex-1 px-4 py-2.5 bg-blue-500 hover:bg-blue-400 text-white rounded-full text-xs font-semibold transition-colors shadow-lg shadow-blue-500/30 opacity-50 cursor-not-allowed" disabled><i class="fa-solid fa-snowflake mr-1"></i> Охладить</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lab 3 -->
+                <div class="lab-card md:col-span-2 bg-slate-800/50 backdrop-blur-md p-6 rounded-2xl border border-slate-700 flex flex-col">
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold mr-4">3</div>
+                        <h4 class="text-lg font-bold">Сообщающиеся сосуды</h4>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-4">Независимо от формы сосудов, жидкости устанавливаются на одном уровне. Это прямое следствие равенства давления на одной и той же глубине.</p>
+                    <div class="flex flex-col md:flex-row items-center gap-8 bg-slate-900/50 rounded-xl p-6">
+                        <div class="w-full md:w-2/3 flex justify-center">
+                            <svg viewBox="0 0 400 220" class="w-full h-auto max-h-[220px]">
+                                <defs>
+                                    <clipPath id="vessel-clip">
+                                        <path d="M 50 20 L 50 190 L 330 190 L 350 20 L 250 20 L 290 160 L 90 160 L 90 20 Z" />
+                                    </clipPath>
+                                </defs>
+                                
+                                <g id="lab3-rotatable" transform="rotate(0, 200, 110)">
+                                    <!-- Water Group -->
+                                    <g clip-path="url(#vessel-clip)">
+                                        <rect id="lab3-water" x="-200" y="100" width="800" height="400" fill="#0ea5e9" opacity="0.85" transform="rotate(0, 200, 110)" />
+                                        <!-- Surface Line -->
+                                        <rect id="lab3-water-surface" x="-200" y="100" width="800" height="4" fill="#38bdf8" transform="rotate(0, 200, 110)" />
+                                    </g>
+                                    
+                                    <!-- Outer and Inner Outlines -->
+                                    <path d="M 50 20 L 50 190 L 330 190 L 350 20" fill="none" stroke="#94a3b8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M 90 20 L 90 160 L 290 160 L 250 20" fill="none" stroke="#94a3b8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+                                </g>
+                            </svg>
+                        </div>
+                        <div class="w-full md:w-1/3 flex flex-col justify-center bg-slate-800 p-4 rounded-xl border border-slate-700">
+                            <!-- Уровень воды -->
+                            <label for="lab3-slider" class="text-sm font-semibold mb-2 flex justify-between">
+                                <span>Уровень воды</span>
+                                <span id="lab3-level-val" class="text-primary bg-primary/10 px-2 py-0.5 rounded">50%</span>
+                            </label>
+                            <input type="range" id="lab3-slider" min="30" max="180" value="100" class="w-full h-2 bg-slate-900 rounded-lg appearance-none cursor-pointer accent-primary mb-6">
+                            
+                            <!-- Наклон сосуда -->
+                            <label for="lab3-tilt" class="text-sm font-semibold mb-2 flex justify-between">
+                                <span>Наклон сосуда</span>
+                                <span id="lab3-tilt-val" class="text-primary bg-primary/10 px-2 py-0.5 rounded">0°</span>
+                            </label>
+                            <input type="range" id="lab3-tilt" min="-40" max="40" value="0" class="w-full h-2 bg-slate-900 rounded-lg appearance-none cursor-pointer accent-primary mb-2">
+                            
+                            <p class="text-xs text-slate-400 mt-2 text-center">Изменяйте объем и угол наклона</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Historical Fact Callout -->
+        <section class="bg-gradient-to-r from-amber-50 to-orange-50 border border-orange-100 rounded-3xl p-8 md:p-12 shadow-lg shadow-orange-100/50 flex flex-col md:flex-row items-center gap-8">
+            <div class="md:w-1/3 flex justify-center w-full">
+                <div class="relative w-full max-w-[320px] h-72 rounded-2xl overflow-hidden shadow-md shadow-orange-200/50 bg-white/80 border border-orange-200/60 p-2 flex items-center justify-center">
+                    <img src="https://foto.zabor.zp.ua/old/77331/article12125.jpg" 
+                         alt="Магдебургские полушария" 
+                         class="w-full h-full object-contain rounded-xl"
+                         onerror="this.src='https://placehold.co/400x400/fed7aa/c2410c?text=Исторический+опыт'">
+                </div>
+            </div>
+            <div class="md:w-2/3">
+                <div class="inline-block bg-orange-200 text-orange-800 font-bold px-4 py-1 rounded-full text-xs uppercase tracking-wide mb-4">Исторический факт</div>
+                <h3 class="text-2xl md:text-3xl font-bold text-slate-800 mb-4">Магдебургские полушария</h3>
+                <p class="text-slate-600 leading-relaxed mb-4">
+                    В XVII веке немецкий физик Отто фон Герике провел грандиозный эксперимент. Он соединил две медные полусферы диаметром около 50 см и выкачал из них воздух. 
+                </p>
+                <p class="text-slate-600 leading-relaxed font-semibold">
+                    Атмосферное давление сдавило полусферы с такой силой, что две упряжки по 8 лошадей в каждой (всего 16 лошадей!) не смогли их разорвать. Это стало наглядным доказательством колоссальной силы атмосферного давления.
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-slate-400 py-10 text-center border-t border-slate-800">
+        <div class="container mx-auto px-6">
+            <div class="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-xl">
+                <i class="fa-solid fa-compress"></i>
+            </div>
+            <p class="mb-2 text-white font-semibold text-lg">Вывод</p>
+            <p class="max-w-2xl mx-auto text-sm leading-relaxed mb-6">
+                Давление — это не просто формула в учебнике, это важнейший механизм, управляющий процессами в живой природе, атмосфере, океане и технике. Понимание законов Паскаля и гидростатики позволяет нам строить глубоководные аппараты, предсказывать погоду и понимать работу биологических систем.
+            </p>
+            <p class="text-xs opacity-60">
+                Конспект урока «Мир под давлением» • 7 класс
+            </p>
+        </div>
+    </footer>
+
+    <!-- Interactive Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initial MathJax Typesetting just in case it loads before DOM
+            if (window.MathJax) {
+                MathJax.typesetPromise();
+            }
+
+            const lenis = new Lenis({
+                duration: 1.2,
+                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
+            });
+
+            function raf(time) {
+                lenis.raf(time);
+                requestAnimationFrame(raf);
+            }
+            requestAnimationFrame(raf);
+
+            gsap.registerPlugin(ScrollTrigger);
+            
+            // Sync Lenis with GSAP ScrollTrigger
+            lenis.on('scroll', ScrollTrigger.update);
+            gsap.ticker.add((time)=>{ lenis.raf(time * 1000) });
+            gsap.ticker.lagSmoothing(0, 0);
+
+            // Animate lab cards with staggered fade-up
+            gsap.utils.toArray('.lab-card').forEach((card, i) => {
+                gsap.from(card, {
+                    scrollTrigger: {
+                        trigger: card,
+                        start: "top 85%"
+                    },
+                    y: 40,
+                    opacity: 0,
+                    duration: 0.8,
+                    delay: i * 0.15,
+                    ease: "power3.out"
+                });
+            });
+
+            const canvasLab1 = document.getElementById('lab1-canvas');
+            const ctx1 = canvasLab1.getContext('2d');
+            let waterFill1 = 0;
+            let isFilling1 = false;
+            let splashParticles = [];
+            
+            function drawLab1() {
+                ctx1.clearRect(0, 0, canvasLab1.width, canvasLab1.height);
+                
+                const floorY = 300;
+                const bX = 40, bW = 70, bH = 220;
+                const bY = floorY - bH;
+                
+                const h1 = bY + 50, h2 = bY + 120, h3 = bY + 190;
+
+                ctx1.strokeStyle = '#334155';
+                ctx1.lineWidth = 4;
+                ctx1.lineCap = 'round';
+                ctx1.beginPath();
+                ctx1.moveTo(20, floorY);
+                ctx1.lineTo(canvasLab1.width - 20, floorY);
+                ctx1.stroke();
+                
+                if (waterFill1 > 0) {
+                    const currentY = bY + bH - waterFill1;
+                    
+                    ctx1.fillStyle = '#0ea5e9';
+                    ctx1.fillRect(bX, currentY, bW, waterFill1);
+                    
+                    ctx1.strokeStyle = '#38bdf8';
+                    ctx1.lineWidth = 3;
+                    ctx1.lineCap = 'round';
+                    ctx1.beginPath();
+                    
+                    [h1, h2, h3].forEach((hy) => {
+                        if (currentY < hy) {
+                            const depth = hy - currentY;
+                            const v = depth * 0.1 + Math.pow(depth / 100, 2) * 8; 
+                            const gravity = 0.6;
+                            
+                            for(let t = 0; t < 50; t += 0.5) {
+                                const jx = bX + bW + v * t;
+                                const jy = hy + 0.5 * gravity * t * t; 
+                                
+                                if (jy >= floorY) {
+                                    const timeToFloor = Math.sqrt(2 * (floorY - hy) / gravity);
+                                    const hitX = bX + bW + v * timeToFloor;
+                                    
+                                    if (t === 0) ctx1.moveTo(hitX, floorY);
+                                    else ctx1.lineTo(hitX, floorY);
+                                    
+                                    if (Math.random() > 0.5) {
+                                        splashParticles.push({
+                                            x: hitX,
+                                            y: floorY,
+                                            vx: (Math.random() - 0.5) * 1.5 + (v * 0.04),
+                                            vy: -(Math.random() * 2 + 1),
+                                            life: 1.0
+                                        });
+                                    }
+                                    break; 
+                                }
+                                
+                                if (jx > canvasLab1.width) break;
+                                
+                                if (t === 0) ctx1.moveTo(jx, jy);
+                                else ctx1.lineTo(jx, jy);
+                            }
+                        }
+                    });
+                    ctx1.stroke();
+                }
+                
+                ctx1.strokeStyle = '#cbd5e1';
+                ctx1.lineWidth = 4;
+                ctx1.lineCap = 'round';
+                ctx1.lineJoin = 'round';
+                ctx1.beginPath();
+                ctx1.moveTo(bX, bY); 
+                ctx1.lineTo(bX, floorY);
+                ctx1.lineTo(bX + bW, floorY); 
+                ctx1.lineTo(bX + bW, bY);
+                ctx1.stroke();
+                
+                ctx1.fillStyle = '#0f172a';
+                ctx1.fillRect(bX + bW - 2, h1 - 3, 4, 6);
+                ctx1.fillRect(bX + bW - 2, h2 - 3, 4, 6);
+                ctx1.fillRect(bX + bW - 2, h3 - 3, 4, 6);
+
+                for (let i = splashParticles.length - 1; i >= 0; i--) {
+                    let p = splashParticles[i];
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += 0.2;
+                    p.life -= 0.04;
+
+                    if (p.life <= 0 || p.y > floorY + 5) {
+                        splashParticles.splice(i, 1);
+                    } else {
+                        ctx1.fillStyle = `rgba(56, 189, 248, ${p.life})`;
+                        ctx1.beginPath();
+                        ctx1.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
+                        ctx1.fill();
+                    }
+                }
+                
+                if (isFilling1 && waterFill1 < bH - 10) {
+                    waterFill1 += 1.5; 
+                } else if (!isFilling1 && waterFill1 > 0) {
+                    waterFill1 -= 0.8; 
+                }
+                
+                requestAnimationFrame(drawLab1);
+            }
+            
+            drawLab1();
+            
+            document.getElementById('lab1-btn').addEventListener('click', (e) => {
+                isFilling1 = true;
+                e.target.disabled = true;
+                e.target.classList.add('opacity-50', 'cursor-not-allowed');
+                
+                setTimeout(() => { 
+                    isFilling1 = false; 
+                    e.target.disabled = false; 
+                    e.target.classList.remove('opacity-50', 'cursor-not-allowed');
+                }, 4000);
+            });
+
+            const btnHeat2 = document.getElementById('lab2-btn-heat');
+            const btnCool2 = document.getElementById('lab2-btn-cool');
+            const steam2 = document.getElementById('lab2-steam');
+            const can2 = document.getElementById('lab2-can');
+            const water2 = document.getElementById('lab2-water');
+            const bubbles2 = document.getElementById('lab2-bubbles');
+            
+            btnHeat2.addEventListener('click', () => {
+                can2.classList.remove('crushed');
+                bubbles2.classList.add('active'); // Включаем пузырьки кипения на дне
+                
+                // Нагрев: вода испаряется, пар начинает подниматься
+                setTimeout(() => {
+                    steam2.classList.add('active');
+                }, 400);
+                
+                btnHeat2.disabled = true;
+                btnHeat2.classList.add('opacity-50', 'cursor-not-allowed');
+                
+                btnCool2.disabled = false;
+                btnCool2.classList.remove('opacity-50', 'cursor-not-allowed');
+            });
+            
+            btnCool2.addEventListener('click', () => {
+                bubbles2.classList.remove('active');
+                steam2.classList.remove('active');
+                can2.classList.add('crushed');
+                
+                gsap.fromTo(can2, 
+                    { x: -6 }, 
+                    { x: 6, duration: 0.05, yoyo: true, repeat: 5, onComplete: () => gsap.set(can2, {x: 0}) }
+                );
+                
+                btnCool2.disabled = true;
+                btnCool2.classList.add('opacity-50', 'cursor-not-allowed');
+                
+                btnHeat2.disabled = false;
+                btnHeat2.classList.remove('opacity-50', 'cursor-not-allowed');
+            });
+
+            const slider3 = document.getElementById('lab3-slider');
+            const tilt3 = document.getElementById('lab3-tilt');
+            const water3 = document.getElementById('lab3-water');
+            const surface3 = document.getElementById('lab3-water-surface');
+            const levelVal3 = document.getElementById('lab3-level-val');
+            const tiltVal3 = document.getElementById('lab3-tilt-val');
+            const rotatableGroup = document.getElementById('lab3-rotatable');
+            
+            function updateVessels() {
+                const val = parseInt(slider3.value);
+                const angle = parseInt(tilt3.value);
+                
+                rotatableGroup.setAttribute('transform', `rotate(${angle}, 200, 110)`);
+                water3.setAttribute('transform', `rotate(${-angle}, 200, 110)`);
+                surface3.setAttribute('transform', `rotate(${-angle}, 200, 110)`);
+                
+                water3.setAttribute('y', val);
+                surface3.setAttribute('y', val);
+                
+                const percentage = Math.max(0, Math.min(100, Math.round(((180 - val) / (180 - 30)) * 100)));
+                levelVal3.textContent = percentage + '%';
+                tiltVal3.textContent = angle + '°';
+            }
+            
+            slider3.addEventListener('input', updateVessels);
+            tilt3.addEventListener('input', updateVessels);
+            
+            updateVessels();
+            
+            const mmContainer = document.getElementById('mindmap-container');
+            const mmContent = document.getElementById('mindmap-content');
+            
+            if (mmContainer && mmContent) {
+                let currentScale = 1.0;
+                let isPanning = false;
+                let startX = 0, startY = 0;
+                let translateX = 0, translateY = 0;
+
+                function updateMapTransform(animate = false) {
+                    mmContent.style.transition = animate ? 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)' : 'none';
+                    mmContent.style.transform = `translate(${translateX}px, ${translateY}px) scale(${currentScale})`;
+                }
+
+                setTimeout(() => updateMapTransform(true), 800); 
+
+                mmContainer.addEventListener('mousedown', (e) => {
+                    isPanning = true;
+                    startX = e.clientX - translateX;
+                    startY = e.clientY - translateY;
+                    mmContainer.style.cursor = 'grabbing';
+                });
+
+                window.addEventListener('mousemove', (e) => {
+                    if (!isPanning) return;
+                    translateX = e.clientX - startX;
+                    translateY = e.clientY - startY;
+                    updateMapTransform(false);
+                });
+
+                window.addEventListener('mouseup', () => {
+                    isPanning = false;
+                    mmContainer.style.cursor = 'grab';
+                });
+
+                mmContainer.addEventListener('mouseleave', () => {
+                    isPanning = false;
+                    mmContainer.style.cursor = 'grab';
+                });
+
+                mmContainer.addEventListener('wheel', (e) => {
+                    e.preventDefault();
+                    const delta = e.deltaY > 0 ? 0.9 : 1.1;
+                    currentScale = Math.max(0.4, Math.min(currentScale * delta, 3.5));
+                    updateMapTransform(false);
+                }, { passive: false });
+
+                document.getElementById('zoom-in').addEventListener('click', () => { 
+                    currentScale = Math.min(currentScale * 1.3, 3.5); 
+                    updateMapTransform(true); 
+                });
+                document.getElementById('zoom-out').addEventListener('click', () => { 
+                    currentScale = Math.max(currentScale * 0.7, 0.4); 
+                    updateMapTransform(true); 
+                });
+                document.getElementById('zoom-reset').addEventListener('click', () => { 
+                    currentScale = 1.0; 
+                    translateX = 0; 
+                    translateY = 0; 
+                    updateMapTransform(true); 
+                });
+            }
+            
+        });
+    </script>
+</body>
+</html>
