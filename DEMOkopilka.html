@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабораторная работа: Мощность при подъёме по лестнице</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    
+    <style>
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.3); }
+
+        @media print {
+            body { background: white !important; color: black !important; }
+            .bg-orb { display: none !important; }
+            .glass-card { 
+                background: white !important; 
+                border: 1px solid #ccc !important; 
+                box-shadow: none !important; 
+                backdrop-filter: none !important; 
+                color: black !important;
+                page-break-inside: avoid;
+            }
+            input { border: none !important; background: transparent !important; color: black !important; padding: 0 !important; }
+            .no-print { display: none !important; }
+            .text-white, .text-gray-300, .text-blue-300 { color: black !important; }
+            table { border-collapse: collapse; width: 100%; }
+            th, td { border: 1px solid #000 !important; }
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen relative overflow-x-hidden selection:bg-blue-500/30">
+
+    <div class="bg-orb absolute top-[-10%] left-[-10%] w-[40vw] h-[40vw] rounded-full bg-blue-600/20 blur-[120px] pointer-events-none"></div>
+    <div class="bg-orb absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-emerald-600/10 blur-[150px] pointer-events-none"></div>
+    <div class="bg-orb absolute top-[40%] left-[60%] w-[30vw] h-[30vw] rounded-full bg-purple-600/15 blur-[100px] pointer-events-none"></div>
+
+    <main class="max-w-5xl mx-auto px-4 py-12 relative z-10">
+        
+        <header class="glass-element mb-10 text-center">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-blue-300 text-xs font-semibold tracking-wider uppercase mb-6">
+                <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+                Физика · 7 класс · Лабораторный практикум
+            </div>
+            <h1 class="text-3xl md:text-5xl font-bold tracking-tight mb-4 text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">
+                Расчёт мощности при подъёме по лестнице
+            </h1>
+            <p class="text-gray-400 text-lg max-w-2xl mx-auto">
+                Измерьте работу, которую совершаете при подъёме по лестнице, и рассчитайте среднюю мощность своего движения.
+            </p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <div class="glass-card lg:col-span-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl relative overflow-hidden group">
+                <h2 class="text-xl font-bold mb-4 flex items-center gap-3">Вводные данные</h2>
+                <div class="space-y-4 text-gray-300 text-sm md:text-base">
+                    <p><strong class="text-white">Цель работы:</strong> Научиться рассчитывать мощность человека при подъёме по лестнице и выяснить, от каких величин она зависит.</p>
+                    <p><strong class="text-white">Оборудование:</strong> Часы или секундомер, линейка или измерительная лента, напольные весы, лестница.</p>
+                </div>
+                <div class="mt-6 p-4 bg-amber-500/10 border border-amber-500/20 rounded-xl text-amber-200 text-sm">
+                    <strong>⚠️ Техника безопасности:</strong> Держитесь за перила, поднимайтесь и спускайтесь осторожно. Не бегите, не перепрыгивайте через ступени.
+                </div>
+            </div>
+
+            <div class="glass-card bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl flex flex-col justify-center">
+                <h2 class="text-xl font-bold mb-6 text-center">Формулы</h2>
+                <div class="space-y-4 font-mono text-lg text-center">
+                    <div class="bg-black/20 py-2 rounded-lg border border-white/5">F = mg</div>
+                    <div class="bg-black/20 py-2 rounded-lg border border-white/5">R = hn</div>
+                    <div class="bg-black/20 py-2 rounded-lg border border-white/5">A = F · R</div>
+                    <div class="bg-blue-500/20 text-blue-300 py-3 rounded-lg border border-blue-500/30 font-bold text-xl scale-105">N = A / t</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass-card bg-white/10 backdrop-blur-2xl border border-white/20 rounded-3xl p-6 md:p-8 shadow-2xl mb-8">
+            <div class="flex flex-wrap justify-between items-center mb-6 gap-4">
+                <h2 class="text-2xl font-bold">Параметры эксперимента</h2>
+                <span id="saveStatus" class="text-xs bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded-full border border-emerald-500/30 no-print">
+                    Автосохранение активно
+                </span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <div class="space-y-2">
+                    <label class="text-sm font-medium text-gray-400 pl-1">ФИО ученика</label>
+                    <input id="studentName" type="text" placeholder="Иванов Иван" class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 transition-all">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-sm font-medium text-gray-400 pl-1">Масса тела m, (кг)</label>
+                    <!-- Изменен тип на text для всеядности к запятым -->
+                    <input id="mass" type="text" inputmode="decimal" placeholder="60,5" class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 transition-all">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-sm font-medium text-gray-400 pl-1">Высота ступени h, (м)</label>
+                    <input id="stepHeight" type="text" inputmode="decimal" placeholder="0,15" class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 transition-all">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-sm font-medium text-gray-400 pl-1">Число ступеней n</label>
+                    <input id="stepCount" type="text" inputmode="numeric" placeholder="20" class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 transition-all">
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm whitespace-nowrap">
+                    <thead>
+                        <tr class="border-b border-white/10 text-gray-400">
+                            <th class="pb-3 px-4 font-medium text-center">№ Опыта</th>
+                            <th class="pb-3 px-4 font-medium">Время t, (с)</th>
+                            <th class="pb-3 px-4 font-medium">Сила F, (Н)</th>
+                            <th class="pb-3 px-4 font-medium">Высота R, (м)</th>
+                            <th class="pb-3 px-4 font-medium">Работа A, (Дж)</th>
+                            <th class="pb-3 px-4 font-medium text-blue-300">Мощность N, (Вт)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultsTable" class="divide-y divide-white/5">
+                        <!-- Строки генерируются JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="glass-card bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6 md:p-8 shadow-2xl mb-8 relative overflow-hidden">
+            <div class="absolute left-0 top-0 bottom-0 w-1 bg-blue-500"></div>
+            <h3 class="text-lg font-bold mb-3 uppercase tracking-wider text-blue-400">Вывод</h3>
+            <p id="conclusion" class="text-gray-300 text-lg leading-relaxed min-h-[3rem]">
+                Заполните данные для формирования автоматического вывода.
+            </p>
+        </div>
+
+        <div class="flex flex-wrap gap-4 no-print glass-element">
+            <button id="submitBtn" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-3 rounded-xl font-medium shadow-lg shadow-emerald-500/20 transition-all hover:-translate-y-0.5 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+                Отправить результаты
+            </button>
+            <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-xl font-medium transition-all">
+                PDF / Печать
+            </button>
+            <button id="clearBtn" class="bg-white/5 hover:bg-red-500/20 text-gray-300 hover:text-red-400 border border-white/10 px-6 py-3 rounded-xl font-medium transition-all">
+                Очистить
+            </button>
+        </div>
+    </main>
+
+    <script>
+        // --- ЗАЩИЩЕННАЯ ЛОГИКА ПРИЛОЖЕНИЯ ---
+        const KEY = 'physics-lab-stairs-v3';
+        const getEl = (id) => document.getElementById(id);
+        
+        const els = {
+            studentName: getEl('studentName'),
+            mass: getEl('mass'),
+            height: getEl('stepHeight'),
+            count: getEl('stepCount'),
+            table: getEl('resultsTable'),
+            conclusion: getEl('conclusion'),
+            status: getEl('saveStatus'),
+            clearBtn: getEl('clearBtn')
+        };
+
+        let state = { name: '', mass: '', height: '', count: '', times: ['', '', ''] };
+
+        // Этот парсер переваривает и точки, и запятые, и случайные пробелы
+        const parseNum = (val) => {
+            if (val === '' || val == null) return null;
+            const n = parseFloat(String(val).replace(',', '.').replace(/\s/g, ''));
+            return isNaN(n) ? null : n;
+        };
+        const formatNum = (val) => new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 2 }).format(val);
+
+        function saveState() {
+            try {
+                localStorage.setItem(KEY, JSON.stringify(state));
+                if (els.status) {
+                    els.status.textContent = 'Сохранено ✓';
+                    els.status.classList.remove('text-emerald-300', 'bg-emerald-500/20');
+                    els.status.classList.add('text-gray-400', 'bg-white/5');
+                    setTimeout(() => {
+                        els.status.textContent = 'Автосохранение активно';
+                        els.status.classList.add('text-emerald-300', 'bg-emerald-500/20');
+                        els.status.classList.remove('text-gray-400', 'bg-white/5');
+                    }, 1000);
+                }
+            } catch (e) {
+                if(els.status) els.status.textContent = 'Ошибка сохранения';
+            }
+        }
+
+        function renderTable() {
+            if (!els.table) return; // Защита от сбоя
+            
+            els.table.innerHTML = '';
+            state.times.forEach((t, i) => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-white/5 transition-colors group';
+                tr.innerHTML = `
+                    <td class="py-4 px-4 text-center text-gray-500 font-bold group-hover:text-white transition-colors">${i + 1}</td>
+                    <td class="py-4 px-4">
+                        <input data-time="${i}" type="text" inputmode="decimal" value="${t}" placeholder="0.0" 
+                               class="w-24 bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 focus:bg-black/60 transition-all text-center">
+                    </td>
+                    <td class="py-4 px-4 text-gray-300 font-mono" data-force="${i}">—</td>
+                    <td class="py-4 px-4 text-gray-300 font-mono" data-distance="${i}">—</td>
+                    <td class="py-4 px-4 text-gray-300 font-mono" data-work="${i}">—</td>
+                    <td class="py-4 px-4 text-blue-300 font-mono font-bold text-lg" data-power="${i}">—</td>
+                `;
+                els.table.appendChild(tr);
+            });
+
+            if (els.studentName) els.studentName.value = state.name;
+            if (els.mass) els.mass.value = state.mass;
+            if (els.height) els.height.value = state.height;
+            if (els.count) els.count.value = state.count;
+
+            document.querySelectorAll('#studentName, #mass, #stepHeight, #stepCount, [data-time]')
+                .forEach(el => el.addEventListener('input', updateCalculations));
+                
+            updateCalculations();
+        }
+
+        function updateCalculations(e) {
+            if(els.studentName) state.name = els.studentName.value;
+            if(els.mass) state.mass = els.mass.value;
+            if(els.height) state.height = els.height.value;
+            if(els.count) state.count = els.count.value;
+
+            const m = parseNum(state.mass);
+            const h = parseNum(state.height);
+            const n = parseNum(state.count);
+            
+            const force = (m !== null) ? m * 9.8 : null;
+            const distance = (h !== null && n !== null) ? h * n : null;
+            const work = (force !== null && distance !== null) ? force * distance : null;
+
+            let powers = [];
+
+            document.querySelectorAll('#resultsTable tr').forEach((row, i) => {
+                const timeInput = row.querySelector(`[data-time="${i}"]`);
+                if (!timeInput) return;
+                
+                state.times[i] = timeInput.value;
+                const t = parseNum(timeInput.value);
+                const power = (work !== null && t !== null && t > 0) ? work / t : null;
+
+                const fEl = row.querySelector(`[data-force="${i}"]`);
+                const dEl = row.querySelector(`[data-distance="${i}"]`);
+                const wEl = row.querySelector(`[data-work="${i}"]`);
+                const pEl = row.querySelector(`[data-power="${i}"]`);
+
+                if(fEl) fEl.textContent = force !== null ? formatNum(force) : '—';
+                if(dEl) dEl.textContent = distance !== null ? formatNum(distance) : '—';
+                if(wEl) wEl.textContent = work !== null ? formatNum(work) : '—';
+                if(pEl) pEl.textContent = power !== null ? formatNum(power) : '—';
+
+                if (power !== null) powers.push(power);
+            });
+
+            if(els.conclusion) {
+                let resultText = 'Заполните параметры лестницы, массу тела и время подъёма для расчета мощности.';
+                if (powers.length > 0) {
+                    const avgPower = powers.reduce((a, b) => a + b, 0) / powers.length;
+                    resultText = `Средняя развиваемая мощность составила <b class="text-white">${formatNum(avgPower)} Вт</b>. Анализ данных показывает, что при совершении одинаковой работы (подъём на одну и ту же высоту), мощность зависит от времени: чем меньше время подъёма, тем больше развиваемая мощность.`;
+                }
+                els.conclusion.innerHTML = resultText;
+            }
+
+            if (e) saveState();
+        }
+
+        if (els.clearBtn) {
+            els.clearBtn.addEventListener('click', () => {
+                if(confirm('Очистить все введенные данные?')) {
+                    state = { name: '', mass: '', height: '', count: '', times: ['', '', ''] };
+                    renderTable();
+                    saveState();
+                }
+            });
+        }
+
+        try {
+            const saved = JSON.parse(localStorage.getItem(KEY));
+            if (saved && Array.isArray(saved.times)) {
+                state = {
+                    name: saved.name || '',
+                    mass: saved.mass || '',
+                    height: saved.height || '',
+                    count: saved.count || '',
+                    times: Array.from({length: 3}, (_, i) => saved.times[i] || '')
+                };
+            }
+        } catch (e) {}
+
+        renderTable();
+
+        document.addEventListener("DOMContentLoaded", () => {
+            if(typeof gsap !== 'undefined') {
+                gsap.from(".glass-element", { y: -30, opacity: 0, duration: 0.8, ease: "power3.out" });
+                gsap.from(".glass-card", { y: 50, opacity: 0, duration: 0.8, stagger: 0.2, ease: "back.out(1.2)", delay: 0.2 });
+            }
+        });
+	// --- ЛОГИКА ОТПРАВКИ В GOOGLE ТАБЛИЦУ ---
+        const GOOGLE_APP_URL = 'https://script.google.com/macros/s/AKfycbyTDQ9p3ufyRJ9yjSxWsJ3denep12q17PVPVPo4wP72tgKU3dH4h_5-ORNA6itSGhU4Ag/exec';
+        const submitBtn = getEl('submitBtn');
+
+        if (submitBtn) {
+            submitBtn.addEventListener('click', async () => {
+                if (!state.name || state.name.trim() === '') {
+                    alert('Пожалуйста, укажите ФИО ученика перед отправкой.');
+                    if(els.studentName) els.studentName.focus();
+                    return;
+                }
+                
+                const m = parseNum(state.mass);
+                const h = parseNum(state.height);
+                const n = parseNum(state.count);
+                const force = (m !== null) ? m * 9.8 : null;
+                const distance = (h !== null && n !== null) ? h * n : null;
+                const work = (force !== null && distance !== null) ? force * distance : null;
+                
+                let powers = [];
+                state.times.forEach(tStr => {
+                    const t = parseNum(tStr);
+                    if (work !== null && t !== null && t > 0) powers.push(work / t);
+                });
+                
+                if (powers.length === 0) {
+                    alert('Заполните массу, параметры лестницы и хотя бы одно время опыта.');
+                    return;
+                }
+
+                const avgPower = powers.reduce((a, b) => a + b, 0) / powers.length;
+
+                const payload = {
+                    name: state.name,
+                    mass: m !== null ? formatNum(m) : '',
+                    height: h !== null ? formatNum(h) : '',
+                    count: n !== null ? n : '',
+                    time1: state.times[0] !== '' ? formatNum(parseNum(state.times[0])) : '',
+                    time2: state.times[1] !== '' ? formatNum(parseNum(state.times[1])) : '',
+                    time3: state.times[2] !== '' ? formatNum(parseNum(state.times[2])) : '',
+                    force: force !== null ? formatNum(force) : '',
+                    distance: distance !== null ? formatNum(distance) : '',
+                    work: work !== null ? formatNum(work) : '',
+                    avgPower: formatNum(avgPower)
+                };
+
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = 'Отправка... ⏳';
+                submitBtn.disabled = true;
+                submitBtn.classList.add('opacity-70', 'cursor-not-allowed');
+
+                try {
+                    const response = await fetch(GOOGLE_APP_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.result === 'success') {
+                        submitBtn.innerHTML = 'Отправлено ✓';
+                        submitBtn.classList.replace('bg-emerald-600', 'bg-green-600');
+                        setTimeout(() => {
+                            submitBtn.innerHTML = originalText;
+                            submitBtn.disabled = false;
+                            submitBtn.classList.remove('opacity-70', 'cursor-not-allowed', 'bg-green-600');
+                            submitBtn.classList.add('bg-emerald-600');
+                        }, 4000);
+                    } else {
+                        throw new Error('Script error');
+                    }
+                } catch (error) {
+                    console.error(error);
+                    alert('Ошибка сети. Попробуйте еще раз.');
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
