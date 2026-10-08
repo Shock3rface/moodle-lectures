@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Интерактивный лист лабораторной работы по физике: измерение электроёмкости конденсатора и исследование плоского конденсатора.">
+<title>Лабораторная работа — электроёмкость конденсатора</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  MathJax = { tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] }, svg: { fontCache: 'global' } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+  :root { --blue:#a8cfda; --blue-dark:#557b88; --ink:#2c3940; --muted:#68767d; --line:#d7e1e5; --paper:#fff; --tint:#eef6f8; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:#edf3f5; color:var(--ink); font-family:Arial,Helvetica,sans-serif; line-height:1.55; }
+  .sheet { max-width:1000px; margin:24px auto; padding:clamp(18px,4vw,46px); background:var(--paper); box-shadow:0 8px 30px #17354318; }
+  .topline { color:var(--blue-dark); border-bottom:3px solid var(--blue); padding-bottom:10px; font-size:.9rem; letter-spacing:.08em; text-transform:uppercase; font-weight:700; }
+  h1 { font-size:clamp(1.65rem,3.5vw,2.35rem); line-height:1.2; margin:24px 0 20px; font-weight:800; color:#263b45; }
+  h2 { font-size:clamp(1.57rem,calc(2.3vw + 2pt),1.79rem); line-height:1.25; margin:0 0 14px; font-weight:800; color:#202124; padding-bottom:9px; border-bottom:1px solid #20212424; }
+  h3 { font-size:1.08rem; margin:0 0 10px; font-weight:750; color:#354b55; }
+  .section { margin:22px 0; padding:clamp(16px,2.5vw,24px); border:1px solid var(--section-border,#d7e1e5); border-left:5px solid var(--section-accent,#a8cfda); border-radius:16px; background:var(--section-bg,#f7fafb); box-shadow:0 3px 12px #253c4808; }
+  .section p:last-child { margin-bottom:0; }
+  .theme-goal { --section-bg:#eff5fb; --section-border:#dbe6f1; --section-accent:#8faec5; }
+  .theme-theory { --section-bg:#f4f1f8; --section-border:#e4deef; --section-accent:#a99ac1; }
+  .theme-equipment { --section-bg:#f0f6ed; --section-border:#dfe9d9; --section-accent:#9fba92; }
+  .theme-procedure { --section-bg:#fbf3eb; --section-border:#efe2d4; --section-accent:#c9a989; }
+  .theme-model { --section-bg:#eef6f8; --section-border:#d9e8ec; --section-accent:#91bac7; }
+  .theme-results { --section-bg:#faf1f3; --section-border:#eedfe3; --section-accent:#c9a2ac; }
+  .theme-analysis { --section-bg:#faf6e9; --section-border:#eee7d1; --section-accent:#c8b77f; }
+  .theme-conclusion { --section-bg:#eff6f2; --section-border:#dce9e2; --section-accent:#97b9a7; }
+  .label { font-weight:800; color:#202124; font-size:.98em; }
+  .goal p { margin:0; font-size:1.08rem; line-height:1.6; }
+  .box { border:1px solid var(--line); border-radius:12px; padding:18px; background:#fff; }
+  .soft { background:rgba(255,255,255,.42); }
+  .formula { background:#f1f8fa; border-radius:8px; padding:10px 14px; margin:10px 0; overflow-x:auto; }
+  .note { color:var(--muted); font-size:.92rem; }
+  .input { width:100%; border:1px solid #9eb6c1; border-radius:7px; padding:9px 10px; font:inherit; background:white; }
+  input[type=range] { width:100%; accent-color:var(--blue-dark); }
+  .grid2 { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+  .grid3 { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
+  .btn { border:0; border-radius:8px; padding:10px 15px; font-weight:700; cursor:pointer; font:inherit; }
+  .btn-primary { background:#d9eaf0; color:#345660; border:1px solid #c7dce3; }
+  .btn-secondary { background:#edf3f5; color:#405761; border:1px solid #d9e3e7; }
+  .btn-danger { background:#fae9e8; color:#714f4b; border:1px solid #eed8d5; }
+  .btn:hover { filter:brightness(.96); }
+  .tabbar { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0; }
+  .tab { border:1px solid var(--line); border-radius:999px; padding:8px 14px; background:white; cursor:pointer; font-weight:700; }
+  .tab[aria-selected="true"] { background:var(--blue-dark); color:#fff; border-color:var(--blue-dark); }
+  .mode-panel[hidden] { display:none; }
+  .video-frame { width:100%; aspect-ratio:16/9; border:0; border-radius:10px; background:#101820; }
+  table { border-collapse:collapse; width:100%; font-size:.92rem; }
+  th,td { border:1px solid #91aab5; padding:8px; vertical-align:middle; }
+  th { background:#dceef4; font-weight:700; text-align:center; }
+  td input { width:100%; min-width:60px; padding:6px; border:1px solid #c0d1d8; border-radius:4px; font:inherit; }
+  .table-wrap { overflow-x:auto; }
+  .meter { font-family:inherit; background:#e9f3ed; color:#3d6553; border:1px solid #d5e6dc; padding:12px 15px; border-radius:8px; font-size:1.3rem; font-weight:800; display:inline-block; min-width:150px; text-align:center; }
+  .model-visual { height:170px; border-radius:10px; background:linear-gradient(180deg,#f1f8fa,#fff); display:grid; place-items:center; overflow:hidden; }
+  .model-svg { display:block; width:min(100%,360px); height:160px; }
+  .model-plate { fill:#c39b7d; stroke:#92705a; stroke-width:2; transition:all .2s ease; }
+  .dielectric-slab { opacity:.58; stroke-width:2; transition:all .2s ease; }
+  .dielectric-plastic { fill:#a8cda2; stroke:#789b73; }
+  .dielectric-glass { fill:#a7d3e2; stroke:#739eae; }
+  .plate-charge { fill:#684d3c; font:700 13px Arial,sans-serif; text-anchor:middle; }
+  .field-line { stroke:#557987; stroke-width:1.5; stroke-dasharray:4 4; marker-end:url(#fieldArrow); transition:all .2s ease; }
+  .result-card { border:1px solid var(--line); padding:14px; border-radius:10px; background:#ffffffb8; }
+  .badge { display:inline-block; border-radius:999px; padding:3px 9px; background:#e8f5f8; color:#12536b; font-size:.78rem; font-weight:700; }
+  .callout { padding:12px 14px; border-left:4px solid #d3bf88; background:#fbf7ea; border-radius:0 8px 8px 0; }
+  .small { font-size:.85rem; }
+  .footer { color:var(--muted); border-top:1px solid var(--line); padding-top:14px; margin-top:28px; font-size:.85rem; }
+  @media (max-width:650px) { .grid2,.grid3 { grid-template-columns:1fr; } .sheet { margin:0; box-shadow:none; } table { min-width:760px; } }
+  @media print { body { background:white; } .sheet { margin:0; max-width:none; box-shadow:none; } .no-print, .video-frame, .tabbar, .model-controls { display:none !important; } .mode-panel[hidden] { display:block !important; } .box { break-inside:avoid; } }
+</style>
+</head>
+<body>
+<main class="sheet">
+  <div class="topline">Физика · 10 класс · Лабораторная работа</div>
+  <h1>Измерение электроёмкости конденсатора. Исследование плоского конденсатора</h1>
+
+  <section class="section goal theme-goal">
+    <p><span class="label">Цель работы:</span> измерить электроёмкость конденсаторов и исследовать, как ёмкость плоского конденсатора зависит от площади его обкладок, расстояния между ними и вещества между обкладками.</p>
+  </section>
+
+  <section class="section box soft theme-theory">
+    <h2>Теоретическая часть</h2>
+    <p>Конденсатор состоит из двух проводников (обкладок), разделённых диэлектриком. Электроёмкость показывает, какой заряд может накопить конденсатор при заданном напряжении.</p>
+    <div class="formula">\[ C=\frac{q}{U} \]</div>
+    <p>Для плоского конденсатора в модели идеальных параллельных обкладок:</p>
+    <div class="formula">\[ C=\varepsilon_0\varepsilon_r\frac{S}{d} \]</div>
+    <p>Здесь (C) — электроёмкость, (q) — модуль заряда одной обкладки, (U) — напряжение между обкладками, (S) — площадь перекрывающихся частей обкладок, (d) — расстояние между ними, ( \varepsilon_0) — электрическая постоянная, ( \varepsilon_r) — относительная диэлектрическая проницаемость вещества.</p>
+    <p>Следовательно, при прочих равных условиях увеличение площади обкладок увеличивает ёмкость, а увеличение расстояния между ними уменьшает её. Ёмкость зависит и от диэлектрика.</p>
+    <p class="note">Единица электроёмкости в СИ — фарад (Ф). На практике часто используют микрофарад (мкФ), нанофарад (нФ) и пикофарад (пФ).</p>
+  </section>
+
+  <section class="section theme-equipment">
+    <h2>Оборудование</h2>
+    <p>Мультиметр с режимом измерения ёмкости, конденсаторы, плоский конденсатор с изменяемыми параметрами (или интерактивная модель на этой странице).</p>
+    <div class="callout small"><b>При работе с реальными конденсаторами:</b> перед измерением убедитесь, что конденсатор разряжен; подключайте мультиметр в режиме измерения ёмкости согласно инструкции к прибору. Не подключайте мультиметр в этом режиме к источнику напряжения.</div>
+  </section>
+
+  <section class="section box theme-procedure">
+    <h2>Порядок выполнения работы</h2>
+    <ol class="list-decimal pl-6 space-y-2">
+      <li>Выберите способ выполнения: по видео или с помощью интерактивной модели.</li>
+      <li>Измерьте или смоделируйте ёмкость нескольких конденсаторов/вариантов плоского конденсатора. Для исследования зависимости меняйте по одному параметру, сохраняя остальные неизменными.</li>
+      <li>Запишите условия опыта и значение ёмкости в таблицу. Для каждого изменённого параметра выполните не менее трёх опытов.</li>
+      <li>Сравните результаты и сформулируйте вывод о зависимости ёмкости от площади обкладок, расстояния между ними и диэлектрика.</li>
+    </ol>
+  </section>
+
+  <section class="section theme-model">
+    <h2>Интерактивная модель</h2>
+    <div id="modelPanel" class="box">
+      <div class="grid2">
+        <div>
+          <h3>Параметры плоского конденсатора</h3>
+          <div class="model-controls">
+            <label class="block mb-3">Площадь перекрывающихся обкладок (S): <b><output id="areaOut">100</output> см²</b>
+              <input id="area" type="range" min="25" max="200" step="5" value="100" aria-label="Площадь обкладок">
+            </label>
+            <label class="block mb-3">Расстояние между обкладками (d): <b><output id="gapOut">2</output> мм</b>
+              <input id="gap" type="range" min="1" max="10" step="0.5" value="2" aria-label="Расстояние между обкладками">
+            </label>
+            <label class="block mb-3">Среда между обкладками
+              <select id="medium" class="input">
+                <option value="1.00059" data-kind="air">Воздух (εᵣ ≈ 1,00059)</option>
+                <option value="2.1" data-kind="plastic">Тефлон — пример пластика (εᵣ ≈ 2,1)</option>
+                <option value="5.6" data-kind="glass">Стекло Pyrex (εᵣ ≈ 5,6)</option>
+              </select>
+            </label>
+          </div>
+          <div class="result-card">
+            <div class="small text-slate-600">Расчётная ёмкость модели</div>
+            <div class="meter"><span id="capacitance">44.3</span> пФ</div>
+            <div class="small mt-2">Значение рассчитано по формуле плоского конденсатора; это модельный результат, а не показание реального прибора.</div>
+          </div>
+          <button class="btn btn-primary mt-3 no-print" type="button" onclick="addModelRow()">Записать результат в таблицу</button>
+        </div>
+        <div>
+          <h3>Схема модели</h3>
+          <div class="model-visual" aria-label="Интерактивная схема плоского конденсатора">
+            <svg class="model-svg" viewBox="0 0 300 180" role="img" aria-labelledby="diagramTitle diagramDesc">
+              <title id="diagramTitle">Обкладки плоского конденсатора</title>
+              <desc id="diagramDesc">Ширина пластин меняется вместе с площадью, промежуток между пластинами — вместе с расстоянием. Пунктирные линии поля расположены между обкладками.</desc>
+              <defs><marker id="fieldArrow" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#557987"></path></marker></defs>
+              <rect id="dielectricSlab" class="dielectric-slab" x="102" y="77" width="96" height="26" visibility="hidden"></rect>
+              <g id="fieldLines" aria-hidden="true"></g>
+              <rect id="plateTop" class="model-plate" x="100" y="65" width="100" height="12" rx="2"></rect>
+              <rect id="plateBottom" class="model-plate" x="100" y="103" width="100" height="12" rx="2"></rect>
+              <text id="topCharge" class="plate-charge" x="90" y="74">+</text>
+              <text id="bottomCharge" class="plate-charge" x="90" y="112">−</text>
+            </svg>
+          </div>
+          <p class="note small mt-2">Коричневые детали — обкладки; зелёная пластинка — тефлон, голубая — стекло Pyrex. Пластинка диэлектрика заполняет зазор и меняет цвет при выборе среды.</p>
+          <p class="note small mt-2">Справочные значения при комнатной температуре: сухой воздух — εᵣ ≈ 1,00059; тефлон — 2,1; обычное стекло — 4–6, стекло Pyrex — 5,6. <a class="underline text-sky-800" href="https://openstax.org/books/university-physics-volume-2/pages/8-5-molecular-model-of-a-dielectric" target="_blank" rel="noopener">Источник: OpenStax, таблица 8.1</a>.</p>
+          <div class="callout small mt-3"><b>Проверьте закономерность:</b> сначала увеличьте (S), не меняя (d) и среду; затем верните (S) и увеличьте (d). Наконец, сравните разные среды при одинаковых (S) и (d).</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section theme-results">
+    <h2>Результаты измерений и моделирования</h2>
+    <p class="note">В строках из видео введите показание мультиметра и подпишите источник. В строках модели указано расчётное значение. Поля таблицы можно редактировать.</p>
+    <div class="table-wrap">
+      <table id="resultsTable">
+        <thead><tr><th>№</th><th>Источник/конденсатор</th><th>(S), см²</th><th>(d), мм</th><th>Среда</th><th>(C), пФ</th><th>Наблюдение</th><th class="no-print">Удалить</th></tr></thead>
+        <tbody id="resultsBody"></tbody>
+      </table>
+    </div>
+    <div class="flex gap-2 flex-wrap mt-3 no-print">
+      <button class="btn btn-secondary" type="button" onclick="addBlankRow()">Добавить пустую строку</button>
+      <button class="btn btn-secondary" type="button" onclick="exportCSV()">Скачать таблицу CSV</button>
+      <button class="btn btn-danger" type="button" onclick="clearRows()">Очистить результаты</button>
+    </div>
+  </section>
+
+  <section class="section box soft theme-analysis">
+    <h2>Обработка результатов</h2>
+    <ol class="list-decimal pl-6 space-y-2">
+      <li>Сравните ёмкости конденсаторов, измеренные мультиметром. Укажите единицы, в которых отображались показания, и при необходимости переведите их в пикофарады.</li>
+      <li>По модельным опытам сравните пары строк, в которых менялся только один параметр.</li>
+      <li>Заполните вывод. Укажите, как влияют площадь обкладок, расстояние между ними и диэлектрик на ёмкость.</li>
+    </ol>
+    <div class="formula">\[1\,\text{мкФ}=10^6\,\text{пФ},\qquad 1\,\text{нФ}=10^3\,\text{пФ}\]</div>
+  </section>
+
+  <section class="section theme-conclusion">
+    <h2>Вывод</h2>
+    <p>Сформулируйте вывод по цели работы, опираясь на заполненную таблицу. Если использовалась модель, отметьте, что её результаты являются расчётными.</p>
+    <textarea class="input" id="conclusion" rows="5" placeholder="В ходе работы я установил(а), что…"></textarea>
+  </section>
+
+  <div class="footer flex justify-between items-center flex-wrap gap-3">
+    <span>Лист лабораторной работы · электроёмкость конденсатора</span>
+    <button class="btn btn-secondary no-print" type="button" onclick="window.print()">Печать / сохранить в PDF</button>
+  </div>
+</main>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const area = $('area'), gap = $('gap'), medium = $('medium');
+  const tbody = $('resultsBody');
+  const STORE = 'physics-capacitance-lab-v1';
+  const eps0 = 8.8541878128e-12;
+  const mediumName = () => medium.options[medium.selectedIndex].text;
+  function calculate() {
+    const sCm2 = Number(area.value);
+    const dMm = Number(gap.value);
+    const er = Number(medium.value);
+    const materialKind = medium.options[medium.selectedIndex].dataset.kind;
+    const sM2 = sCm2 * 1e-4;
+    const dM = dMm * 1e-3;
+    const cPf = eps0 * er * sM2 / dM * 1e12;
+    $('areaOut').value = sCm2;
+    $('gapOut').value = dMm;
+    $('capacitance').textContent = cPf.toFixed(1);
+    // Схематически изменяем ширину пластин вслед за площадью S.
+    const plateWidth = 70 + (sCm2 - 25) / (200 - 25) * 150;
+    const plateHeight = 12;
+    const plateLeft = (300 - plateWidth) / 2;
+    // Зазор связан с d: при изменении расстояния обе обкладки расходятся симметрично.
+    const gapPx = 16 + (dMm - 1) / (10 - 1) * 64;
+    const totalHeight = plateHeight * 2 + gapPx;
+    const topY = (180 - totalHeight) / 2;
+    const bottomY = topY + plateHeight + gapPx;
+    const topPlate = $('plateTop');
+    const bottomPlate = $('plateBottom');
+    topPlate.setAttribute('x', plateLeft);
+    topPlate.setAttribute('y', topY);
+    topPlate.setAttribute('width', plateWidth);
+    bottomPlate.setAttribute('x', plateLeft);
+    bottomPlate.setAttribute('y', bottomY);
+    bottomPlate.setAttribute('width', plateWidth);
+    $('topCharge').setAttribute('x', plateLeft - 12);
+    $('topCharge').setAttribute('y', topY + plateHeight - 1);
+    $('bottomCharge').setAttribute('x', plateLeft - 12);
+    $('bottomCharge').setAttribute('y', bottomY + plateHeight - 1);
+    const slab = $('dielectricSlab');
+    if (materialKind === 'air') {
+      slab.setAttribute('visibility', 'hidden');
+      slab.setAttribute('class', 'dielectric-slab');
+    } else {
+      slab.setAttribute('visibility', 'visible');
+      slab.setAttribute('class', 'dielectric-slab ' + (materialKind === 'plastic' ? 'dielectric-plastic' : 'dielectric-glass'));
+      slab.setAttribute('x', plateLeft + 2);
+      slab.setAttribute('y', topY + plateHeight);
+      slab.setAttribute('width', plateWidth - 4);
+      slab.setAttribute('height', gapPx);
+    }
+    // Крайние линии поля следуют за краями обкладок; их плотность качественно уменьшается как 1/εᵣ.
+    const inset = 7;
+    const xStart = plateLeft + inset;
+    const xEnd = plateLeft + plateWidth - inset;
+    const fieldGroup = $('fieldLines');
+    fieldGroup.replaceChildren();
+    const lineCount = Math.max(2, Math.round(10 / er));
+    for (let i = 0; i < lineCount; i++) {
+      const x = lineCount === 1 ? (xStart + xEnd) / 2 : xStart + (xEnd - xStart) * i / (lineCount - 1);
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('class', 'field-line');
+      line.setAttribute('x1', x);
+      line.setAttribute('x2', x);
+      line.setAttribute('y1', topY + plateHeight + 2);
+      line.setAttribute('y2', bottomY - 2);
+      fieldGroup.appendChild(line);
+    }
+    save();
+  }
+  function rowData() {
+    return [...tbody.querySelectorAll('tr')].map(tr => [...tr.querySelectorAll('input')].map(i => i.value));
+  }
+  function save() {
+    try {
+      localStorage.setItem(STORE, JSON.stringify({rows:rowData(),conclusion:$('conclusion').value}));
+    } catch(e) {}
+  }
+  function renumber() { [...tbody.rows].forEach((tr,i)=>tr.cells[0].textContent=i+1); }
+  window.addRow = function(values=[]) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td class="text-center"></td>' + Array.from({length:6},(_,i)=>'<td><input aria-label="Ячейка результата"></td>').join('') + '<td class="no-print text-center"><button type="button" class="btn btn-danger small" aria-label="Удалить строку">×</button></td>';
+    const inputs = tr.querySelectorAll('input');
+    values.forEach((v,i)=>{if(inputs[i]) inputs[i].value=v;});
+    tr.querySelector('button').addEventListener('click',()=>{tr.remove();renumber();save();});
+    inputs.forEach(i=>i.addEventListener('input',save));
+    tbody.appendChild(tr); renumber(); save();
+  };
+  window.addBlankRow = () => addRow(['','','','','','']);
+  window.addModelRow = () => addRow(['Модель (расчёт)',area.value,gap.value,mediumName(),Number($('capacitance').textContent).toFixed(1),'Расчёт по формуле C = ε₀εᵣS/d']);
+  window.clearRows = () => { if(confirm('Удалить все строки таблицы?')) {tbody.innerHTML=''; save();} };
+  window.exportCSV = () => {
+    const headers=['№','Источник/конденсатор','S, см²','d, мм','Среда','C, пФ','Наблюдение'];
+    const rows=[...tbody.rows].map(tr=>[tr.cells[0].textContent,...[...tr.querySelectorAll('input')].map(i=>i.value)]);
+    const q=v=>'"'+String(v??'').replaceAll('"','""')+'"';
+    const csv='\ufeff'+[headers,...rows].map(r=>r.map(q).join(';')).join('\r\n');
+    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='результаты_лабораторной_электроемкость.csv';a.click();URL.revokeObjectURL(a.href);
+  };
+  [area,gap,medium].forEach(el=>el.addEventListener('input',calculate));
+  $('conclusion').addEventListener('input',save);
+  try {
+    const old=JSON.parse(localStorage.getItem(STORE)||'{}');
+    $('conclusion').value=old.conclusion||'';
+    (old.rows||[]).forEach(r=>addRow(r));
+  } catch(e) {}
+  calculate();
+})();
+</script>
+
+<script>
+function resizeIframe() {
+    // В этом файле основной контейнер имеет класс .sheet
+    const container = document.querySelector('.sheet') || document.body;
+    
+    // Получаем стили блока, чтобы учесть его внешние отступы (margin)
+    const style = window.getComputedStyle(container);
+    const marginTop = parseFloat(style.marginTop) || 0;
+    const marginBottom = parseFloat(style.marginBottom) || 0;
+    
+    // Полная высота = высота самого блока + верхний отступ + нижний отступ
+    const height = container.offsetHeight + marginTop + marginBottom;
+    
+    window.parent.postMessage({
+        type: "resizeIframe",
+        height: Math.ceil(height)
+    }, "*");
+}
+
+window.addEventListener("load", resizeIframe);
+window.addEventListener("resize", resizeIframe);
+
+// Наблюдаем за изменениями размеров контейнера
+const target = document.querySelector('.sheet') || document.body;
+new ResizeObserver(resizeIframe).observe(target);
+</script>
+</body>
+</html>
