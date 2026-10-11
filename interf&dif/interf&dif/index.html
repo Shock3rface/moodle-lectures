@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#102a43">
+  <meta name="description" content="Учебная лекция для 9 класса об интерференции и дифракции механических волн.">
+  <title>Интерференция и дифракция механических волн — физика, 9 класс</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%23102a43'/%3E%3Cpath d='M4 21c5-15 9 15 14 0s9 15 14 0' fill='none' stroke='%234fd1c5' stroke-width='3'/%3E%3C/svg%3E">
+  <script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"]]},chtml:{scale:1}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+  <style>
+    :root{color-scheme:light;--navy:#102a43;--blue:#176b87;--teal:#087e8b;--cyan:#dff7f6;--ink:#243b53;--muted:#52677c;--paper:#fff;--bg:#eef4f8;--line:#d7e2ea;--gold:#f4bd50;--soft:#f3f8fb}
+    *{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;background:var(--bg);color:var(--ink);font:1.06rem/1.72 system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+    header{background:var(--navy);color:#fff;padding:3.2rem max(1.25rem,calc((100% - 1080px)/2)) 2.8rem;position:relative;overflow:hidden}
+    header:after{content:"";position:absolute;width:420px;height:420px;border:1px solid #ffffff26;border-radius:50%;right:-130px;top:-270px;box-shadow:0 0 0 38px #ffffff0b,0 0 0 76px #ffffff08}
+    .eyebrow{font-size:.88rem;letter-spacing:.12em;text-transform:uppercase;color:#80ded7;font-weight:750;margin:0 0 .7rem}.hero{max-width:1080px;margin:auto;position:relative;z-index:1}h1{font-size:clamp(2.1rem,5vw,3.8rem);line-height:1.08;letter-spacing:-.035em;max-width:850px;margin:.15rem 0 1rem}.lede{font-size:1.2rem;color:#d6e7f0;max-width:760px;margin:0}
+    main{max-width:1080px;margin:2rem auto 4rem;padding:0 1.1rem}.lesson{background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:0 12px 34px #17324a0c;padding:clamp(1.15rem,3.5vw,2.7rem)}
+    nav{display:flex;gap:.55rem;flex-wrap:wrap;margin:0 0 2rem;padding:0 0 1.3rem;border-bottom:1px solid var(--line)}nav a{font-size:.94rem;color:var(--blue);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:.35rem .75rem}nav a:hover,nav a:focus-visible{background:var(--cyan);outline:2px solid transparent}
+    h2{font-size:clamp(1.5rem,3vw,2rem);line-height:1.2;color:var(--navy);margin:2.5rem 0 .85rem;letter-spacing:-.02em}h2:first-of-type{margin-top:0}h3{font-size:1.22rem;line-height:1.35;color:var(--blue);margin:1.45rem 0 .45rem}p{margin:.55rem 0 1rem}strong{color:var(--navy)}
+    .definition{background:var(--soft);border-left:4px solid var(--teal);padding:1rem 1.15rem;border-radius:0 12px 12px 0;margin:1rem 0 1.25rem}.definition p:last-child{margin-bottom:0}.formula{margin:1rem 0;padding:1.1rem 1rem;background:#102a43;color:#fff;border-radius:14px;text-align:center;font:600 clamp(1.1rem,2.5vw,1.45rem)/1.6 Georgia,"Times New Roman",serif;overflow-wrap:anywhere}.formula small{display:block;font:400 .92rem/1.5 system-ui,Arial,sans-serif;color:#cfe3ed;margin-top:.45rem}.note{font-size:.98rem;color:var(--muted)}
+    figure{margin:1.3rem 0 1.5rem;padding:1rem;background:#f6fafc;border:1px solid var(--line);border-radius:14px}figure svg{display:block;width:100%;height:auto}figcaption{font-size:.92rem;line-height:1.5;color:var(--muted);margin:.65rem .25rem 0}
+    .history{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem;margin:1.1rem 0}.historical{display:flex;align-items:center;gap:1rem;padding:1rem;border:1px solid var(--line);border-radius:12px;background:#fff}.historical b{display:block;color:var(--teal);font-size:1.04rem;margin-bottom:.2rem}.portrait-slot{width:88px;min-width:88px;height:104px;overflow:hidden;border-radius:9px;background:#e7f0f5;color:#61798d;display:grid;place-items:center;font-size:.82rem;text-align:center}.portrait-slot img{width:100%;height:100%;object-fit:cover}.portrait-slot img[hidden],.portrait-placeholder[hidden]{display:none}.columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}.card{padding:1rem 1.1rem;border-radius:14px;background:var(--soft);border:1px solid var(--line)}.card h3{margin-top:0}.example-image{display:block;width:100%;max-height:220px;object-fit:cover;border-radius:9px;margin:.35rem 0 .85rem}.example-image[hidden]{display:none}.takeaway{margin-top:2rem;padding:1.15rem 1.3rem;background:var(--cyan);border-radius:14px;border:1px solid #bde8e5}.takeaway h2{margin:.1rem 0 .5rem;font-size:1.35rem}.takeaway ul{margin:.3rem 0 0;padding-left:1.3rem}
+    footer{max-width:1080px;margin:0 auto 2rem;padding:0 1.2rem;color:var(--muted);font-size:.9rem}
+    @media(max-width:650px){header{padding-top:2.5rem}.history,.columns{grid-template-columns:1fr}.lesson{padding:1.1rem;border-radius:14px}nav{gap:.4rem}nav a{font-size:.88rem}}
+    @media print{body{background:white;font-size:11pt}header{padding:1.4rem 0;background:white;color:var(--navy)}header:after,nav{display:none}.lede{color:var(--ink)}main{margin:0 auto;padding:0}.lesson{box-shadow:none;border:0;padding:0}figure,.card,.historical,.definition,.takeaway{break-inside:avoid}h2,h3{break-after:avoid}footer{display:none}}
+	.card img {
+    max-width: 640px; /* Запрещает картинке растягиваться шире 640px */
+    width: 100%;     /* Делает картинку адаптивной: она будет сжиматься, если карточка станет уже 640px */
+    height: auto;     /* Сохраняет оригинальные пропорции (максимальная высота автоматически будет 480px) */
+    display: block;    /* Убирает лишние отступы снизу, характерные для строчных элементов */
+    margin: 0 auto;    /* Центрирует картинку внутри карточки */
+    
+    /* Дополнительно: можно добавить небольшое скругление углов, чтобы смотрелось эстетичнее */
+    border-radius: 8px;
+}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="hero">
+      <p class="eyebrow">Физика · 9 класс</p>
+      <h1>Интерференция и дифракция механических волн</h1>
+      <p class="lede">Два волновых явления, которые показывают, как волны складываются и почему могут огибать препятствия.</p>
+    </div>
+  </header>
+  <main>
+    <article class="lesson">
+      <nav aria-label="Разделы лекции">
+        <a href="#interference">Интерференция</a><a href="#history">История</a><a href="#diffraction">Дифракция</a><a href="#examples">Примеры</a>
+      </nav>
+
+      <section id="interference">
+        <h2>Интерференция волн</h2>
+        <div class="definition"><p><strong>Интерференция</strong> — устойчивое усиление или ослабление колебаний, возникающее при наложении когерентных волн.</p></div>
+        <p><strong>Когерентные волны</strong> имеют одинаковую частоту и постоянную разность фаз. Благодаря этому в каждой точке пространства волны складываются одним и тем же образом: одни области остаются усиленными, а другие — ослабленными.</p>
+        <p>Если гребень одной волны приходит одновременно с гребнем другой, колебания усиливаются. Если гребень одной волны совпадает с впадиной другой, колебания ослабляются. Это проявление <strong>принципа суперпозиции</strong>: при встрече волн результирующее смещение среды равно сумме смещений, создаваемых каждой волной отдельно.</p>
+        <figure>
+          <!-- Длинный base64 код заменен на заглушку "image-1.png" для предотвращения обрыва кода -->
+          <img src="images/volny.png" alt="Схемы сложения двух гармонических волн: сложение волн в одинаковой фазе и взаимное гашение волн в противофазе" style="display:block;width:100%;height:auto;max-width:683px;margin:0 auto;border-radius:6px">
+          <figcaption>При совпадении фаз амплитуды складываются; одинаковые по амплитуде волны в противофазе взаимно компенсируются.</figcaption>
+        </figure>
+        <h3>Условия максимума и минимума</h3>
+        <p>Результат сложения удобно определять по <strong>разности хода</strong> \(\Delta r\) — разности расстояний от источников волн до рассматриваемой точки.</p>
+        <div class="formula">\[\begin{aligned}\Delta r &= m\lambda &&\text{— максимум},\\[3pt]\Delta r &= \left(m+\frac{1}{2}\right)\lambda &&\text{— минимум}.\end{aligned}\]
+          <small>\(m=0,1,2,\ldots\) — порядок максимума или минимума; \(\lambda\) — длина волны.</small>
+        </div>
+        <p>При разности хода, равной целому числу длин волн, волны приходят в одинаковой фазе и усиливают друг друга. При разности хода, равной нечётному числу полуволн, они приходят в противофазе и ослабляются.</p>
+        <p>Например, если от двух синхронно работающих источников до точки наблюдения волны проходят пути, отличающиеся на одну длину волны, в этой точке возникает максимум. Если пути отличаются на половину длины волны — минимум.</p>
+      </section>
+
+      <section id="history">
+        <h2>Как изучали волновые явления</h2>
+        <p>Интерференцию и дифракцию сначала исследовали прежде всего на световых волнах. Эти исследования помогли учёным понять общие свойства волн, которые проявляются также у звука, волн на воде и других механических волн.</p>
+        <div class="history">
+          <!-- Чтобы добавить портрет, замените значение data-image-url="ВСТАВЬТЕ_ССЫЛКУ_НА_ПОРТРЕТ" на прямую ссылку на файл изображения. -->
+          <div class="historical">
+            <div class="portrait-slot"><img src="images/grimaldi.jpg" alt="Портрет Франческо Гримальди"><span class="portrait-placeholder">Портрет учёного</span></div>
+            <div><b>1665 год · Франческо Гримальди</b>Описал распространение света за края препятствий и ввёл термин «дифракция».</div>
+          </div>
+          <div class="historical">
+            <div class="portrait-slot"><img <img src="images/huygens.jpeg" alt="Портрет Христиана Гюйгенса"><span class="portrait-placeholder">Портрет учёного</span></div>
+            <div><b>1678 год · Христиан Гюйгенс</b>Сформулировал принцип вторичных волн. Трактат «Трактат о свете» опубликован в 1690 году.</div>
+          </div>
+          <div class="historical">
+            <div class="portrait-slot"><img src="images/young.jpg" alt="Портрет Томаса Юнга"><span class="portrait-placeholder">Портрет учёного</span></div>
+            <div><b>Около 1801 года · Томас Юнг</b>Показал интерференцию света в опыте с двумя близкими щелями.</div>
+          </div>
+          <div class="historical">
+            <div class="portrait-slot"><img src="images/frenel.jpg" alt="Портрет Огюстена Френеля"><span class="portrait-placeholder">Портрет учёного</span></div>
+            <div><b>1815–1818 годы · Огюстен Френель</b>Развил волновое объяснение дифракции и связал её с интерференцией вторичных волн.</div>
+          </div>
+        </div>
+        <p class="note">Те же закономерности складывания волн можно наблюдать на воде и слышать в звуковых волнах.</p>
+      </section>
+
+      <section id="diffraction">
+        <h2>Дифракция волн</h2>
+        <div class="definition"><p><strong>Дифракция</strong> — отклонение волны от прямолинейного распространения: волна огибает препятствие или расходится после прохождения через отверстие.</p></div>
+        <p>Дифракция особенно заметна, когда размеры препятствия или отверстия сравнимы с длиной волны. Если отверстие намного шире длины волны, волна за ним распространяется почти прямо. Если размеры близки, волна заметно расходится в стороны.</p>
+        <p>Дифракцию объясняет <strong>принцип Гюйгенса–Френеля</strong>: каждую точку волнового фронта можно рассматривать как источник вторичных волн. Эти волны накладываются и формируют новый волновой фронт. За узкой щелью фронт становится расходящимся, а за препятствием волна частично проникает в область геометрической тени.</p>
+        <figure>
+          <!-- Длинный base64 код заменен на заглушку "image-2.png" для предотвращения обрыва кода -->
+          <img src="images/difraction.png" alt="Чем уже щель по сравнению с длиной волны, тем заметнее волна расходится за ней." style="display:block;width:100%;height:auto;max-width:683px;margin:0 auto;border-radius:6px">
+          <figcaption>Чем уже щель по сравнению с длиной волны, тем заметнее волна расходится за ней.</figcaption>
+        </figure>
+        <figure>
+		<img src="images/interfdif.png" alt="Схемы дифракции волны на препятствии и интерференции волн от двух источников" style="display:block;width:100%;height:auto;max-width:900px;margin:0 auto;border-radius:6px">
+          <figcaption>а) Дифракция волны от источника на препятствии; б) интерференция волн от двух источников. Эти явления иллюстрируют образование новых волновых фронтов и сложение вторичных волн.</figcaption>
+        </figure>
+        <h3>Дифракционная картина щели</h3>
+        <p>При прохождении через узкую щель волна расходится и за ней образуются области усиления и ослабления. Для качественного понимания достаточно помнить: центральный максимум наиболее выражен, а по сторонам от него располагаются более слабые максимумы.</p>
+        <figure>
+		<img src="images/maximym.png" alt="Для дифракции на щели характерен широкий центральный максимум и более слабые боковые максимумы; ниже показано распределение интерференционных полос." style="display:block;width:100%;height:auto;max-width:700px;margin:0 auto;border-radius:6px">
+          <figcaption>Для дифракции на щели характерен широкий центральный максимум и более слабые боковые максимумы; ниже показано распределение интерференционных полос.</figcaption>
+        </figure>
+      </section>
+
+      <section id="examples">
+        <h2>Интерференция и дифракция вокруг нас</h2>
+        <div class="columns">
+          <div class="card"><h3>Волны на воде</h3><p>Если два источника одновременно создают рябь, круговые волны пересекаются. В одних местах гребни встречаются с гребнями и усиливаются, в других гребень встречается с впадиной. Так возникает чередование спокойных и сильно колеблющихся участков.</p><img src="images/ytki.png" class="card img" alt="Интерференция волн на воде"></div>
+          <div class="card"><h3>Звук за углом</h3><p>Звуковая волна может огибать дверной проём или край стены. Поэтому голос или музыка слышны, даже если источник не виден. Эффект заметнее, когда размер проёма сравним с длиной звуковой волны.</p><img src="images/komnata.png" class="card img" alt="Распространение звука за препятствием"></div>
+          <div class="card"><h3>Шумоподавляющие наушники</h3><p>Микрофоны улавливают внешний шум, а электроника создаёт звук с противоположной фазой. При наложении волн шум ослабляется. Такой принцип называется активным шумоподавлением.</p><img src="images/haushniki.png" class="card img" alt="Работа шумоподавляющих наушников"></div>
+          <div class="card"><h3>Звук в помещении</h3><p>Звуковые волны, отражённые от стен, накладываются на прямой звук. В разных точках комнаты отдельные частоты могут звучать громче или тише из-за интерференции.</p><img src="images/akystika.png" class="card img" alt="Распространение и отражение звука в помещении"></div>
+        </div>
+      </section>
+
+      <aside class="takeaway">
+        <h2>Главное</h2>
+        <ul>
+          <li>Интерференция — устойчивое усиление и ослабление при наложении когерентных волн.</li>
+          <li>Для максимума \(\Delta r=m\lambda\); для минимума \(\Delta r=(m+\frac{1}{2})\lambda\).</li>
+          <li>Дифракция — огибание препятствий и расхождение волн за отверстием; она заметна, когда размеры преграды сравнимы с длиной волны.</li>
+          <li>Интерференция и дифракция проявляются у механических волн, в том числе у звука и волн на воде.</li>
+        </ul>
+      </aside>
+
+    </article>
+  </main>
+<script>
+function resizeIframe() {
+    // Ищем основной блок страницы. Если его нет — берем body
+    const container = document.querySelector('.page') || document.body;
+    
+    // Получаем стили блока, чтобы учесть его внешние отступы (margin)
+    const style = window.getComputedStyle(container);
+    const marginTop = parseFloat(style.marginTop) || 0;
+    const marginBottom = parseFloat(style.marginBottom) || 0;
+    
+    // Полная высота = высота самого блока + верхний отступ + нижний отступ
+    const height = container.offsetHeight + marginTop + marginBottom;
+    
+    window.parent.postMessage({
+        type: "resizeIframe",
+        height: Math.ceil(height)
+    }, "*");
+}
+
+window.addEventListener("load", resizeIframe);
+window.addEventListener("resize", resizeIframe);
+
+// Наблюдаем за изменениями размеров именно контейнера с контентом
+const target = document.querySelector('.page') || document.body;
+new ResizeObserver(resizeIframe).observe(target);
+</script>
+</body>
+</html>
