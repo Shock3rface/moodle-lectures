@@ -510,7 +510,7 @@
         });
     </script> <!-- ЗДЕСЬ МЫ ПРАВИЛЬНО ЗАКРЫЛИ ПЕРВЫЙ СКРИПТ -->
 
-    <!-- Скрипт авторесайза для передачи высоты в iframe (Moodle) -->
+   <!-- Скрипт авторесайза для передачи высоты в iframe (Moodle) -->
     <script>
         function sendHeightToParent() {
             // Вычисляем полную высоту контента
@@ -522,8 +522,9 @@
             );
             
             // Отправляем сообщение родительскому окну
+            // ТИП СООБЩЕНИЯ ИЗМЕНЕН НА 'resizeIframe', ЧТОБЫ СОВПАДАТЬ С ВАШИМ КОДОМ
             window.parent.postMessage({ 
-                type: 'iframeResize', 
+                type: 'resizeIframe', 
                 height: height 
             }, '*'); 
         }
