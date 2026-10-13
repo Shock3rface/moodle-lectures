@@ -119,4 +119,39 @@ $('camera-reset').addEventListener('click',()=>labView?.reset());$('zoom-in').ad
 let scrollTick=false;window.addEventListener('scroll',()=>{if(scrollTick)return;scrollTick=true;requestAnimationFrame(()=>{const max=document.documentElement.scrollHeight-innerHeight;$('read-progress').style.width=(max>0?scrollY/max*100:0)+'%';scrollTick=false;});},{passive:true});
 selectMode(state.mode,false);renderRecords();converter();persist();init3D();
 </script>
-</body></html>
+  <!-- Скрипт авторесайза для передачи высоты в iframe (Moodle) -->
+    <script>
+        function sendHeightToParent() {
+            // Вычисляем полную высоту контента
+            const height = Math.max(
+                document.body.scrollHeight,
+                document.documentElement.scrollHeight,
+                document.body.offsetHeight,
+                document.documentElement.offsetHeight
+            );
+            
+            // Отправляем сообщение родительскому окну (Moodle)
+            // Используем тип 'resizeIframe' для совместимости с вашим кодом
+            window.parent.postMessage({ 
+                type: 'resizeIframe', 
+                height: height 
+            }, '*'); 
+        }
+
+        // Отправляем высоту при загрузке страницы
+        window.addEventListener('load', sendHeightToParent);
+        
+        // Отправляем высоту при изменении размера окна
+        window.addEventListener('resize', sendHeightToParent);
+
+        // Отслеживаем динамические изменения (например, открытие вкладок, аккордеонов)
+        if (window.ResizeObserver) {
+            const observer = new ResizeObserver(() => {
+                sendHeightToParent();
+            });
+            // Наблюдаем за всем body
+            observer.observe(document.body);
+        }
+    </script>
+</body>
+</html>
