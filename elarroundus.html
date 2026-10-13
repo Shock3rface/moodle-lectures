@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Электричество вокруг нас | 8 класс</title>
+    
+    <!-- GSAP для анимаций -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <!-- Three.js для 3D сцены -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <!-- MathJax для формул -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$']] }
+        };
+    </script>
+
+    <style>
+        /* Пастельная цветовая палитра */
+        :root {
+            --bg-color: #fdfbf7;
+            --primary: #bae1ff;
+            --secondary: #baffc9;
+            --accent-pink: #ffb3ba;
+            --accent-yellow: #ffffba;
+            --text-dark: #5a5a5a;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        header {
+            background-color: var(--primary);
+            padding: 4rem 1rem;
+            text-align: center;
+            border-bottom: 5px solid var(--accent-pink);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.8rem;
+            color: #4a6fa5;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 1rem auto;
+            color: #557a95;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            border-left: 8px solid var(--secondary);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .card:nth-child(even) {
+            border-left: none;
+            border-right: 8px solid var(--accent-pink);
+        }
+        
+        .card:nth-child(3) {
+            border-left: 8px solid var(--primary);
+            border-right: none;
+        }
+
+        h2 {
+            color: #4a6fa5;
+            border-bottom: 2px dashed var(--primary);
+            padding-bottom: 0.5rem;
+            margin-top: 0;
+            font-size: 1.8rem;
+        }
+
+        .formula-box {
+            background-color: var(--bg-color);
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1.3rem;
+            margin: 1rem 0;
+            border: 1px solid #eef2f5;
+            overflow-x: auto;
+        }
+
+        /* Контейнер для 3D сцены */
+        #canvas-container {
+            width: 100%;
+            height: 400px;
+            background-color: #d1f2fd;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            margin: 1.5rem 0;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .btn-shock {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--accent-pink);
+            color: #5a5a5a;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 179, 186, 0.8);
+            transition: 0.2s;
+            z-index: 10;
+            white-space: nowrap;
+        }
+
+        .btn-shock:hover {
+            background-color: #ff9ca5;
+            transform: translateX(-50%) scale(1.05);
+            color: #fff;
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            min-width: 500px; /* Чтобы не сжималась слишком сильно */
+        }
+        
+        th, td {
+            border: 1px solid #eee;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th { background-color: var(--secondary); color: #4a6fa5; }
+        
+        .fact-badge {
+            display: inline-block;
+            background-color: var(--accent-yellow);
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        /* --- Адаптивность для мобильных устройств --- */
+        @media (max-width: 768px) {
+            header {
+                padding: 2.5rem 1rem;
+            }
+            header h1 {
+                font-size: 2rem;
+            }
+            header p {
+                font-size: 1rem;
+            }
+            .container {
+                padding: 1rem;
+            }
+            .card {
+                padding: 1.5rem;
+                border-width: 5px; /* Уменьшаем толщину боковых линий */
+            }
+            h2 {
+                font-size: 1.4rem;
+            }
+            .formula-box {
+                font-size: 1.1rem;
+            }
+            #canvas-container {
+                height: 300px; /* Уменьшаем высоту сцены на телефоне */
+            }
+            .btn-shock {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+                bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Электричество вокруг нас</h1>
+        <p>Обобщающий урок физики: от формул 8 класса до загадок природы и инженерии будущего.</p>
+    </header>
+
+    <div class="container">
+        
+        <div class="card">
+            <h2>1. Фундаментальные законы и цепи</h2>
+            <p>Вспомним базовые принципы электродинамики, которые управляют и бытовыми приборами, и природными явлениями.</p>
+            
+            <p><strong>Закон Ома для участка цепи:</strong> устанавливает строгую зависимость между силой тока, напряжением и сопротивлением.</p>
+            <div class="formula-box">
+                $$I = \frac{U}{R}$$
+            </div>
+
+            <p><strong>Закон Джоуля-Ленца:</strong> описывает тепловое действие тока. Чем больше ток и сопротивление, тем больше выделяется энергии.</p>
+            <div class="formula-box">
+                $$Q = I^2 \cdot R \cdot t$$
+            </div>
+            
+            <p><strong>Топология цепей:</strong></p>
+            <div class="table-responsive">
+                <table>
+                    <tr>
+                        <th>Параметр</th>
+                        <th>Последовательное соединение</th>
+                        <th>Параллельное соединение</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Сила тока ($I$)</strong></td>
+                        <td>Одинакова везде</td>
+                        <td>Складывается на ветвях</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Напряжение ($U$)</strong></td>
+                        <td>Складывается (как в батарейках)</td>
+                        <td>Одинаково везде (как в розетке)</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>2. Электричество в природе: Живая электростанция</h2>
+            <div class="fact-badge">Шокирующий факт: Напряжение 860 В</div>
+            <p>Законы физики работают не только в проводах, но и в биологии. Ярчайший пример — недавно открытый вид электрического угря <strong>Electrophorus voltai</strong>.</p>
+            <p>Этот хищник Амазонии способен генерировать рекордное напряжение в <strong>860 В</strong>! Его электрический орган состоит из сотен тысяч клеток (электроцитов), которые соединены <em>последовательно</em> для создания гигантского напряжения и <em>параллельно</em> для снижения сопротивления. Истинный триумф законов физики в живой природе.</p>
+            
+            <!-- Интерактивная 3D сцена -->
+            <div id="canvas-container">
+                <button class="btn-shock" id="btnShock">Сгенерировать разряд!</button>
+            </div>
+            <p style="text-align:center; font-size: 0.9em; color: #888;">Нажмите кнопку, чтобы визуализировать биоэлектрический разряд.</p>
+        </div>
+
+        <div class="card">
+            <h2>3. Техника: Защита человека (УЗО)</h2>
+            <p>Обычные автоматические выключатели в электрощитке защищают провода от перегрева при коротком замыкании. Но они не способны спасти человека. Для этого используется <strong>Устройство защитного отключения (УЗО)</strong>.</p>
+            <p>Работа УЗО основана на электромагнитной индукции и законах сохранения. УЗО постоянно сравнивает силу тока, уходящего по фазному проводу, с током, возвращающимся по нулевому.</p>
+            <ul>
+                <li>В идеальной цепи разница токов равна нулю.</li>
+                <li>Если человек касается оголенного провода, часть тока утекает через его тело в землю.</li>
+                <li>Возникает дисбаланс, который создает магнитное поле. Поле за доли секунды отключает механизм пружины, разрывая цепь при утечке всего в 30 миллиампер!</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>4. Передовые технологии электроники</h2>
+            <div class="fact-badge">Будущее уже здесь (2025-2026)</div>
+            <p>Знания о проводимости, сопротивлении и полях сегодня трансформируются в фантастические изобретения.</p>
+            
+            <p>🔋 <strong>Твердотельные аккумуляторы (SSB):</strong> Традиционные литий-ионные батареи с горючим жидким электролитом уходят в прошлое. В новых аккумуляторах используется твердый электролит, что исключает риск пожара и повышает плотность энергии до 400-500 Вт·ч/кг. Запас хода электромобилей превысит 1000 км.</p>
+            
+            <p>🛰️ <strong>Проект MAPLE (Беспроводная передача):</strong> Инженеры из Калифорнийского технологического института успешно испытали на орбите Земли спутник, который собирает солнечную энергию в космосе и отправляет ее на Землю в виде сфокусированного микроволнового луча, доказывая, что провода нам скоро могут не понадобиться.</p>
+        </div>
+
+    </div>
+
+    <!-- Логика и анимации -->
+    <script>
+        // GSAP Анимация появления карточек
+        gsap.registerPlugin(ScrollTrigger);
+        gsap.utils.toArray('.card').forEach(card => {
+            gsap.to(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: "top 90%", 
+                    toggleActions: "play none none reverse"
+                },
+                y: 0,
+                opacity: 1,
+                duration: 0.6,
+                ease: "power2.out"
+            });
+        });
+
+        // -----------------------------------------------------------------
+        // Three.js: РЕАЛИСТИЧНАЯ ГЕНЕРАЦИЯ 3D-МОДЕЛИ УГРЯ БЕЗ ВНЕШНИХ ФАЙЛОВ
+        // -----------------------------------------------------------------
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        
+        scene.background = new THREE.Color('#d1f2fd');
+        scene.fog = new THREE.FogExp2('#d1f2fd', 0.04);
+        
+        const camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 1000);
+        camera.position.set(0, 3, 16);
+        camera.lookAt(0, 0, 0);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        renderer.setPixelRatio(window.devicePixelRatio); // Для четкости на Retina/мобильных экранах
+        container.appendChild(renderer.domElement);
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        dirLight.position.set(5, 10, 5);
+        scene.add(dirLight);
+
+        const shockLight = new THREE.PointLight('#aaffff', 0, 30);
+        scene.add(shockLight);
+
+        // 1. ГЕНЕРАЦИЯ ТЕКСТУРЫ
+        const texCanvas = document.createElement('canvas');
+        texCanvas.width = 512;
+        texCanvas.height = 512;
+        const ctx = texCanvas.getContext('2d');
+
+        const gradient = ctx.createLinearGradient(0, 0, 0, 512);
+        gradient.addColorStop(0, '#2d3324'); 
+        gradient.addColorStop(0.4, '#444a33'); 
+        gradient.addColorStop(0.7, '#d68922'); 
+        gradient.addColorStop(1, '#e3a842'); 
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, 512, 512);
+
+        for (let i = 0; i < 3000; i++) {
+            ctx.fillStyle = `rgba(0, 0, 0, ${Math.random() * 0.15})`;
+            ctx.beginPath();
+            ctx.arc(Math.random() * 512, Math.random() * 512, Math.random() * 3, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        const skinTexture = new THREE.CanvasTexture(texCanvas);
+        skinTexture.wrapS = THREE.RepeatWrapping;
+        skinTexture.wrapT = THREE.RepeatWrapping;
+        skinTexture.repeat.set(3, 1); 
+
+        const eelMaterial = new THREE.MeshStandardMaterial({
+            map: skinTexture,
+            roughness: 0.3,
+            metalness: 0.1
+        });
+
+        // 2. ГЕОМЕТРИЯ
+        const geometry = new THREE.CylinderGeometry(0.5, 0.5, 16, 32, 60);
+        geometry.rotateZ(Math.PI / 2); 
+
+        const basePositions = [];
+        const positions = geometry.attributes.position;
+
+        for (let i = 0; i < positions.count; i++) {
+            const x = positions.getX(i);
+            let y = positions.getY(i);
+            let z = positions.getZ(i);
+
+            const normalizedX = (x + 8) / 16; 
+            
+            let profile = 1.0;
+            if (normalizedX > 0.85) {
+                profile = Math.sin((1 - normalizedX) * (1 / 0.15) * Math.PI / 2);
+            } else {
+                profile = 0.1 + 0.9 * Math.pow(normalizedX / 0.85, 0.6);
+            }
+
+            y *= profile; 
+            z *= profile * 0.6; 
+
+            positions.setY(i, y);
+            positions.setZ(i, z);
+            
+            basePositions.push({ x, y, z });
+        }
+        geometry.computeVertexNormals();
+
+        const eelMesh = new THREE.Mesh(geometry, eelMaterial);
+        scene.add(eelMesh);
+
+        const eyeGeo = new THREE.SphereGeometry(0.08, 16, 16);
+        const eyeMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
+        const eyeR = new THREE.Mesh(eyeGeo, eyeMat);
+        eyeR.position.set(7.2, 0.2, 0.25);
+        const eyeL = new THREE.Mesh(eyeGeo, eyeMat);
+        eyeL.position.set(7.2, 0.2, -0.25);
+        eelMesh.add(eyeR);
+        eelMesh.add(eyeL);
+
+        // 3. ИСКРЫ
+        const sparkGeo = new THREE.BufferGeometry();
+        const sparkCount = 200;
+        const sparkPos = new Float32Array(sparkCount * 3);
+        const sparkBasePos = [];
+        
+        for(let i = 0; i < sparkCount; i++) {
+            const x = (Math.random() - 0.5) * 16;
+            const y = (Math.random() - 0.5) * 4;
+            const z = (Math.random() - 0.5) * 4;
+            sparkPos[i*3] = x;
+            sparkPos[i*3+1] = y;
+            sparkPos[i*3+2] = z;
+            sparkBasePos.push({x, y, z});
+        }
+        
+        sparkGeo.setAttribute('position', new THREE.BufferAttribute(sparkPos, 3));
+        const sparkMat = new THREE.PointsMaterial({
+            color: '#aaffff',
+            size: 0.3,
+            transparent: true,
+            opacity: 0,
+            blending: THREE.AdditiveBlending
+        });
+        const sparks = new THREE.Points(sparkGeo, sparkMat);
+        scene.add(sparks);
+
+        let time = 0;
+        let isShocking = false;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            time += 0.04;
+
+            const currentPos = geometry.attributes.position;
+            for (let i = 0; i < currentPos.count; i++) {
+                const baseX = basePositions[i].x;
+                const baseZ = basePositions[i].z;
+                const damp = Math.max(0, (8 - baseX) / 16); 
+                const wave = Math.sin(baseX * 1.5 - time * 4) * 1.5 * Math.pow(damp, 1.5);
+                currentPos.setZ(i, baseZ + wave);
+            }
+            currentPos.needsUpdate = true;
+            geometry.computeVertexNormals();
+            
+            eelMesh.rotation.x = Math.sin(time * 0.5) * 0.05;
+
+            if (isShocking) {
+                eelMaterial.emissive.setHex(Math.random() > 0.3 ? 0x226688 : 0x000000);
+                
+                const positionsAttr = sparks.geometry.attributes.position.array;
+                for(let i = 0; i < sparkCount; i++) {
+                    positionsAttr[i*3] = sparkBasePos[i].x + (Math.random() - 0.5) * 2;
+                    positionsAttr[i*3+1] = sparkBasePos[i].y + (Math.random() - 0.5) * 2;
+                    positionsAttr[i*3+2] = sparkBasePos[i].z + (Math.random() - 0.5) * 2;
+                }
+                sparks.geometry.attributes.position.needsUpdate = true;
+            }
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        const btnShock = document.getElementById('btnShock');
+        btnShock.addEventListener('click', () => {
+            if(isShocking) return;
+            isShocking = true;
+            
+            shockLight.intensity = 3;
+            sparks.material.opacity = 1;
+            
+            gsap.to(camera.position, {
+                x: (Math.random() - 0.5) * 1.0,
+                y: 3 + (Math.random() - 0.5) * 1.0,
+                duration: 0.05,
+                yoyo: true,
+                repeat: 14,
+                onComplete: () => {
+                    camera.position.set(0, 3, 16);
+                    isShocking = false;
+                    shockLight.intensity = 0;
+                    eelMaterial.emissive.setHex(0x000000);
+                    sparks.material.opacity = 0;
+                }
+            });
+        });
+
+        // АВТОРЕСАЙЗ для 3D канваса
+        window.addEventListener('resize', () => {
+            if (container.clientWidth > 0 && container.clientHeight > 0) {
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            }
+        });
+    </script>
+</body>
+</html>
