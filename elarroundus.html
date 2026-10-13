@@ -500,8 +500,17 @@
             });
         });
 
-        // АВТОРЕСАЙЗ для 3D канваса
-        <!-- Скрипт авторесайза для передачи высоты в iframe (Moodle) -->
+       // АВТОРЕСАЙЗ для 3D канваса
+        window.addEventListener('resize', () => {
+            if (container.clientWidth > 0 && container.clientHeight > 0) {
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            }
+        });
+    </script> <!-- ЗДЕСЬ МЫ ПРАВИЛЬНО ЗАКРЫЛИ ПЕРВЫЙ СКРИПТ -->
+
+    <!-- Скрипт авторесайза для передачи высоты в iframe (Moodle) -->
     <script>
         function sendHeightToParent() {
             // Вычисляем полную высоту контента
@@ -516,7 +525,7 @@
             window.parent.postMessage({ 
                 type: 'iframeResize', 
                 height: height 
-            }, '*'); // В продакшене '*' можно заменить на URL вашего Moodle для безопасности
+            }, '*'); 
         }
 
         // Отправляем высоту при загрузке страницы
@@ -525,7 +534,7 @@
         // Отправляем высоту при изменении размера окна
         window.addEventListener('resize', sendHeightToParent);
 
-        // Используем ResizeObserver для отслеживания динамических изменений (анимации, раскрывающиеся блоки)
+        // Используем ResizeObserver для отслеживания динамических изменений
         if (window.ResizeObserver) {
             const observer = new ResizeObserver(() => {
                 sendHeightToParent();
