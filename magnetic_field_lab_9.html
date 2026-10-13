@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#08a9df">
+<meta name="description" content="Лабораторная работа для 9 класса: действие магнитного поля на проводник с током. Указания, таблица наблюдений и вывод.">
+<title>Лабораторная работа № _ · Действие магнитного поля на проводник с током</title>
+<style>
+
+:root{--blue:#08a9df;--dark:#087ca8;--ink:#202326;--muted:#677178;--line:#d8e0e4;--wash:#f4f8fa;--pale:#dff5fc;--grey:#e2e2e2;--shadow:0 18px 60px #22364312}
+*{box-sizing:border-box}body{margin:0;background:#edf2f4;color:var(--ink);font:16px/1.5 Georgia,"Times New Roman",serif}.page{max-width:1060px;margin:34px auto;background:#fff;box-shadow:var(--shadow);padding:38px 54px 46px}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:12px;color:var(--muted);font:600 12px/1.3 Arial,sans-serif;text-transform:uppercase;letter-spacing:.09em;margin-bottom:20px}.titlebar{display:grid;grid-template-columns:92px 1fr;margin-bottom:22px}.number{display:grid;place-items:center;background:var(--blue);color:#fff;font:800 34px/1 Arial,sans-serif;min-height:76px}h1{margin:0;background:var(--grey);padding:14px 26px;display:flex;align-items:center;font:800 clamp(20px,3vw,27px)/1.12 Arial,sans-serif;text-transform:uppercase}.lead{font-size:19px;margin:0 0 26px;color:#41484c}
+.meta{display:grid;grid-template-columns:160px 1fr;gap:12px 18px;margin:0 0 30px}.meta dt{font:700 14px/1.25 Arial,sans-serif}.meta dd{margin:0;font-size:19px;line-height:1.35}.section-ribbon{display:inline-block;margin:0 0 16px;background:var(--blue);color:#fff;padding:5px 12px;font:800 14px/1.1 Arial,sans-serif;letter-spacing:.045em;text-transform:uppercase}
+.steps{list-style:none;counter-reset:step;padding:0;margin:0 0 29px}.steps li{counter-increment:step;display:grid;grid-template-columns:30px 1fr;gap:12px;margin:0 0 14px;font-size:19px;line-height:1.35}.steps li:before{content:counter(step) ".";color:var(--blue);font:800 18px/1.45 Arial,sans-serif;text-align:right}.step-text{display:block}.note{background:#f5fbfd;border-left:4px solid var(--blue);padding:13px 16px;margin:22px 0 30px;color:#35444b;font-size:16px}.formula{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:16px 20px;margin:14px 0 24px;background:var(--pale);font-size:20px}.formula b{font-size:22px;color:var(--dark)}.formula small{font:14px/1.4 Arial,sans-serif;color:#52636a}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:4px;margin:12px 0}.table-wrap table{border-collapse:collapse;width:100%;min-width:900px}th{background:#dff5fc;font:700 14px/1.3 Arial,sans-serif;text-align:center;padding:12px 10px;border:1px solid #fff;vertical-align:middle}td{padding:9px 8px;border:1px solid var(--line);text-align:center;background:#fff}tbody tr:nth-child(even) td{background:#f6fbfd}td input{width:100%;min-width:72px;border:1px solid #cad7dc;border-radius:4px;background:#fff;padding:8px;text-align:center;color:var(--ink);font:16px Georgia,serif}td input:focus{outline:2px solid #81d9f4;border-color:var(--blue)}.trial{font:700 15px Arial,sans-serif;color:var(--dark)}.calc{font-weight:700;color:#123847}.status{font:700 14px/1.25 Arial,sans-serif;color:#31434a}.sink{color:#96500d}.float{color:var(--dark)}.rise{color:#16784d}
+.table-foot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--muted);font:13px/1.4 Arial,sans-serif}.actions{display:flex;gap:8px;flex-wrap:wrap}.button{border:1px solid #b8c9cf;background:#fff;color:#25343a;border-radius:5px;padding:9px 13px;cursor:pointer;font:700 13px Arial,sans-serif}.button:hover{border-color:var(--blue);color:var(--dark)}.danger{border-color:#e2c6c6;color:#9b4141}
+.conclusion{border:1px solid var(--line);background:var(--wash);padding:18px 20px;margin:18px 0 28px}.conclusion-label{font:800 14px Arial,sans-serif;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}.conclusion p{font-size:18px;margin:0;min-height:52px}.prompt{font:14px Arial,sans-serif;color:var(--muted);margin-top:9px!important}.footer{margin-top:40px;padding-top:10px;border-top:4px solid var(--blue);display:flex;justify-content:space-between;color:var(--muted);font:12px Arial,sans-serif}.source a{color:var(--dark)}
+@media(max-width:720px){.page{margin:0;padding:24px 18px 34px}.titlebar{grid-template-columns:66px 1fr}.number{min-height:70px;font-size:27px}h1{padding:12px 15px;font-size:20px}.meta{grid-template-columns:1fr;gap:5px;margin-bottom:24px}.meta dd{margin-bottom:10px}.steps li{grid-template-columns:26px 1fr;font-size:17px}.formula{font-size:18px;padding:13px}.footer{gap:12px;flex-wrap:wrap}.topline{align-items:flex-start;flex-direction:column}}
+@media print{body{background:#fff}.page{max-width:none;margin:0;box-shadow:none;padding:12mm;min-height:auto}.actions,.save-status{display:none!important}.table-wrap{overflow:visible}table{min-width:0!important}input{border:0!important;padding:2px!important}.note,.formula,.conclusion{break-inside:avoid}}
+
+.page{overflow-wrap:break-word}.number{white-space:nowrap;font-size:32px}h1{line-height:1.2}.meta dt{padding-top:3px}.section{margin:0 0 28px}.section p{font-size:18px;margin:0 0 12px}.section-ribbon{font-size:16px;line-height:1.25}.theory{padding:18px 20px;background:var(--wash);border:1px solid var(--line)}.theory p:last-child{margin-bottom:0}.theory strong{color:#202326}.rule{border-top:1px solid var(--line);padding-top:12px}.steps{margin-bottom:18px}.note{margin:18px 0 24px}.formula{display:grid;grid-template-columns:1fr 1fr;gap:18px;font-size:17px}.formula strong{display:block;font:700 15px/1.4 Arial,sans-serif;margin-bottom:5px}.formula span{display:block}.pole{display:inline-block!important;width:17px;height:17px;border-radius:3px;vertical-align:-3px;margin-right:5px;border:1px solid #0002}.pole-blue{background:#447eab}.pole-red{background:#bf6761}.table-wrap table{min-width:740px;table-layout:fixed}.table-wrap th:nth-child(1){width:7%}.table-wrap th:nth-child(2){width:24%}.table-wrap th:nth-child(3){width:24%}.table-wrap th:nth-child(4){width:45%}tbody th{border-color:var(--line)}td{font-size:16px;vertical-align:top;padding:12px 10px}td small{display:block;font:13px/1.4 Arial,sans-serif;color:var(--muted);margin-top:6px}.field{display:block;width:100%;border:1px solid #bacbd2;border-radius:4px;background:#fff;color:var(--ink);padding:10px;font:16px/1.45 Arial,sans-serif;min-height:82px;resize:vertical;overflow:hidden;text-align:left}.field:focus-visible{outline:3px solid #90dff9;outline-offset:2px;border-color:#147393}.field::placeholder{color:#66747a;opacity:1}.field-label{display:block;font:700 15px/1.45 Arial,sans-serif;margin:0 0 8px}.questions{list-style:none;margin:0;padding:0;counter-reset:question}.questions li{counter-increment:question;margin-bottom:18px}.questions label:before{content:counter(question) ". ";color:var(--dark)}.conclusion p{min-height:0;margin-bottom:12px}.conclusion textarea{min-height:132px}.conclusion-label{font-size:16px}.field-caption{font:13px/1.45 Arial,sans-serif;color:var(--muted);margin:9px 0 0}.source{font:13px/1.6 Arial,sans-serif;color:var(--muted);margin:22px 0 0}.source a{color:#086588;text-underline-offset:3px}.save-status{max-width:250px;text-transform:none;letter-spacing:0;font-weight:400;text-align:right}.button{font-size:14px;min-height:40px}.button:focus-visible,dialog button:focus-visible,a:focus-visible{outline:3px solid #90dff9;outline-offset:3px}.print-value{display:none}.print-lines{height:80px;background:repeating-linear-gradient(transparent 0,transparent 25px,#ccd5d9 25px,#ccd5d9 26px)}.print-value.filled{white-space:pre-wrap;overflow-wrap:anywhere}.table-foot{align-items:center}.screen-help{font:13px/1.5 Arial,sans-serif;color:var(--muted);margin:8px 0 12px}dialog{border:1px solid #c8d5dc;border-radius:8px;padding:24px;max-width:430px;width:calc(100% - 36px);color:var(--ink);box-shadow:0 20px 80px #152b3840}dialog::backdrop{background:#172c3d70}dialog h2{font:700 22px/1.25 Arial,sans-serif;margin:0 0 12px}dialog p{font-size:18px;margin:0 0 20px}dialog .actions{justify-content:flex-end}.noscript{padding:12px;border:1px solid var(--line);font:15px/1.5 Arial,sans-serif}.footer{margin-top:28px}.intro-label{font-weight:700}
+@media(max-width:720px){.number{font-size:24px}h1{font-size:20px}.lead{font-size:18px}.section-ribbon{font-size:15px}.theory{padding:15px}.formula{grid-template-columns:1fr;gap:14px}.save-status{text-align:left;max-width:none}.meta dd{font-size:18px}.table-foot{align-items:flex-start}.section p{font-size:17px}}
+@media print{@page{size:A4;margin:14mm}body{font-size:11pt;line-height:1.35;background:white!important}.page{padding:0!important;max-width:none!important}.topline{font-size:8pt;margin-bottom:12px}.titlebar{grid-template-columns:62px 1fr;margin-bottom:16px}.number{font-size:22px;min-height:64px}h1{font-size:20px;padding:10px 16px}.lead{font-size:12pt;margin-bottom:18px}.meta{grid-template-columns:125px 1fr;gap:8px 14px;margin-bottom:20px}.meta dt{font-size:10pt}.meta dd{font-size:12pt}.section-ribbon{font-size:11pt;break-after:avoid}.section{margin-bottom:20px}.section p,.steps li{font-size:11.5pt;line-height:1.35}.steps li{margin-bottom:10px;break-inside:avoid}.steps li:before{font-size:11pt}.theory{padding:12px}.note{font-size:10.5pt;padding:10px;margin:14px 0}.formula{font-size:11pt;margin:10px 0 16px;padding:12px}.formula strong{font-size:10pt}.actions,.save-status,.screen-help,.field-caption,dialog,.field{display:none!important}.print-value{display:block!important;text-align:left;min-height:65px;font:11pt/1.4 Georgia,serif}.table-wrap{border:0!important;overflow:visible!important}.table-wrap table{width:100%;min-width:0!important}thead{display:table-header-group}tr{break-inside:avoid}th{font-size:9pt;padding:8px 6px;border-color:#bacbd2!important}td{font-size:10.5pt;padding:8px 6px}td small{font-size:9pt}.table-foot{display:none}.field-label{font-size:11pt}.questions li{break-inside:avoid;margin-bottom:14px}.conclusion{break-inside:auto;padding:12px;margin:18px 0}.conclusion-label{font-size:11pt}.conclusion p{font-size:11pt}.conclusion .print-value{min-height:105px}.source{font-size:9pt;break-inside:avoid}.footer{font-size:8pt;margin-top:18px}.number,.section-ribbon,th,.formula{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style>
+</head>
+<body>
+<main class="page">
+<div class="topline"><span>Физика · 9 класс · лабораторный практикум</span><span class="save-status" id="saveStatus" role="status" aria-live="polite">Заполнение сохраняется в этом браузере</span></div>
+<header class="titlebar"><div class="number">№ _ </div><h1>Действие магнитного поля на проводник с током</h1></header>
+<p class="lead">Исследуйте, как меняется отклонение подвешенной катушки при изменении направления тока и положения полюсов магнита.</p>
+
+<dl class="meta">
+<dt>Цель работы</dt><dd>Наблюдать действие магнитного поля на проводник с током и установить, от чего зависит направление этого действия.</dd>
+<dt>Приборы и материалы</dt><dd>Подковообразный магнит, проволочная катушка на гибких проводниках, штатив, источник постоянного тока, ключ и соединительные провода.</dd>
+</dl>
+
+<section class="section" aria-labelledby="theoryTitle">
+<h2 class="section-ribbon" id="theoryTitle">Теоретическая часть</h2>
+<div class="theory">
+<p>На проводник с током в магнитном поле может действовать <strong>сила Ампера</strong>. Её направление зависит от направления тока и магнитного поля. В опыте действие поля обнаруживают по отклонению свободно подвешенной катушки.</p>
+<p>В пространстве между полюсами магнита линии магнитного поля направлены <strong>от северного полюса N к южному S</strong>. Если поменять полюса местами, направление поля изменится на противоположное. Если поменять местами провода на выводах источника, изменится направление тока.</p>
+<p class="rule"><strong>Правило левой руки.</strong> Расположите левую руку так, чтобы линии магнитного поля входили в ладонь, а четыре вытянутых пальца указывали направление тока. Отогнутый на 90° большой палец покажет направление силы, действующей на участок проводника, перпендикулярный линиям поля.</p>
+</div>
+</section>
+
+<section class="section" aria-labelledby="procedureTitle">
+<h2 class="section-ribbon" id="procedureTitle">Указания к работе</h2>
+<ol class="steps">
+<li><span class="step-text">Соберите последовательную цепь из источника тока, ключа и катушки. Подвесьте катушку на гибких проводниках так, чтобы она могла свободно отклоняться. При сборке ключ должен быть разомкнут.</span></li>
+<li><span class="step-text">Поднесите магнит к катушке, расположив часть её витков между полюсами. Магнит не должен касаться катушки. Зафиксируйте её исходное положение при разомкнутой цепи.</span></li>
+<li><span class="step-text"><strong>Опыт 1.</strong> Расположите магнит как в начале демонстрации: синий полюс сверху, красный снизу — <strong>положение А</strong>. Кратковременно замкните ключ, наблюдайте отклонение катушки и разомкните цепь. Запишите результат.</span></li>
+<li><span class="step-text"><strong>Опыт 2.</strong> Сохраните подключение катушки. Переверните магнит: красный полюс сверху, синий снизу — <strong>положение Б</strong>. Повторите наблюдение при замыкании цепи.</span></li>
+<li><span class="step-text"><strong>Опыт 3.</strong> При разомкнутом ключе поменяйте местами провода на выводах источника тока. Верните магнит в положение А. Кратковременно замкните цепь и сравните отклонение с опытом 1.</span></li>
+<li><span class="step-text"><strong>Опыт 4.</strong> Сохраните изменённое подключение катушки и переведите магнит в положение Б. Повторите наблюдение. Сравните результат с опытами 2 и 3.</span></li>
+<li><span class="step-text">Разомкните цепь. Сопоставьте результаты четырёх опытов, ответьте на вопросы и сформулируйте вывод.</span></li>
+</ol>
+<aside class="note"><strong>При выполнении опыта.</strong> Используйте школьный низковольтный источник. Меняйте соединения только при разомкнутом ключе; замыкайте цепь ненадолго, чтобы не нагревались провода и катушка.</aside>
+</section>
+
+<section class="section" aria-labelledby="resultsTitle">
+<h2 class="section-ribbon" id="resultsTitle">Результаты наблюдений</h2>
+<div class="formula" aria-label="Условные обозначения положений магнита">
+<div><strong>Положение А</strong><span><span class="pole pole-blue" aria-hidden="true"></span>Синий полюс сверху</span><span><span class="pole pole-red" aria-hidden="true"></span>Красный полюс снизу</span></div>
+<div><strong>Положение Б</strong><span><span class="pole pole-red" aria-hidden="true"></span>Красный полюс сверху</span><span><span class="pole pole-blue" aria-hidden="true"></span>Синий полюс снизу</span></div>
+</div>
+<p>Для каждого опыта запишите, куда отклонилась катушка: к магниту или от него. Если отклонение не удалось различить, отметьте это и повторите наблюдение.</p>
+<p class="screen-help">Таблицу можно заполнить по видеодемонстрации или по собственному опыту. На узком экране таблица прокручивается по горизонтали.</p>
+<div class="table-wrap" role="region" aria-label="Таблица наблюдений, горизонтальная прокрутка" tabindex="0">
+<table aria-label="Действие магнитного поля на катушку с током">
+<thead><tr><th scope="col">№</th><th scope="col">Подключение катушки</th><th scope="col">Положение магнита</th><th scope="col">Наблюдаемое отклонение катушки</th></tr></thead>
+<tbody>
+<tr><th scope="row" class="trial">1</th><td>Исходное<small>Первоначальное направление тока</small></td><td>А<small>Синий полюс сверху</small></td><td><textarea class="field" id="observation1" data-save rows="3" maxlength="2000" aria-label="Наблюдение в опыте 1" placeholder="Запишите наблюдение"></textarea><div class="print-value print-lines" data-print="observation1" aria-hidden="true"></div></td></tr>
+<tr><th scope="row" class="trial">2</th><td>Исходное<small>Как в опыте 1</small></td><td>Б<small>Красный полюс сверху</small></td><td><textarea class="field" id="observation2" data-save rows="3" maxlength="2000" aria-label="Наблюдение в опыте 2" placeholder="Запишите наблюдение"></textarea><div class="print-value print-lines" data-print="observation2" aria-hidden="true"></div></td></tr>
+<tr><th scope="row" class="trial">3</th><td>Обратное<small>Направление тока изменено</small></td><td>А<small>Синий полюс сверху</small></td><td><textarea class="field" id="observation3" data-save rows="3" maxlength="2000" aria-label="Наблюдение в опыте 3" placeholder="Запишите наблюдение"></textarea><div class="print-value print-lines" data-print="observation3" aria-hidden="true"></div></td></tr>
+<tr><th scope="row" class="trial">4</th><td>Обратное<small>Как в опыте 3</small></td><td>Б<small>Красный полюс сверху</small></td><td><textarea class="field" id="observation4" data-save rows="3" maxlength="2000" aria-label="Наблюдение в опыте 4" placeholder="Запишите наблюдение"></textarea><div class="print-value print-lines" data-print="observation4" aria-hidden="true"></div></td></tr>
+</tbody>
+</table>
+</div>
+<div class="table-foot"><span>Наблюдения и ответы сохраняются в этом браузере.</span><div class="actions"><button class="button" id="print" type="button">Печать / PDF</button><button class="button danger" id="clear" type="button">Очистить заполнение</button></div></div>
+</section>
+
+<section class="section" aria-labelledby="analysisTitle">
+<h2 class="section-ribbon" id="analysisTitle">Анализ результатов</h2>
+<ol class="questions">
+<li><label class="field-label" for="answer1">Сравните опыты 1 и 2, затем 3 и 4. Как влияет перемена полюсов магнита на направление отклонения катушки при неизменном направлении тока?</label><textarea class="field" id="answer1" data-save rows="2" maxlength="3000" placeholder="Сравните наблюдения и объясните результат"></textarea><div class="print-value print-lines" data-print="answer1" aria-hidden="true"></div></li>
+<li><label class="field-label" for="answer2">Сравните опыты 1 и 3, затем 2 и 4. Как влияет изменение направления тока на направление отклонения при неизменном положении магнита?</label><textarea class="field" id="answer2" data-save rows="2" maxlength="3000" placeholder="Запишите ответ"></textarea><div class="print-value print-lines" data-print="answer2" aria-hidden="true"></div></li>
+<li><label class="field-label" for="answer3">Сравните опыты 1 и 4. Что происходит с направлением отклонения, если и ток, и магнитное поле изменить на противоположные?</label><textarea class="field" id="answer3" data-save rows="2" maxlength="3000" placeholder="Запишите ответ"></textarea><div class="print-value print-lines" data-print="answer3" aria-hidden="true"></div></li>
+</ol>
+</section>
+
+<section class="conclusion" aria-labelledby="conclusionTitle">
+<h2 class="conclusion-label" id="conclusionTitle">Вывод</h2>
+<p>Укажите, какое наблюдение подтверждает действие магнитного поля на проводник с током и от чего зависит направление этого действия.</p>
+<label class="field-label" for="conclusion">Сформулируйте вывод по результатам опытов</label>
+<textarea class="field" id="conclusion" data-save rows="5" maxlength="6000" placeholder="В ходе работы я наблюдал(а)… Направление действия магнитного поля на проводник с током зависит от…"></textarea>
+<div class="print-value print-lines" data-print="conclusion" aria-hidden="true"></div>
+<p class="field-caption">Вывод должен опираться на сравнение опытов.</p>
+</section>
+
+<noscript><p class="noscript">Автосохранение и кнопки работают при включённом JavaScript. Без него страницу можно распечатать средствами браузера и заполнить от руки.</p></noscript>
+<footer class="footer"><span>Лабораторная работа </span><span>Физика · Наблюдение и вывод</span></footer>
+</main>
+
+<dialog id="clearDialog" aria-labelledby="clearTitle" aria-describedby="clearDescription">
+<h2 id="clearTitle">Очистить заполнение?</h2><p id="clearDescription">Будут удалены наблюдения, ответы и вывод на этой странице.</p>
+<div class="actions"><button class="button" id="cancelClear" type="button" autofocus>Отмена</button><button class="button danger" id="confirmClear" type="button">Очистить</button></div>
+</dialog>
+
+<script>
+(() => {
+  'use strict';
+  const KEY = 'physics-lab-9-magnetic-field-v1';
+  const fields = Array.from(document.querySelectorAll('[data-save]'));
+  const status = document.getElementById('saveStatus');
+  const dialog = document.getElementById('clearDialog');
+  let timer;
+  let resizePending = false;
+  let lastHeight = 0;
+
+  function resizeIframe() {
+    if (window.parent === window || resizePending) return;
+    resizePending = true;
+    window.requestAnimationFrame(() => {
+      resizePending = false;
+      const page = document.querySelector('.page');
+      const style = window.getComputedStyle(page);
+      const height = Math.ceil(page.offsetHeight + (parseFloat(style.marginTop) || 0) + (parseFloat(style.marginBottom) || 0));
+      if (height !== lastHeight) {
+        lastHeight = height;
+        // Совместимо с обработчиком resizeIframe в Moodle-странице референса.
+        window.parent.postMessage({type: 'resizeIframe', height}, '*');
+      }
+    });
+  }
+
+  function syncField(field) {
+    const output = document.querySelector('[data-print="' + field.id + '"]');
+    output.textContent = field.value;
+    output.classList.toggle('filled', Boolean(field.value.trim()));
+    output.classList.toggle('print-lines', !field.value.trim());
+    field.style.height = 'auto';
+    field.style.height = Math.max(82, field.scrollHeight + 2) + 'px';
+  }
+
+  function save() {
+    clearTimeout(timer);
+    timer = null;
+    const values = {};
+    fields.forEach(field => { values[field.id] = field.value; });
+    try {
+      localStorage.setItem(KEY, JSON.stringify({version: 1, values}));
+      status.textContent = 'Сохранено в этом браузере';
+    } catch (error) {
+      status.textContent = 'Автосохранение недоступно — сохраните работу через печать';
+    }
+  }
+
+  function restore() {
+    try {
+      const raw = localStorage.getItem(KEY);
+      if (!raw) return;
+      const saved = JSON.parse(raw);
+      if (!saved || saved.version !== 1 || !saved.values || typeof saved.values !== 'object') return;
+      fields.forEach(field => {
+        const value = saved.values[field.id];
+        if (typeof value === 'string') field.value = value.slice(0, field.maxLength);
+      });
+      status.textContent = 'Восстановлено сохранённое заполнение';
+    } catch (error) {
+      status.textContent = 'Не удалось восстановить заполнение';
+    }
+  }
+
+  function clearFields() {
+    clearTimeout(timer);
+    timer = null;
+    fields.forEach(field => { field.value = ''; syncField(field); });
+    try {
+      localStorage.removeItem(KEY);
+      status.textContent = 'Заполнение очищено';
+    } catch (error) {
+      status.textContent = 'Поля очищены; сохранение в браузере недоступно';
+    }
+    resizeIframe();
+    fields[0].focus();
+  }
+
+  restore();
+  fields.forEach(field => {
+    syncField(field);
+    field.addEventListener('input', () => {
+      syncField(field);
+      status.textContent = 'Сохраняется…';
+      clearTimeout(timer);
+      timer = setTimeout(save, 300);
+      resizeIframe();
+    });
+  });
+
+  document.getElementById('print').addEventListener('click', () => { save(); window.print(); });
+  document.getElementById('clear').addEventListener('click', () => {
+    if (typeof dialog.showModal === 'function') dialog.showModal();
+    else if (window.confirm('Удалить наблюдения, ответы и вывод на этой странице?')) clearFields();
+  });
+  document.getElementById('cancelClear').addEventListener('click', () => dialog.close());
+  document.getElementById('confirmClear').addEventListener('click', () => { dialog.close(); clearFields(); });
+  window.addEventListener('beforeprint', () => fields.forEach(syncField));
+  window.addEventListener('afterprint', () => { fields.forEach(syncField); resizeIframe(); });
+  window.addEventListener('pagehide', () => { if (timer) save(); });
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden' && timer) save(); });
+  window.addEventListener('load', resizeIframe);
+  window.addEventListener('resize', () => { fields.forEach(syncField); resizeIframe(); });
+  if ('ResizeObserver' in window) new ResizeObserver(resizeIframe).observe(document.querySelector('.page'));
+  resizeIframe();
+})();
+</script>
+</body>
+</html>
