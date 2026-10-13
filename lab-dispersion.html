@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f1eb">
+  <meta name="description" content="Интерактивная лабораторная работа: наблюдение дисперсии белого света в стеклянной призме.">
+  <title>Лабораторная работа · Дисперсия света</title>
+  <style>
+    :root{--ink:#273844;--muted:#657782;--paper:#f7f4ef;--card:#fffdfa;--line:#e8e1d8;--blue:#dceaf0;--lilac:#e9e3f1;--peach:#f4e2d5;--mint:#dfece4;--accent:#557987;--shadow:0 14px 40px #283a4210;--serif:Georgia,"Times New Roman",serif}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.62 "Segoe UI",Arial,sans-serif}a{color:inherit}button,input,textarea{font:inherit}button{color:inherit}.wrap{width:min(1160px,calc(100% - 40px));margin:auto}.topbar{display:flex;justify-content:space-between;align-items:center;padding:20px 0}.brand{display:flex;gap:11px;align-items:center;font-weight:700;letter-spacing:.03em}.brand-mark{width:34px;height:34px;border-radius:12px;background:linear-gradient(145deg,#e3dcec,#d8e9ea);display:grid;place-items:center;color:#587783}.brand-mark svg{width:21px}.topbar nav{display:flex;gap:25px;color:var(--muted);font-size:14px}.topbar nav a{text-decoration:none}.topbar nav a:hover{color:var(--ink)}.hero{display:grid;grid-template-columns:1.12fr .88fr;gap:36px;align-items:center;padding:55px 0 74px}.eyebrow{display:inline-flex;align-items:center;gap:9px;border:1px solid #d9e1dc;border-radius:99px;padding:7px 12px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#59756d;background:#edf3ed}.eyebrow:before{content:"";width:7px;height:7px;background:#85a895;border-radius:50%}h1,h2,h3,p{margin-top:0}h1{font:clamp(42px,6vw,68px)/1.06 var(--serif);letter-spacing:-.04em;margin:24px 0 20px;max-width:650px}h1 em{color:#7d8298;font-weight:400}.lead{font-size:18px;line-height:1.65;color:#586974;max-width:600px}.hero-actions{display:flex;gap:12px;margin-top:29px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:12px 17px;border-radius:13px;text-decoration:none;border:1px solid transparent;cursor:pointer;transition:.2s}.btn.primary{background:#617f88;color:#fff}.btn.primary:hover{background:#496b75;transform:translateY(-1px)}.btn.ghost{border-color:#d9dedb;background:#ffffff7a}.btn.ghost:hover{background:#fff}.hero-art{height:310px;border-radius:28px;background:linear-gradient(140deg,#e7e0ed,#d9e9e7 70%,#ece5d9);position:relative;overflow:hidden;display:grid;place-items:center}.hero-art:before,.hero-art:after{content:"";position:absolute;border-radius:50%;filter:blur(1px)}.hero-art:before{width:260px;height:260px;background:#fff8;top:-80px;right:-30px}.hero-art:after{width:170px;height:170px;background:#f4d9ca8c;bottom:-70px;left:-25px}.hero-art svg{width:90%;max-height:275px;position:relative;z-index:1}.art-caption{position:absolute;right:20px;bottom:16px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#65727a;z-index:2}.section{padding:62px 0}.section-head{max-width:690px;margin-bottom:27px}.kicker{color:#778d88;text-transform:uppercase;letter-spacing:.14em;font-size:11px;font-weight:700}.section h2{font:clamp(30px,4vw,43px)/1.12 var(--serif);letter-spacing:-.025em;margin:9px 0 13px}.section-head p{color:var(--muted);margin-bottom:0}.lab{background:#e9eff0;border-top:1px solid #e0e7e7;border-bottom:1px solid #e0e7e7}.scene-shell{border-radius:24px;overflow:hidden;background:#182a39;box-shadow:0 24px 60px #21394521;position:relative}.scene-top{display:flex;justify-content:space-between;align-items:center;padding:17px 20px;color:#e8f0ef;background:#203544;border-bottom:1px solid #ffffff18}.scene-top strong{font-size:14px;font-weight:600}.scene-top span{font-size:12px;color:#adc0c4}.scene-body{position:relative}.scene-canvas{display:block;width:100%;height:430px;touch-action:none;cursor:grab}.scene-canvas:active{cursor:grabbing}.scene-hint{position:absolute;left:18px;bottom:14px;color:#ffffffa8;font-size:12px;pointer-events:none}.scene-key{position:absolute;right:17px;bottom:14px;display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}.key-item{background:#142534bf;border:1px solid #ffffff20;color:#e7efee;border-radius:99px;padding:5px 9px;font-size:11px}.key-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px}.scene-controls{display:grid;grid-template-columns:1fr 1fr auto;gap:22px;align-items:center;padding:19px 21px 21px;background:#203544;color:#edf3f2}.control label{display:flex;justify-content:space-between;gap:12px;font-size:13px;margin-bottom:7px}.control output{color:#d0e3df;font-variant-numeric:tabular-nums}.control input{width:100%;accent-color:#b7d0ca}.scene-buttons{display:flex;gap:8px}.scene-buttons button{border:1px solid #ffffff35;background:#ffffff0c;color:#edf3f2;border-radius:11px;padding:9px 12px;cursor:pointer;font-size:12px}.scene-buttons button:hover{background:#ffffff18}.under-scene{font-size:12px;color:#687a82;margin:13px 4px 0}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.card{background:var(--card);border:1px solid var(--line);border-radius:19px;padding:23px;box-shadow:var(--shadow)}.card .num{width:31px;height:31px;border-radius:11px;display:grid;place-items:center;background:var(--lilac);color:#706b83;font-size:13px;font-weight:700;margin-bottom:15px}.card:nth-child(2) .num{background:var(--blue);color:#577985}.card:nth-child(3) .num{background:var(--peach);color:#9b775f}.card h3{font-size:16px;margin-bottom:8px}.card p{font-size:14px;color:var(--muted);margin:0}.formula-row{display:grid;grid-template-columns:1fr 1.15fr;gap:18px;margin-top:18px}.formula{background:#e8e3ef;border-radius:20px;padding:24px}.formula .equation{font:27px var(--serif);color:#555c77;letter-spacing:.03em;margin:12px 0}.formula p{color:#626879;font-size:14px;margin:0}.note{background:#f2e8dd;border-radius:20px;padding:24px;display:flex;gap:16px;align-items:flex-start}.note-icon{flex:0 0 38px;height:38px;border-radius:13px;background:#fff7ee;display:grid;place-items:center;color:#a77e63;font-weight:700}.note p{color:#766b62;font-size:14px;margin:0}.experiment{display:grid;grid-template-columns:.9fr 1.1fr;gap:20px;align-items:stretch}.steps{counter-reset:step;display:grid;gap:10px}.step{counter-increment:step;display:grid;grid-template-columns:34px 1fr;gap:13px;align-items:start;background:#fffdfa;border:1px solid var(--line);border-radius:15px;padding:15px}.step:before{content:counter(step,decimal-leading-zero);font-size:11px;color:#78908a;font-weight:700;letter-spacing:.06em;padding-top:4px}.step p{margin:0;color:#5c6b73;font-size:14px}.step strong{color:var(--ink)}.obs-card{background:#e2ece8;border-radius:22px;padding:24px}.obs-card h3{font:25px var(--serif);margin-bottom:6px}.obs-card>p{color:#61736e;font-size:14px}.spectrum-list{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:17px 0}.color-chip{background:#fff9;border:1px solid #ffffffc9;border-radius:12px;padding:10px 12px;display:flex;gap:10px;align-items:center;text-align:left;cursor:pointer;transition:.18s}.color-chip:hover,.color-chip.active{background:white;transform:translateY(-1px);box-shadow:0 7px 16px #304a3912}.swatch{width:17px;height:31px;border-radius:6px;flex:0 0 17px}.color-chip b{font-size:13px;display:block}.color-chip small{font-size:11px;color:#71817c}.selected-color{border-top:1px solid #ffffffc0;padding-top:15px;font-size:13px;color:#536c65;min-height:44px}.spectrum-table{width:100%;border-collapse:collapse;font-size:13px;background:#fffdfa;border-radius:16px;overflow:hidden;margin-top:18px}.spectrum-table th,.spectrum-table td{text-align:left;padding:12px 14px;border-bottom:1px solid #eee8e0}.spectrum-table th{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#75847f;background:#f3f5ef}.spectrum-table tr:last-child td{border:0}.spectrum-table .swatch{height:15px;width:15px;border-radius:50%;display:inline-block;vertical-align:middle;margin-right:8px}.conclusion{background:#e9e3f0;border-radius:23px;padding:30px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center}.conclusion h3{font:26px var(--serif);margin:0 0 8px}.conclusion p{color:#62677a;margin:0;max-width:800px}.conclusion .spark{font-size:46px;color:#9389a8;padding:0 14px}.footer{padding:28px 0 40px;display:flex;justify-content:space-between;gap:20px;color:#829099;font-size:12px;border-top:1px solid var(--line)}.footer a{color:#627e88;text-decoration:none}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    @media(max-width:850px){.hero{grid-template-columns:1fr;padding:40px 0 55px;gap:24px}.hero-art{height:270px}.cards{grid-template-columns:1fr}.formula-row,.experiment{grid-template-columns:1fr}.scene-controls{grid-template-columns:1fr 1fr}.scene-buttons{grid-column:1/-1}.scene-canvas{height:360px}.topbar nav{gap:14px}}
+    @media(max-width:560px){.wrap{width:min(100% - 26px,1160px)}.topbar{padding:14px 0}.topbar nav{gap:12px;font-size:12px}.topbar nav a:nth-child(3){display:none}.hero{padding-top:32px}h1{font-size:44px}.lead{font-size:16px}.hero-art{height:220px}.section{padding:47px 0}.scene-top{align-items:flex-start;flex-direction:column;gap:3px}.scene-canvas{height:300px}.scene-controls{grid-template-columns:1fr;gap:13px}.scene-buttons{grid-column:auto}.scene-hint{max-width:150px;font-size:10px}.scene-key{max-width:190px}.key-item{font-size:10px}.formula,.note,.obs-card{padding:20px}.spectrum-list{grid-template-columns:1fr 1fr}.conclusion{grid-template-columns:1fr}.conclusion .spark{display:none}.footer{flex-direction:column}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+    .worksheet{background:#fffdfa;border:1px solid var(--line);border-radius:21px;padding:24px;box-shadow:var(--shadow)}
+    .student-meta{display:grid;grid-template-columns:2fr 1fr 1fr;gap:14px;margin:20px 0}
+    .field label{display:block;font-size:13px;font-weight:650;margin-bottom:6px;color:#53646c}
+    .field input,.field textarea{display:block;width:100%;border:1px solid #d9dfdb;border-radius:11px;background:#fff;padding:11px 12px;color:var(--ink);outline:none;transition:border-color .15s,box-shadow .15s}
+    .field input:focus,.field textarea:focus{border-color:#88a7a0;box-shadow:0 0 0 3px #88a7a022}
+    .field textarea{min-height:92px;resize:vertical;line-height:1.55}
+    .field textarea::placeholder,.field input::placeholder{color:#a0aaa8}
+    .worksheet-fields{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+    .worksheet-fields .wide{grid-column:1/-1}
+    .worksheet-actions{display:flex;justify-content:flex-end;margin-top:16px}
+    .worksheet-actions button{border:1px solid #d9dedb;background:#fff;border-radius:11px;padding:10px 14px;cursor:pointer}
+    .worksheet-actions button:hover{background:#edf3ed}
+    .worksheet-tip{color:#7d8b8a;font-size:12px;margin:12px 2px 0}
+    @media(max-width:850px){.student-meta{grid-template-columns:1fr 1fr}.student-meta .field:first-child{grid-column:1/-1}}
+    @media(max-width:560px){.worksheet{padding:20px}.worksheet-fields,.student-meta{grid-template-columns:1fr}.worksheet-fields .wide,.student-meta .field:first-child{grid-column:auto}}
+    @media print{body{background:white;color:#111;font-size:12pt}.topbar,.hero,#scene,#theory,#work,.footer{display:none!important}.wrap{width:100%;max-width:none}.section#worksheet{display:block;padding:0}.section#worksheet .section-head{margin-bottom:16px}.worksheet{box-shadow:none;border:0;padding:0}.student-meta{grid-template-columns:2fr 1fr 1fr}.worksheet-fields{grid-template-columns:1fr 1fr}.field input,.field textarea{border-color:#9aa3a1;background:white;min-height:28px}.field textarea{min-height:78px}.worksheet-actions,.worksheet-tip{display:none}}
+  </style>
+</head>
+<body>
+  <header class="wrap topbar">
+    <div class="brand"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12h6m4 0h6M10 7l4 5-4 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="4" cy="12" r="1.5" fill="currentColor"/><circle cx="20" cy="12" r="1.5" fill="currentColor"/></svg></span> ФИЗИКА · ЛАБОРАТОРИЯ</div>
+    <nav aria-label="Навигация"><a href="#theory">Теория</a><a href="#scene">Модель</a><a href="#work">Ход работы</a><a href="#worksheet">Лист работы</a></nav>
+  </header>
+  <main>
+    <section class="wrap hero">
+      <div>
+        <span class="eyebrow">Оптика · практическая работа</span>
+        <h1>Как белый свет становится <em>цветным</em></h1>
+        <p class="lead">Исследуем дисперсию: пропустим узкий пучок белого света через стеклянную призму и проследим, как на экране появляется цветной спектр.</p>
+        <div class="hero-actions"><a class="btn primary" href="#scene">Открыть 3D-модель <span aria-hidden="true">↗</span></a><a class="btn ghost" href="#work">Перейти к опыту</a></div>
+      </div>
+      <div class="hero-art" aria-label="Иллюстрация белого луча, стеклянной призмы и цветного спектра">
+        <svg viewBox="0 0 520 270" role="img" aria-hidden="true">
+          <defs><linearGradient id="beam" x2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#fdf5d8"/></linearGradient><linearGradient id="glass" x2="1" y2="1"><stop stop-color="#fff" stop-opacity=".8"/><stop offset="1" stop-color="#b8d7df" stop-opacity=".55"/></linearGradient><filter id="glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+          <path d="M37 136H190" stroke="url(#beam)" stroke-width="8" stroke-linecap="round" filter="url(#glow)"/><path d="M182 136 263 54 334 136 263 218Z" fill="url(#glass)" stroke="#fff" stroke-opacity=".8" stroke-width="2"/><path d="M263 54v164M182 136h152" stroke="#fff" stroke-opacity=".28"/>
+          <path d="M332 135 479 56" stroke="#a891cc" stroke-width="5" stroke-linecap="round"/><path d="M332 135 479 82" stroke="#83a8d4" stroke-width="5"/><path d="M332 135 479 108" stroke="#8bc3ba" stroke-width="5"/><path d="M332 135 479 135" stroke="#f0d488" stroke-width="5"/><path d="M332 135 479 161" stroke="#e8a878" stroke-width="5"/><path d="M332 135 479 188" stroke="#dd8f96" stroke-width="5"/>
+          <rect x="27" y="110" width="20" height="52" rx="5" fill="#758c93"/><rect x="24" y="106" width="26" height="60" rx="7" fill="none" stroke="#fff" stroke-opacity=".8" stroke-width="2"/><path d="M477 41v165" stroke="#819198" stroke-width="5" stroke-linecap="round"/><rect x="464" y="42" width="28" height="166" rx="8" fill="#fff" fill-opacity=".4" stroke="#fff" stroke-opacity=".8"/><circle cx="479" cy="56" r="5" fill="#a891cc"/><circle cx="479" cy="188" r="5" fill="#dd8f96"/>
+        </svg><span class="art-caption">Белый луч → призма → спектр</span>
+      </div>
+    </section>
+
+    <section class="lab section" id="scene">
+      <div class="wrap">
+        <div class="section-head"><span class="kicker">Интерактивная модель</span><h2>Соберите опыт взглядом</h2><p>Перетаскивайте сцену, чтобы осмотреть установку. Меняйте угол призмы и положение экрана — так заметнее, как меняется веер цветных лучей.</p></div>
+        <div class="scene-shell">
+          <div class="scene-top"><strong>Источник света · щель · стеклянная призма · экран</strong><span>3D-сцена · перетащите для поворота</span></div>
+          <div class="scene-body"><canvas class="scene-canvas" id="sceneCanvas" aria-label="Интерактивная 3D-модель опыта по дисперсии света"></canvas><div class="scene-hint">Зажмите и перемещайте, чтобы вращать сцену</div><div class="scene-key"><span class="key-item"><i class="key-dot" style="background:#fff"></i>белый свет</span><span class="key-item"><i class="key-dot" style="background:#a890d0"></i>спектр</span></div></div>
+          <div class="scene-controls">
+            <div class="control"><label for="angle"><span>Поворот призмы</span><output id="angleOut">8°</output></label><input id="angle" type="range" min="0" max="20" value="8" aria-label="Поворот призмы"></div>
+            <div class="control"><label for="distance"><span>Расстояние до экрана</span><output id="distanceOut">2,4 м</output></label><input id="distance" type="range" min="1" max="3.5" step="0.1" value="2.4" aria-label="Расстояние до экрана"></div>
+            <div class="scene-buttons"><button id="beamToggle" type="button" aria-pressed="true">Луч: включён</button><button id="labelsToggle" type="button" aria-pressed="true">Подписи: включены</button><button id="resetView" type="button">Сбросить вид</button></div>
+          </div>
+        </div>
+        <p class="under-scene">Углы на модели схематичны: неравномерный разлёт показан по приближённой зависимости отклонения от 1/λ². Реальная картина зависит от стекла и геометрии опыта.</p>
+      </div>
+    </section>
+
+    <section class="wrap section" id="theory">
+      <div class="section-head"><span class="kicker">Перед опытом</span><h2>Что предстоит выяснить?</h2><p>Вспомни: белый свет может содержать разные цветовые составляющие. Во время опыта проследи, что происходит с узким световым пучком после призмы, и запиши наблюдения своими словами.</p></div>
+      <div class="cards">
+        <article class="card"><span class="num">01</span><h3>Сформулируй предположение</h3><p>Как изменится узкий пучок света после прохождения через призму? Запиши гипотезу до наблюдения.</p></article>
+        <article class="card"><span class="num">02</span><h3>Наблюдай внимательно</h3><p>Обрати внимание на форму изображения на экране и на различия между его цветными частями.</p></article>
+        <article class="card"><span class="num">03</span><h3>Сопоставь результат</h3><p>Сравни наблюдение со своей гипотезой и объясни, что могло вызвать увиденную картину.</p></article>
+      </div>
+      <div class="note" style="margin-top:18px"><span class="note-icon">?</span><p><strong>Вопрос для исследования.</strong> Все ли части белого света изменят направление одинаково? Проверь это на модели и сформулируй ответ после наблюдения.</p></div>
+    </section>
+
+    <section class="wrap section" id="work">
+      <div class="section-head"><span class="kicker">Практическая часть</span><h2>Проведите наблюдение</h2><p>Цель — увидеть разложение белого света и установить порядок цветов в спектре.</p></div>
+      <div class="experiment">
+        <div class="steps">
+          <div class="step"><p><strong>Подготовьте установку.</strong> Понадобятся источник белого света, узкая щель, стеклянная призма и белый экран.</p></div>
+          <div class="step"><p><strong>Сузьте пучок.</strong> Направьте свет через щель на призму так, чтобы луч попадал на одну из её граней.</p></div>
+          <div class="step"><p><strong>Найдите изображение.</strong> Поставьте экран за призмой и перемещайте его, пока результат опыта не станет хорошо различим.</p></div>
+          <div class="step"><p><strong>Зафиксируйте наблюдение.</strong> Запишите увиденное в листе работы своими словами, не сверяясь с готовым выводом.</p></div>
+        </div>
+        <aside class="obs-card"><h3>Наблюдай и записывай</h3><p>Модель показывает качественную картину опыта. Используй её как объект наблюдения, а ответы внеси в лист работы ниже.</p><p style="margin-top:20px"><strong>Подсказка:</strong> сравни края цветной полосы и расстояния между соседними цветами.</p></aside>
+      </div>
+    </section>
+
+    <section class="wrap section" id="worksheet">
+      <div class="section-head"><span class="kicker">Твой рабочий лист</span><h2>Заполни во время опыта</h2><p>Впиши свои данные и наблюдения. Поля оставлены для самостоятельной работы.</p></div>
+      <form class="worksheet" id="worksheetForm" autocomplete="off">
+        <div class="student-meta">
+          <div class="field"><label for="studentName">Фамилия и имя</label><input id="studentName" name="studentName" type="text" placeholder="Заполни самостоятельно"></div>
+          <div class="field"><label for="studentClass">Класс</label><input id="studentClass" name="studentClass" type="text"></div>
+          <div class="field"><label for="workDate">Дата</label><input id="workDate" name="workDate" type="text"></div>
+        </div>
+        <div class="worksheet-fields">
+          <div class="field wide"><label for="hypothesis">1. Гипотеза до начала опыта</label><textarea id="hypothesis" name="hypothesis" placeholder="Как, по-твоему, изменится свет после призмы?"></textarea></div>
+          <div class="field"><label for="spectrumOrder">2. Что увидел на экране?</label><textarea id="spectrumOrder" name="spectrumOrder" placeholder="Опиши форму и последовательность цветов"></textarea></div>
+          <div class="field"><label for="deviation">3. Сравнение отклонения лучей</label><textarea id="deviation" name="deviation" placeholder="Какие лучи отклонились больше или меньше? По каким признакам ты это определил?"></textarea></div>
+          <div class="field wide"><label for="observations">4. Дополнительные наблюдения</label><textarea id="observations" name="observations" placeholder="Запиши детали, которые показались важными"></textarea></div>
+          <div class="field wide"><label for="conclusionText">5. Вывод</label><textarea id="conclusionText" name="conclusionText" rows="5" placeholder="Сформулируй вывод самостоятельно: что показал опыт и как ты объясняешь результат?"></textarea></div>
+        </div>
+        <p class="worksheet-tip">Ответы вводятся прямо в поля. Чтобы сохранить лист на бумаге, воспользуйся печатью браузера.</p>
+        <div class="worksheet-actions"><button type="button" id="printWorksheet">Распечатать заполненный лист</button></div>
+      </form>
+    </section>
+  </main>
+  <footer class="wrap footer"><span>Лабораторная работа · Дисперсия света</span></footer>
+  <script>
+    (()=>{
+      const colors=[
+        {lambda:680,hex:'#df9093'}, {lambda:605,hex:'#e8a878'},
+        {lambda:578,hex:'#efd486'}, {lambda:542,hex:'#8bbca0'},
+        {lambda:507,hex:'#88b9c6'}, {lambda:470,hex:'#829bc9'},
+        {lambda:415,hex:'#a18bc7'}
+      ];
+      document.getElementById('printWorksheet').addEventListener('click',()=>window.print());
+
+      const canvas=document.getElementById('sceneCanvas'),ctx=canvas.getContext('2d');
+      const angleEl=document.getElementById('angle'),distEl=document.getElementById('distance'),angleOut=document.getElementById('angleOut'),distOut=document.getElementById('distanceOut');
+      let yaw=-.48,pitch=.34,drag=null,showBeam=true,showLabels=true,tick=0;
+      const rgb=(h)=>{const n=parseInt(h.slice(1),16);return[(n>>16)&255,(n>>8)&255,n&255]};
+      function resize(){const r=canvas.getBoundingClientRect(),dpr=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(r.width*dpr);canvas.height=Math.round(r.height*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);draw()}
+      function project(p){const ca=Math.cos(yaw),sa=Math.sin(yaw),cp=Math.cos(pitch),sp=Math.sin(pitch);const xx=p[0]*ca-p[2]*sa,zz=p[0]*sa+p[2]*ca;const s=Math.min(canvas.clientWidth/9.5,canvas.clientHeight/5.2);return{x:canvas.clientWidth*.5+xx*s,y:canvas.clientHeight*.62-(p[1]*cp-zz*sp)*s,z:zz}}
+      function poly(points,fill,stroke='rgba(240,249,246,.2)',width=1){const q=points.map(project);ctx.beginPath();q.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.closePath();ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=width;ctx.stroke()}}
+      function line(points,color,width=2,glow=0,dash=[]){const q=points.map(project);ctx.beginPath();q.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineCap='round';ctx.lineJoin='round';ctx.setLineDash(dash);if(glow){ctx.shadowColor=color;ctx.shadowBlur=glow}ctx.stroke();ctx.shadowBlur=0;ctx.setLineDash([])}
+      function box(x1,x2,y1,y2,z1,z2,base){const c=(n)=>Math.max(0,Math.min(255,n)).toString(16).padStart(2,'0');const f=(k)=>{const a=rgb(base).map(v=>Math.round(v*k));return'#'+a.map(c).join('')};const faces=[{p:[[x1,y1,z1],[x2,y1,z1],[x2,y2,z1],[x1,y2,z1]],k:1.06},{p:[[x2,y1,z1],[x2,y1,z2],[x2,y2,z2],[x2,y2,z1]],k:.82},{p:[[x1,y1,z1],[x1,y1,z2],[x2,y1,z2],[x2,y1,z1]],k:.68},{p:[[x1,y2,z1],[x2,y2,z1],[x2,y2,z2],[x1,y2,z2]],k:1.18}];faces.sort((a,b)=>a.p.reduce((s,p)=>s+project(p).z,0)-b.p.reduce((s,p)=>s+project(p).z,0));faces.forEach(fa=>poly(fa.p,f(fa.k),'rgba(239,248,245,.18)',1))}
+      function text(str,p,color='#e5eeee',size=12,align='center'){const q=project(p);ctx.font='500 '+size+'px Segoe UI, Arial';ctx.textAlign=align;ctx.fillStyle=color;ctx.shadowColor='#10202b';ctx.shadowBlur=5;ctx.fillText(str,q.x,q.y);ctx.shadowBlur=0}
+      function draw(){if(!ctx||!canvas.clientWidth)return;const w=canvas.clientWidth,h=canvas.clientHeight;const bg=ctx.createLinearGradient(0,0,0,h);bg.addColorStop(0,'#1c3040');bg.addColorStop(1,'#2b4550');ctx.fillStyle=bg;ctx.fillRect(0,0,w,h);
+        // Soft backdrop and ground grid
+        const glow=ctx.createRadialGradient(w*.45,h*.47,10,w*.48,h*.52,w*.68);glow.addColorStop(0,'#6b879033');glow.addColorStop(1,'#10202b00');ctx.fillStyle=glow;ctx.fillRect(0,0,w,h);
+        for(let x=-5;x<=5;x+=1)line([[x,.025,-1.8],[x,.025,1.8]],'rgba(211,230,225,.09)',.7);for(let z=-1;z<=2;z+=1)line([[-5,.025,z],[5,.025,z]],'rgba(211,230,225,.09)',.7);
+        // Bench and supports
+        box(-4.7,4.4,0,.13,-1.35,1.35,'#71848a');box(-4.25,-4.02,-1.1,0,-.16,.16,'#667c83');box(3.95,4.18,-1.1,0,-.16,.16,'#667c83');
+        // Light source and the narrow aperture
+        box(-4.25,-3.55,.25,1.55,-.48,.48,'#758b92');box(-3.54,-3.48,.43,1.34,-.24,.24,'#c8d7d4');box(-2.95,-2.83,.12,1.75,-.56,.56,'#364a53');box(-2.91,-2.87,.86,.97,-.12,.12,'#d7e6e3');
+        // source lens
+        poly([[-3.52,.55,-.22],[-3.52,1.25,-.22],[-3.52,1.25,.22],[-3.52,.55,.22]],'#c4d9d7','rgba(255,255,255,.45)',1);
+        // Prism: triangular glass body and its mount
+        box(-.47,-.17,.13,.27,-.48,.48,'#766f86');
+        const turn=(+angleEl.value)*Math.PI/180,prismCenter=[-.033,.747];
+        const prismPoint=([x,y,z])=>{const dx=x-prismCenter[0],dy=y-prismCenter[1],c=Math.cos(turn),s=Math.sin(turn);return[prismCenter[0]+dx*c-dy*s,prismCenter[1]+dx*s+dy*c,z]};
+        const baseFront=[[-.95,.27,-.34],[-.05,1.7,-.34],[.9,.27,-.34]],front=baseFront.map(prismPoint),back=baseFront.map(p=>prismPoint([p[0],p[1],.34]));
+        poly(front,'rgba(183,216,220,.76)','rgba(244,253,250,.78)',1.5);poly(back,'rgba(145,188,198,.38)','rgba(230,246,244,.3)',1);for(let i=0;i<3;i++)line([front[i],back[i]],'rgba(240,250,247,.55)',1.2);
+        // Screen, moved by the distance control
+        const sx=2.15+(+distEl.value)*.47;box(sx-.06,sx+.06,.12,2.18,-.73,.73,'#627a81');poly([[sx,.19,-.68],[sx,2.12,-.68],[sx,2.12,.68],[sx,.19,.68]],'rgba(247,245,232,.91)','rgba(255,255,255,.65)',1.4);box(sx-.22,sx+.22,.03,.12,-.8,.8,'#70848a');
+        if(showBeam){const entrance=prismPoint([-.535,.93,0]),exit=prismPoint([.45,.92,0]);line([[-3.49,.93,0],[-2.9,.93,0],entrance],'rgba(255,250,220,.36)',10,12);line([[-3.49,.93,0],[-2.9,.93,0],entrance],'#fff9df',2.3,9);
+          const colorsOnScreen=colors.slice().reverse(),spread=.035+(+angleEl.value)*.0065,mid=exit[1];
+          const redInv=1/(colors[0].lambda**2),violetInv=1/(colors[colors.length-1].lambda**2),invSpan=violetInv-redInv;
+          colorsOnScreen.forEach(c=>{const chroma=(1/(c.lambda**2)-redInv)/invSpan,t=.5-chroma;const targetY=mid+t*spread*2*(sx-exit[0]);const col=c.hex;line([exit,[exit[0]+(sx-exit[0])*.38,mid+t*.04,0],[sx,targetY,0]],col,2.4,8);});
+          // A moving pearl makes the direction of white light easy to follow.
+          const pulse=(tick%170)/170,px=-3.47+pulse*2.25,p=project([px,.93,0]);ctx.beginPath();ctx.arc(p.x,p.y,3.4,0,Math.PI*2);ctx.fillStyle='#fff7d9';ctx.shadowColor='#fff';ctx.shadowBlur=14;ctx.fill();ctx.shadowBlur=0;
+        }
+        // Objects and equipment annotations
+        if(showLabels){text('ИСТОЧНИК',[-3.9,1.82,.05],'#dce8e7',11);text('УЗКАЯ ЩЕЛЬ',[-2.88,1.98,0],'#dce8e7',11);text('ПРИЗМА',[0,1.94,0],'#e5eeee',11);text('ЭКРАН',[sx,2.36,0],'#e5eeee',11);}
+        // A gentle floor highlight under the optical path
+        const a=project([-3.6,.015,0]),b=project([sx,.015,0]);const g=ctx.createLinearGradient(a.x,a.y,b.x,b.y);g.addColorStop(0,'#fff3c820');g.addColorStop(.55,'#c7bddc20');g.addColorStop(1,'#e4c8c820');ctx.strokeStyle=g;ctx.lineWidth=9;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();tick++;
+      }
+      function loop(){draw();requestAnimationFrame(loop)}
+      angleEl.addEventListener('input',()=>{angleOut.value=angleEl.value+'°';draw()});distEl.addEventListener('input',()=>{distOut.value=Number(distEl.value).toFixed(1).replace('.',',')+' м';draw()});
+      document.getElementById('beamToggle').addEventListener('click',e=>{showBeam=!showBeam;e.currentTarget.textContent='Луч: '+(showBeam?'включён':'выключен');e.currentTarget.setAttribute('aria-pressed',String(showBeam));draw()});
+      document.getElementById('labelsToggle').addEventListener('click',e=>{showLabels=!showLabels;e.currentTarget.textContent='Подписи: '+(showLabels?'включены':'скрыты');e.currentTarget.setAttribute('aria-pressed',String(showLabels));draw()});
+      document.getElementById('resetView').addEventListener('click',()=>{yaw=-.48;pitch=.34;angleEl.value=8;distEl.value=2.4;angleOut.value='8°';distOut.value='2,4 м';showBeam=true;showLabels=true;document.getElementById('beamToggle').textContent='Луч: включён';document.getElementById('beamToggle').setAttribute('aria-pressed','true');document.getElementById('labelsToggle').textContent='Подписи: включены';document.getElementById('labelsToggle').setAttribute('aria-pressed','true');draw()});
+      canvas.addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY,yaw,pitch};canvas.setPointerCapture(e.pointerId)});canvas.addEventListener('pointermove',e=>{if(!drag)return;yaw=drag.yaw+(e.clientX-drag.x)*.009;pitch=Math.max(-.08,Math.min(.85,drag.pitch+(e.clientY-drag.y)*.006));draw()});canvas.addEventListener('pointerup',()=>drag=null);canvas.addEventListener('pointercancel',()=>drag=null);
+      new ResizeObserver(resize).observe(canvas);resize();loop();
+    })();
+  </script>
+</body>
+</html>
