@@ -106,5 +106,37 @@
 })();
 </script>
 <style>.model-tag{position:absolute;z-index:2;transform:translate(-50%,-100%);white-space:nowrap;padding:3px 6px;border-radius:5px;background:#172d36b5;color:#e8efeb;font:700 8px/1.2 var(--sans);letter-spacing:.08em;pointer-events:none}</style>
+  <!-- Скрипт авторесайза для передачи высоты в iframe (Moodle) -->
+<script>
+  function sendHeightToParent() {
+    // Вычисляем полную высоту контента
+    const height = Math.max(
+      document.body.scrollHeight,
+      document.documentElement.scrollHeight,
+      document.body.offsetHeight,
+      document.documentElement.offsetHeight
+    );
+    
+    // Отправляем сообщение родительскому окну (Moodle)
+    window.parent.postMessage({ 
+      type: 'resizeIframe', 
+      height: height 
+    }, '*'); 
+  }
+
+  // Отправляем высоту при загрузке страницы
+  window.addEventListener('load', sendHeightToParent);
+  
+  // Отправляем высоту при изменении размера окна
+  window.addEventListener('resize', sendHeightToParent);
+
+  // Отслеживаем динамические изменения (например, переключение вкладок "Баланс системы", "Экономика" и открытие подсказок)
+  if (window.ResizeObserver) {
+    const observer = new ResizeObserver(() => {
+      sendHeightToParent();
+    });
+    observer.observe(document.body);
+  }
+</script>
 </body>
 </html>
