@@ -81,7 +81,7 @@
   // Отправляем высоту при изменении размера окна
   window.addEventListener('resize', sendHeightToParent);
 
-  // Отслеживаем динамические изменения (например, раскрытие пояснения или переключение вкладок)
+  // Отслеживаем динамические изменения (например, раскрытие ответа на вопрос)
   if (window.ResizeObserver) {
     const observer = new ResizeObserver(() => {
       sendHeightToParent();
