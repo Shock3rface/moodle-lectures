@@ -61,6 +61,28 @@
  <div class="quiz-actions"><button class="primary" type="submit">Проверить ответы</button><button class="secondary" type="reset">Начать заново</button><p id="quiz-result" role="status" aria-live="polite"></p></div>
  </form><noscript><p>Для автоматической проверки включите JavaScript. Ответы: 1 — воздух между снежинками; 2 — испарение; 3 — пар превращается в лёд; 4 — температура и преломление; 5 — изменение состояния.</p></noscript>
  <div class="closing"><h3>Теперь посмотрите вокруг.</h3><p>Капля росы, тающий снег, туман над рекой. Выберите одно явление и объясните его через движение энергии и изменение состояния вещества.</p><a class="text-link" href="#top">Вернуться к началу ↑</a></div></section>
- </main><footer class="wrap"><span>Физика · 8 класс</span><span>Тепловые явления в природе</span></footer>
+ </main><footer class="wrap"><span>Физика · 8 класс</span><span>Тепловые явления в природе</span></footer><script>
+  function sendHeight() {
+    const height = Math.max(
+      document.body.scrollHeight,
+      document.documentElement.scrollHeight,
+      document.body.offsetHeight,
+      document.documentElement.offsetHeight
+    );
+    window.parent.postMessage({ type: 'resizeIframe', height: height }, '*');
+  }
+
+  window.addEventListener('load', sendHeight);
+  window.addEventListener('resize', sendHeight);
+  document.addEventListener('DOMContentLoaded', sendHeight);
+
+  // Отслеживает раскрытие <details> и догрузку картинок
+  if (window.ResizeObserver) {
+    new ResizeObserver(sendHeight).observe(document.body);
+  }
+
+  // Запасная повторная отправка после возможного рендера шрифтов/стилей
+  setTimeout(sendHeight, 500);
+</script>
 </body></html>
 
