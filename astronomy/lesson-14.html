@@ -2458,6 +2458,31 @@ window.MathJax = {
   document.addEventListener('toggle', resizeIframe, true);
   document.fonts.ready.then(resizeIframe);
   resizeIframe();
+
+  function scrollToSection(target) {
+    window.parent.postMessage({
+      type: 'scrollIframe',
+      top: Math.round(target.getBoundingClientRect().top + window.scrollY)
+    }, '*');
+  }
+
+  document.addEventListener('click', function (event) {
+    if (event.defaultPrevented || event.button !== 0
+        || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    const link = event.target.closest('a[href^="#"]');
+    if (!link || link.hasAttribute('download') || (link.target && link.target !== '_self')) return;
+    const hash = link.getAttribute('href');
+    const target = document.getElementById(decodeURIComponent(hash.slice(1)));
+    if (!target) return;
+    event.preventDefault();
+    if (window.location.hash !== hash) window.history.pushState(null, '', hash);
+    scrollToSection(target);
+  });
+
+  window.addEventListener('hashchange', function () {
+    const target = document.getElementById(decodeURIComponent(window.location.hash.slice(1)) || 'main');
+    if (target) scrollToSection(target);
+  });
 })();
 
 </script>
