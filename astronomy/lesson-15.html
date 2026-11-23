@@ -1805,6 +1805,50 @@ details > p:last-child { margin-bottom: 0; }
 
 </script>
 <script>
+(() => {
+  if (window.parent === window) return;
+
+  document.documentElement.classList.add('lesson-embedded');
+  const style = document.createElement('style');
+  style.textContent = `
+    .lesson-embedded .portal-chapter { min-height: 0; }
+    .lesson-embedded .portal-frame {
+      min-height: clamp(34rem, 65vw, 54rem);
+      position: relative;
+    }
+    .lesson-embedded .portal-index { bottom: 1.25rem; }
+  `;
+  document.head.append(style);
+
+  let lastHeight = 0;
+  let pending = false;
+  function sendHeight() {
+    pending = false;
+    const body = document.body;
+    const margins = getComputedStyle(body);
+    const height = Math.ceil(body.getBoundingClientRect().height
+      + parseFloat(margins.marginTop) + parseFloat(margins.marginBottom)) + 2;
+    if (!Number.isFinite(height) || height <= 0 || height === lastHeight) return;
+    lastHeight = height;
+    window.parent.postMessage({ type: 'resizeIframe', height }, '*');
+  }
+  function schedule() {
+    if (pending) return;
+    pending = true;
+    requestAnimationFrame(sendHeight);
+  }
+
+  new ResizeObserver(schedule).observe(document.body);
+  window.addEventListener('resize', schedule);
+  window.addEventListener('load', schedule);
+  document.addEventListener('load', schedule, true);
+  document.addEventListener('toggle', schedule, true);
+  document.fonts.ready.then(schedule);
+  schedule();
+})();
+
+</script>
+<script>
 window.MathJax = {
   startup: { elements: ["main"] },
   tex: {
