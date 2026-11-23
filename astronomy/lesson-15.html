@@ -1805,50 +1805,6 @@ details > p:last-child { margin-bottom: 0; }
 
 </script>
 <script>
-(() => {
-  if (window.parent === window) return;
-
-  document.documentElement.classList.add('lesson-embedded');
-  const style = document.createElement('style');
-  style.textContent = `
-    .lesson-embedded .portal-chapter { min-height: 0; }
-    .lesson-embedded .portal-frame {
-      min-height: clamp(34rem, 65vw, 54rem);
-      position: relative;
-    }
-    .lesson-embedded .portal-index { bottom: 1.25rem; }
-  `;
-  document.head.append(style);
-
-  let lastHeight = 0;
-  let pending = false;
-  function sendHeight() {
-    pending = false;
-    const body = document.body;
-    const margins = getComputedStyle(body);
-    const height = Math.ceil(body.getBoundingClientRect().height
-      + parseFloat(margins.marginTop) + parseFloat(margins.marginBottom)) + 2;
-    if (!Number.isFinite(height) || height <= 0 || height === lastHeight) return;
-    lastHeight = height;
-    window.parent.postMessage({ type: 'resizeIframe', height }, '*');
-  }
-  function schedule() {
-    if (pending) return;
-    pending = true;
-    requestAnimationFrame(sendHeight);
-  }
-
-  new ResizeObserver(schedule).observe(document.body);
-  window.addEventListener('resize', schedule);
-  window.addEventListener('load', schedule);
-  document.addEventListener('load', schedule, true);
-  document.addEventListener('toggle', schedule, true);
-  document.fonts.ready.then(schedule);
-  schedule();
-})();
-
-</script>
-<script>
 window.MathJax = {
   startup: { elements: ["main"] },
   tex: {
@@ -2197,6 +2153,48 @@ window.MathJax = {
   addEventListener('load', scheduleRoute, { once: true });
   scheduleRoute();
 })();
+</script>
+<script>
+(function () {
+  if (window.parent === window) return;
+
+  document.documentElement.classList.add('lesson-embedded');
+  const style = document.createElement('style');
+  style.textContent = `
+    .lesson-embedded .portal-chapter { min-height: 0; }
+    .lesson-embedded .portal-frame {
+      min-height: clamp(34rem, 65vw, 54rem);
+      position: relative;
+    }
+    .lesson-embedded .portal-index { bottom: 1.25rem; }
+  `;
+  document.head.append(style);
+
+  function resizeIframe() {
+    const body = document.body;
+    const html = document.documentElement;
+    const height = Math.max(
+      body.getBoundingClientRect().height,
+      body.scrollHeight,
+      html.scrollHeight
+    );
+    window.parent.postMessage({
+      type: 'resizeIframe',
+      height: Math.ceil(height)
+    }, '*');
+  }
+
+  window.addEventListener('load', resizeIframe);
+  window.addEventListener('resize', resizeIframe);
+  setTimeout(resizeIframe, 1000);
+  setTimeout(resizeIframe, 3000);
+  new ResizeObserver(resizeIframe).observe(document.body);
+  document.addEventListener('load', resizeIframe, true);
+  document.addEventListener('toggle', resizeIframe, true);
+  document.fonts.ready.then(resizeIframe);
+  resizeIframe();
+})();
+
 </script>
 </body>
 </html>
